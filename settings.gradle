@@ -1,0 +1,2 @@
+include ':sample', ':uiza-core', ':uiza-player'
+rootProject.name='uiza-sdk-player'
