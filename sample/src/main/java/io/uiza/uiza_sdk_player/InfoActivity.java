@@ -45,7 +45,8 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent();
         intent.putExtra(UizaPlayerActivity.PREFER_EXTENSION_DECODERS_EXTRA, preferExtensionDecoders);
         intent.putExtra(UizaPlayerActivity.ABR_ALGORITHM_EXTRA, abrAlgorithm);
-        intent.setData(Uri.parse("https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8"));
+        uri = "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8";
+        intent.setData(Uri.parse(uri));
         intent.putExtra(UizaPlayerActivity.EXTENSION_EXTRA, "m3u8");
         intent.setAction(UizaPlayerActivity.ACTION_VIEW);
 
