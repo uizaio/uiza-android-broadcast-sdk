@@ -3,6 +3,8 @@ package io.uiza.player;
 import android.content.Context;
 import android.net.Uri;
 
+import androidx.annotation.Nullable;
+
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.database.DatabaseProvider;
@@ -112,21 +114,28 @@ public class UizaPlayer {
                 .setExtensionRendererMode(extensionRendererMode);
     }
 
+    @Nullable
     public DownloadManager getDownloadManager() {
         initDownloadManager();
         return downloadManager;
     }
 
+    @Nullable
     public DownloadTracker getDownloadTracker() {
         initDownloadManager();
         return downloadTracker;
     }
 
+    @Nullable
     public DownloadRequest getDownloadRequest(Uri uri) {
         if (downloadTracker != null) {
             return downloadTracker.getDownloadRequest(uri);
+        } else {
+            DownloadTracker tracker = getDownloadTracker();
+            if (tracker != null)
+                return tracker.getDownloadRequest(uri);
+            else return null;
         }
-        return null;
     }
 
     protected synchronized Cache getDownloadCache() {

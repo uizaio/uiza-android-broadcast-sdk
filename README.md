@@ -15,7 +15,7 @@ Read [CHANGELOG](https://github.com/uizaio/uiza-sdk-player/blob/dev/CHANGELOG.md
 
 ## uiza-core
 
-Use [Retrofit2](https://square.github.io/retrofit/) and [Okhttp](https://square.github.io/okhttp/)
+Use [Retrofit2](https://square.github.io/retrofit/) and [Okhttp3](https://square.github.io/okhttp/)
 > Thanks [Square](https://github.com/square)
 
 ## uiza-player
