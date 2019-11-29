@@ -10,9 +10,9 @@ import android.util.AttributeSet;
 import androidx.appcompat.widget.AppCompatImageButton;
 
 import io.uiza.player.R;
-import io.uiza.player.utils.ConvertUtil;
-import io.uiza.player.utils.DeviceUtil;
-import io.uiza.player.utils.ScreenUtil;
+import io.uiza.player.utils.ConvertKt;
+import io.uiza.player.utils.DeviceKt;
+import io.uiza.player.utils.ScreenKt;
 
 public class UizaImageButton extends AppCompatImageButton {
 
@@ -91,21 +91,21 @@ public class UizaImageButton extends AppCompatImageButton {
             drawableEnabled = getDrawable();
             return;
         }
-        boolean isTablet = DeviceUtil.isTablet(getContext());
+        boolean isTablet = DeviceKt.isTablet(getContext());
         if (isTablet) {
-            ratioLand = DeviceUtil.RATIO_LAND_TABLET;
-            ratioPort = DeviceUtil.RATIO_PORTRAIT_TABLET;
+            ratioLand = DeviceKt.RATIO_LAND_TABLET;
+            ratioPort = DeviceKt.RATIO_PORTRAIT_TABLET;
         } else {
-            ratioLand = DeviceUtil.RATIO_LAND_MOBILE;
-            ratioPort = DeviceUtil.RATIO_PORTRAIT_MOBILE;
+            ratioLand = DeviceKt.RATIO_LAND_MOBILE;
+            ratioPort = DeviceKt.RATIO_PORTRAIT_MOBILE;
         }
-        screenWPortrait = ScreenUtil.getScreenWidth();
-        screenWLandscape = ScreenUtil.getScreenHeightIncludeNavigationBar(this.getContext());
+        screenWPortrait = ScreenKt.getScreenWidth();
+        screenWLandscape = ScreenKt.screenHeightIncludeNavigationBar(this.getContext());
         //set padding 5dp
-        int px = ConvertUtil.dp2px(5);
+        int px = ConvertKt.dp2px(5);
         setPadding(px, px, px, px);
         post(() -> {
-            if (ScreenUtil.isFullScreen(getContext())) {
+            if (ScreenKt.isFullScreen(getContext())) {
                 updateSizeLandscape();
             } else {
                 updateSizePortrait();
@@ -124,7 +124,7 @@ public class UizaImageButton extends AppCompatImageButton {
 
     public void setRatioLand(int ratioLand) {
         this.ratioLand = ratioLand;
-        if (ScreenUtil.isFullScreen(getContext())) {
+        if (ScreenKt.isFullScreen(getContext())) {
             updateSizeLandscape();
         } else {
             updateSizePortrait();
@@ -137,7 +137,7 @@ public class UizaImageButton extends AppCompatImageButton {
 
     public void setRatioPort(int ratioPort) {
         this.ratioPort = ratioPort;
-        if (ScreenUtil.isFullScreen(getContext())) {
+        if (ScreenKt.isFullScreen(getContext())) {
             updateSizeLandscape();
         } else {
             updateSizePortrait();

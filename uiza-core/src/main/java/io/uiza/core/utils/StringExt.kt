@@ -12,9 +12,8 @@ fun emptyString() = ""
 const val emptyString = ""
 
 
-fun toPrettyFormat(jsonString: String?): String? {
+fun String.toPrettyFormat(): String? {
     val parser = JsonParser()
-    val json = parser.parse(jsonString).asJsonObject
-    val gson = GsonBuilder().setPrettyPrinting().create()
-    return gson.toJson(json)
+    val json = parser.parse(this).asJsonObject
+    return GsonBuilder().setPrettyPrinting().create().toJson(json)
 }

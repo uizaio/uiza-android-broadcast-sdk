@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -48,12 +45,11 @@ import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.trackselection.RandomTrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-import com.google.android.exoplayer2.ui.DebugTextViewHelper;
+import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.spherical.SphericalSurfaceView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.ErrorMessageProvider;
-import com.google.android.exoplayer2.util.EventLogger;
 import com.google.android.exoplayer2.util.Util;
 
 import java.lang.reflect.Constructor;
@@ -63,8 +59,12 @@ import java.net.CookiePolicy;
 import java.util.UUID;
 
 import io.uiza.core.utils.CommonKt;
+import io.uiza.core.utils.UizaLog;
+import io.uiza.player.utils.ScreenKt;
 import io.uiza.player.views.TrackSelectionDialog;
+import io.uiza.player.views.UizaDebugView;
 import io.uiza.player.views.UizaPlayerView;
+import io.uiza.player.widgets.UizaImageButton;
 
 public class UizaPlayerActivity extends AppCompatActivity
         implements View.OnClickListener, PlaybackPreparer, UizaPlayerView.PlayerControlVisibilityListener {
@@ -110,18 +110,16 @@ public class UizaPlayerActivity extends AppCompatActivity
     }
 
     private UizaPlayerView playerView;
-    private LinearLayout debugRootView;
-    private Button selectTracksButton;
-    private TextView debugTextView;
+    private UizaDebugView debugView;
     private boolean isShowingTrackSelectionDialog;
-
+    private UizaImageButton selectTracksButton;
     private DataSource.Factory dataSourceFactory;
     private SimpleExoPlayer player;
     private FrameworkMediaDrm mediaDrm;
     private MediaSource mediaSource;
     private DefaultTrackSelector trackSelector;
     private DefaultTrackSelector.Parameters trackSelectorParameters;
-    private DebugTextViewHelper debugViewHelper;
+    //    private UizaDebugViewHelper debugViewHelper;
     private TrackGroupArray lastSeenTrackGroupArray;
 
     private boolean startAutoPlay;
@@ -148,15 +146,28 @@ public class UizaPlayerActivity extends AppCompatActivity
         }
 
         setContentView(R.layout.activity_uiza_player);
-        debugRootView = findViewById(R.id.controls_root);
-        debugTextView = findViewById(R.id.debug_text_view);
-        selectTracksButton = findViewById(R.id.select_tracks_button);
-        selectTracksButton.setOnClickListener(this);
-
+        debugView = findViewById(R.id.debug_view);
+        debugView.setCloseClick(v -> {
+            debugView.setVisibility(View.GONE);
+            if (player != null) {
+                player.removeAnalyticsListener(debugView);
+            }
+        });
         playerView = findViewById(R.id.player_view);
         playerView.setPlayerVisibilityListener(this);
         playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
         playerView.requestFocus();
+        PlayerControlView controlView = playerView.getPlayerControlView();
+        controlView.findViewById(R.id.exo_fullscreen_toggle).setOnClickListener(v -> {
+            UizaLog.e("Player", "onClick fullscreen");
+            ScreenKt.toggleScreenOritation(UizaPlayerActivity.this);
+        });
+
+        selectTracksButton = controlView.findViewById(R.id.exo_trackers);
+        if (selectTracksButton != null) {
+            selectTracksButton.setOnClickListener(this);
+        }
+
         if (sphericalStereoMode != null) {
             int stereoMode;
             if (SPHERICAL_STEREO_MODE_MONO.equals(sphericalStereoMode)) {
@@ -282,14 +293,14 @@ public class UizaPlayerActivity extends AppCompatActivity
 
     @Override
     public void onClick(View view) {
-        if (view == selectTracksButton
+        if (view.getId() == R.id.exo_trackers
                 && !isShowingTrackSelectionDialog
                 && TrackSelectionDialog.willHaveContent(trackSelector)) {
             isShowingTrackSelectionDialog = true;
             TrackSelectionDialog trackSelectionDialog =
                     TrackSelectionDialog.createForTrackSelector(
                             trackSelector,
-                            /* onDismissListener= */ dismissedDialog -> isShowingTrackSelectionDialog = false);
+                            dialog -> isShowingTrackSelectionDialog = false);
             trackSelectionDialog.show(getSupportFragmentManager(), /* tag= */ null);
         }
     }
@@ -305,7 +316,9 @@ public class UizaPlayerActivity extends AppCompatActivity
 
     @Override
     public void onVisibilityChange(int visibility) {
-        debugRootView.setVisibility(visibility);
+
+        UizaLog.e("Player", "visibility = " + visibility);
+
     }
 
     // Internal methods
@@ -398,11 +411,12 @@ public class UizaPlayerActivity extends AppCompatActivity
                             /* context= */ this, renderersFactory, trackSelector, drmSessionManager);
             player.addListener(new PlayerEventListener());
             player.setPlayWhenReady(startAutoPlay);
-            player.addAnalyticsListener(new EventLogger(trackSelector));
+//            player.addAnalyticsListener(new EventLogger(trackSelector));
+            player.addAnalyticsListener(debugView);
             playerView.setPlayer(player);
             playerView.setPlaybackPreparer(this);
-            debugViewHelper = new DebugTextViewHelper(player, debugTextView);
-            debugViewHelper.start();
+//            debugViewHelper = new UizaDebugViewHelper(player, debugView);
+//            debugViewHelper.start();
 
             MediaSource[] mediaSources = new MediaSource[uris.length];
             for (int i = 0; i < uris.length; i++) {
@@ -481,8 +495,8 @@ public class UizaPlayerActivity extends AppCompatActivity
         if (player != null) {
             updateTrackSelectorParameters();
             updateStartPosition();
-            debugViewHelper.stop();
-            debugViewHelper = null;
+//            debugViewHelper.stop();
+//            debugViewHelper = null;
             player.release();
             player = null;
             mediaSource = null;
@@ -581,12 +595,13 @@ public class UizaPlayerActivity extends AppCompatActivity
     // User controls
 
     private void updateButtonVisibility() {
-        selectTracksButton.setEnabled(
-                player != null && TrackSelectionDialog.willHaveContent(trackSelector));
+        if (selectTracksButton != null)
+            selectTracksButton.setEnabled(
+                    player != null && TrackSelectionDialog.willHaveContent(trackSelector));
     }
 
     private void showControls() {
-        debugRootView.setVisibility(View.VISIBLE);
+//        debugRootView.setVisibility(View.VISIBLE);
     }
 
     private void showToast(int messageId) {

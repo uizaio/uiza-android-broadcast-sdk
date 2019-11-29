@@ -5,6 +5,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/background_dark"
     android:keepScreenOn="true">
 
     <io.uiza.player.views.UizaPlayerView
@@ -12,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:controller_layout_id="@layout/uiza_controller_skin_1"
-        app:use_controller="true"/>
+        app:use_controller="true" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,30 +21,14 @@
         android:background="#88000000"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/debug_text_view"
+        <io.uiza.player.views.UizaDebugView
+            android:id="@+id/debug_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingStart="@dimen/padding_16"
+            android:paddingEnd="@dimen/padding_16"
             android:textSize="10sp"
             tools:ignore="SmallSp" />
-
-        <LinearLayout
-            android:id="@+id/controls_root"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/select_tracks_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:text="@string/track_selection_title" />
-
-        </LinearLayout>
 
     </LinearLayout>
 

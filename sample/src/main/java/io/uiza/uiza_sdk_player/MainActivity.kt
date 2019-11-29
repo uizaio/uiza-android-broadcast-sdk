@@ -2,14 +2,17 @@ package io.uiza.uiza_sdk_player
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.uiza.core.utils.ObservableUtil
 import io.uiza.core.utils.UizaLog
+import io.uiza.core.utils.execSubscribe
 import io.uiza.extensions.setVertical
 import kotlinx.android.synthetic.main.activity_main.*
 
+
 class MainActivity : AppCompatActivity() {
 
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,14 +22,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadEntities() {
-        ObservableUtil.subscribe((application as SampleApplication).liveService.getEntities()
-            .map { response -> response.entities }, Consumer { entities ->
-            entities?.let {
-                contentList.adapter = EntityAdapter(it)
-            }
-        }, Consumer { throwable ->
-            UizaLog.e("MainActivity", "error: " + throwable?.localizedMessage)
-        })
+        compositeDisposable.add((application as SampleApplication).liveService.getEntities()
+            .map { response -> response.entities }.execSubscribe(Consumer { entities ->
+                entities?.let {
+                    contentList.adapter = EntityAdapter(it)
+                }
+            }, Consumer { throwable ->
+                UizaLog.e("MainActivity", "error: " + throwable?.localizedMessage)
+            })
+        )
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!compositeDisposable.isDisposed) {
+            compositeDisposable.dispose()
+        }
     }
 }

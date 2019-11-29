@@ -20,8 +20,13 @@
     <string name="stat_viewport_frames">Viewport / Frames</string>
     <string name="stat_connection_speed">Connection Speed</string>
     <string name="stat_host">Host</string>
-    <string name="stat_sdk_player_api_version">SDK / Player / API Version</string>
+    <string name="stat_sdk_player_api_version">SDK/ Player / API</string>
     <string name="stat_os_device_info">Device Info</string>
+    <string name="stat_audio_format">%1$s %2$dHz ch: %3$d</string>
+    <string name="stat_video_format">%1$s %2$dx%3$d@%4$d %5$s</string>
+    <string name="stat_resolution_format">%1$dx%2$d / %3$dx%4$d</string>
+    <string name="stat_viewport_frame_format">%1$dx%2$d / %3$d dropped frames</string>
+    <string name="stat_buffer_health_format">%1$s s</string>
 
     <string name="track_selection_title">Select tracks</string>
     <string name="unexpected_intent_action">Unexpected intent action: <xliff:g id="action">%1$s</xliff:g></string>
@@ -49,4 +54,5 @@
     <string name="prefer_extension_decoders">Prefer extension decoders</string>
     <string name="random_abr">Enable random ABR</string>
     <string name="exo_controls_subtitles_description">Subtitles</string>
+    <string name="exo_controls_fullscreen_description">Fullscreen</string>
 </resources>

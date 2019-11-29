@@ -2,15 +2,18 @@
 <resources>
     <dimen name="previewseekbar_indicator_width">16dp</dimen>
     <dimen name="previewseekbar_thumb_offset">10dp</dimen>
+
     <!-- margin -->
     <dimen name="margin_3">3dp</dimen>
     <dimen name="margin_5">5dp</dimen>
     <dimen name="margin_10">10dp</dimen>
+    <dimen name="margin_16">16dp</dimen>
     <!-- padding -->
     <dimen name="padding_2">2dp</dimen>
     <dimen name="padding_3">3dp</dimen>
     <dimen name="padding_5">5dp</dimen>
     <dimen name="padding_10">10dp</dimen>
+    <dimen name="padding_16">16dp</dimen>
     <dimen name="padding_20">20dp</dimen>
 
     <dimen name="w_1">1dp</dimen>
@@ -26,4 +29,7 @@
     <dimen name="txt_13">13sp</dimen>
     <dimen name="txt_14">14sp</dimen>
     <dimen name="txt_15">15sp</dimen>
+
+    <dimen name="exo_media_button_height">64dp</dimen>
+    <dimen name="exo_media_button_width">72dp</dimen>
 </resources>

@@ -12,7 +12,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 
 import java.util.List;
 
-import io.uiza.core.utils.SentryUtil;
+import io.uiza.core.utils.SentryKt;
 import io.uiza.player.utils.ViewUtil;
 
 public class UizaPlayerView extends PlayerView implements PlayerControlView.VisibilityListener {
@@ -238,7 +238,7 @@ public class UizaPlayerView extends PlayerView implements PlayerControlView.Visi
                 }
             } catch (Exception exception) {
                 exception.printStackTrace();
-                SentryUtil.captureException(exception);
+                SentryKt.captureException(exception);
             }
             return true;
         }

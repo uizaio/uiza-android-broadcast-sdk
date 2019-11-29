@@ -16,7 +16,8 @@
     <item name="exo_setting" type="id"/>
     <item name="exo_speed" type="id"/>
     <item name="exo_volume" type="id"/>
-    <item name="exo_fullscreen_toggle_icon" type="id"/>
+    <item name="exo_fullscreen_toggle" type="id"/>
+    <item name="exo_trackers" type="id"/>
     <item name="tv_live" type="id"/>
     <item name="iv_live_time" type="id"/>
     <item name="tv_live_time" type="id"/>

@@ -38,6 +38,7 @@ public class DialogUtil {
 
     public interface Callback1 {
         void onClick1();
+
         void onCancel();
     }
 
@@ -52,16 +53,22 @@ public class DialogUtil {
             builder.setTitle(title);
         }
         builder.setMessage(msg);
-        builder.setPositiveButton(button1, (dialog, which) -> {
-            dialog.dismiss();
-            if (callback1 != null) {
-                callback1.onClick1();
+        builder.setPositiveButton(button1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                if (callback1 != null) {
+                    callback1.onClick1();
+                }
             }
         });
         AlertDialog dialog = builder.create();
-        dialog.setOnCancelListener(dialog1 -> {
-            if (callback1 != null) {
-                callback1.onCancel();
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if (callback1 != null) {
+                    callback1.onCancel();
+                }
             }
         });
         dialog.show();
@@ -75,19 +82,25 @@ public class DialogUtil {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getString(R.string.warning));
         builder.setMessage(msg);
-        builder.setPositiveButton(context.getString(R.string.confirm), (dialog, which) -> {
-            dialog.dismiss();
-            if (callback1 != null) {
-                callback1.onClick1();
+        builder.setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                if (callback1 != null) {
+                    callback1.onClick1();
+                }
             }
         });
         AlertDialog dialog = builder.create();
-        dialog.setOnCancelListener(dialog1 -> {
-            if (callback1 != null) {
-                callback1.onCancel();
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if (callback1 != null) {
+                    callback1.onCancel();
+                }
             }
         });
-        boolean isFullScreen = ScreenUtil.isFullScreen(context);
+        boolean isFullScreen = ScreenKt.isFullScreen(context);
         Window window = dialog.getWindow();
         if (window == null) return;
         if (isFullScreen) {
@@ -124,16 +137,22 @@ public class DialogUtil {
         }
         builder.setMessage(msg);
         if (button1 != null && !button1.isEmpty()) {
-            builder.setNegativeButton(button1, (dialog, which) -> {
-                if (callback2 != null) {
-                    callback2.onClick1();
+            builder.setNegativeButton(button1, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (callback2 != null) {
+                        callback2.onClick1();
+                    }
                 }
             });
         }
         if (button2 != null && !button2.isEmpty()) {
-            builder.setPositiveButton(button2, (dialog, which) -> {
-                if (callback2 != null) {
-                    callback2.onClick2();
+            builder.setPositiveButton(button2, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (callback2 != null) {
+                        callback2.onClick2();
+                    }
                 }
             });
         }
@@ -162,23 +181,32 @@ public class DialogUtil {
         }
         builder.setMessage(msg);
         if (button1 != null && !button1.isEmpty()) {
-            builder.setNegativeButton(button1, (dialog, which) -> {
-                if (callback3 != null) {
-                    callback3.onClick1();
+            builder.setNegativeButton(button1, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (callback3 != null) {
+                        callback3.onClick1();
+                    }
                 }
             });
         }
         if (button2 != null && !button2.isEmpty()) {
-            builder.setPositiveButton(button2, (dialog, which) -> {
-                if (callback3 != null) {
-                    callback3.onClick2();
+            builder.setPositiveButton(button2, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (callback3 != null) {
+                        callback3.onClick2();
+                    }
                 }
             });
         }
         if (button3 != null && !button3.isEmpty()) {
-            builder.setNeutralButton(button3, (dialog, which) -> {
-                if (callback3 != null) {
-                    callback3.onClick3();
+            builder.setNeutralButton(button3, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (callback3 != null) {
+                        callback3.onClick3();
+                    }
                 }
             });
         }
@@ -201,9 +229,12 @@ public class DialogUtil {
         if (title != null && !title.isEmpty()) {
             builder.setTitle(title);
         }
-        builder.setItems(arr, (dialog, which) -> {
-            if (callbackList != null) {
-                callbackList.onClick(which);
+        builder.setItems(arr, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (callbackList != null) {
+                    callbackList.onClick(which);
+                }
             }
         });
         AlertDialog dialog = builder.create();
@@ -225,9 +256,12 @@ public class DialogUtil {
         progressDialog.setTitle(title);
         progressDialog.setProgressStyle(style);
         if (buttonTitle != null) {
-            progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, buttonTitle, (dialog, which) -> {
-                if (callback1 != null) {
-                    callback1.onClick1();
+            progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, buttonTitle, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (callback1 != null) {
+                        callback1.onClick1();
+                    }
                 }
             });
         }

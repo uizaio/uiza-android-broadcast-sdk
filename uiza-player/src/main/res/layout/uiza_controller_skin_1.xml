@@ -18,6 +18,12 @@
         android:paddingTop="4dp">
 
         <io.uiza.player.widgets.UizaImageButton
+            android:id="@id/exo_trackers"
+            style="@style/UizaMediaButton.Trackers"
+            android:tint="@android:color/white"
+            android:tintMode="src_in" />
+
+        <io.uiza.player.widgets.UizaImageButton
             android:id="@id/exo_prev"
             style="@style/UizaMediaButton.Previous"
             android:tint="@android:color/white"
@@ -71,6 +77,12 @@
             android:tint="@android:color/white"
             android:tintMode="src_in" />
 
+        <io.uiza.player.widgets.UizaImageButton
+            android:id="@id/exo_fullscreen_toggle"
+            style="@style/UizaMediaButton.Fullscreen"
+            android:tint="@android:color/white"
+            android:tintMode="src_in" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -87,7 +99,7 @@
             android:includeFontPadding="false"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:textColor="#ff323232"
+            android:textColor="@android:color/white"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -106,7 +118,7 @@
             android:includeFontPadding="false"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:textColor="#ff323232"
+            android:textColor="@android:color/white"
             android:textSize="14sp"
             android:textStyle="bold" />
 

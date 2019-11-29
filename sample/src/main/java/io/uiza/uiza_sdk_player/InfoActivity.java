@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.util.Assertions;
 import io.uiza.core.models.UizaEntity;
 import io.uiza.core.utils.StringKt;
 import io.uiza.core.utils.UizaLog;
+import io.uiza.extensions.MediaExtension;
 import io.uiza.player.UizaPlayerActivity;
 
 public class InfoActivity extends AppCompatActivity implements View.OnClickListener {
@@ -36,8 +37,10 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.playBtn) {
-            UizaLog.e("InfoActivity", "uri = " + entity.playback.hls);
-            startActivity(buildIntent(false, UizaPlayerActivity.ABR_ALGORITHM_RANDOM, entity.playback.hls));
+            if (entity.playback != null)
+                UizaLog.e("InfoActivity", "uri = " + entity.playback.hls);
+            startActivity(buildIntent(false,
+                    UizaPlayerActivity.ABR_ALGORITHM_RANDOM, "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8"));
         }
     }
 
@@ -45,9 +48,8 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent();
         intent.putExtra(UizaPlayerActivity.PREFER_EXTENSION_DECODERS_EXTRA, preferExtensionDecoders);
         intent.putExtra(UizaPlayerActivity.ABR_ALGORITHM_EXTRA, abrAlgorithm);
-        uri = "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8";
         intent.setData(Uri.parse(uri));
-        intent.putExtra(UizaPlayerActivity.EXTENSION_EXTRA, "m3u8");
+        intent.putExtra(UizaPlayerActivity.EXTENSION_EXTRA, MediaExtension.TYPE_HLS);
         intent.setAction(UizaPlayerActivity.ACTION_VIEW);
 
         if (drmInfo != null) {

@@ -17,7 +17,6 @@ import io.uiza.player.R;
 
 public class PreviewDelegate implements PreviewView.OnPreviewChangeListener {
 
-    private FrameLayout previewFrameLayout;
     private View morphView;
     private View previewFrameView;
     private ViewGroup previewParent;
@@ -56,17 +55,16 @@ public class PreviewDelegate implements PreviewView.OnPreviewChangeListener {
             return;
         }
         this.previewParent = (ViewGroup) frameLayout.getParent();
-        this.previewFrameLayout = frameLayout;
         inflateViews(frameLayout);
         morphView.setVisibility(View.INVISIBLE);
-        previewFrameLayout.setVisibility(View.INVISIBLE);
+        frameLayout.setVisibility(View.INVISIBLE);
         previewFrameView.setVisibility(View.INVISIBLE);
         if (CommonKt.isLlAndAbove()) {
             animator = new PreviewAnimatorLollipopImpl(previewParent, previewView, morphView,
-                    previewFrameLayout, previewFrameView);
+                    frameLayout, previewFrameView);
         } else {
             animator = new PreviewAnimatorImpl(previewParent, previewView, morphView,
-                    previewFrameLayout, previewFrameView);
+                    frameLayout, previewFrameView);
         }
 
         setup = true;

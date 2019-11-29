@@ -59,7 +59,7 @@
             android:src="@drawable/ic_volume_up_white_24" />
 
         <io.uiza.player.widgets.UizaImageButton
-            android:id="@id/exo_fullscreen_toggle_icon"
+            android:id="@id/exo_fullscreen_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
