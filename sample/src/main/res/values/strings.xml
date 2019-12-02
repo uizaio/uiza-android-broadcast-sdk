@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">uiza-sdk-player</string>
-
+    <string name="app_name">Uiza Sample</string>
+    <string name="app_live_name">Uiza Live Sample</string>
+    <string name="app_player_name">Uiza Player Sample</string>
 </resources>

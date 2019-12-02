@@ -1,6 +1,7 @@
 package io.uiza.core.models
 
 import android.os.Parcelable
+import android.text.TextUtils
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
@@ -21,6 +22,17 @@ data class UizaEntity @JvmOverloads constructor(
     override fun toString(): String {
         return (Gson().toJson(this))
     }
+
+    fun hasLive(): Boolean {
+        return status.equals("ready", true) && broadcast.equals(
+            "offline",
+            true
+        )
+    }
+
+    fun needGetInfo(): Boolean {
+        return status.equals("init", true)
+    }
 }
 
 @Parcelize
@@ -28,6 +40,10 @@ data class UizaPlayback @JvmOverloads constructor(@JvmField @SerializedName("hls
     Parcelable {
     override fun toString(): String {
         return (Gson().toJson(this))
+    }
+
+    fun getLinkPlay(): String? {
+        return hls?.replace("/hls/", "/fmp4/")?.replace("index.m3u8", "master.m3u8")
     }
 }
 
@@ -39,12 +55,21 @@ data class UizaIngest @JvmOverloads constructor(
     override fun toString(): String {
         return (Gson().toJson(this))
     }
+
+    fun getLiveUrl(): String? {
+        return if (TextUtils.isEmpty(streamKey) || TextUtils.isEmpty(streamUrl)) {
+            null
+        } else {
+            streamUrl?.replace("hls", "transcode") + "/" + streamKey
+        }
+    }
 }
 
 class CreateEntityBody @JvmOverloads constructor(
-    @JvmField @SerializedName("app_id") var appId: String? = null,
     @JvmField @SerializedName("name") var name: String? = null,
+    @JvmField @SerializedName("description") var description: String? = null,
     @JvmField @SerializedName("region") var region: String? = null,
-    @JvmField @SerializedName("user_id") var userId: String? = null,
-    @JvmField @SerializedName("description") var description: String? = null
+    @JvmField @SerializedName("app_id") var appId: String? = null,
+    @JvmField @SerializedName("user_id") var userId: String? = null
+
 )

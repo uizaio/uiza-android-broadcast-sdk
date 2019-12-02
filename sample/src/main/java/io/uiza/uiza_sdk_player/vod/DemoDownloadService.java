@@ -1,4 +1,4 @@
-package io.uiza.uiza_sdk_player;
+package io.uiza.uiza_sdk_player.vod;
 
 import android.app.Notification;
 
@@ -11,6 +11,9 @@ import com.google.android.exoplayer2.util.NotificationUtil;
 import com.google.android.exoplayer2.util.Util;
 
 import java.util.List;
+
+import io.uiza.uiza_sdk_player.R;
+import io.uiza.uiza_sdk_player.SampleApplication;
 
 /**
  * A service for downloading media.

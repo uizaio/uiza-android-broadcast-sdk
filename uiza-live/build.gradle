@@ -7,7 +7,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -24,6 +24,7 @@ android {
 
 dependencies {
     implementation project(':uiza-core')
+    //https://github.com/pedroSG94/rtmp-rtsp-stream-client-java
     implementation "com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:$pedrosg94_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'

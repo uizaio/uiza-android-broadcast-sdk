@@ -1,13 +1,17 @@
-package io.uiza.uiza_sdk_player
+package io.uiza.uiza_sdk_player.vod
 
 import android.view.View
 import io.uiza.core.models.UizaEntity
 import io.uiza.core.utils.UizaLog
 import io.uiza.extensions.lauchActivity
+import io.uiza.uiza_sdk_player.R
+import io.uiza.uiza_sdk_player.custom.BaseAdapter
 import kotlinx.android.synthetic.main.row_entity.view.*
 
 class EntityAdapter(var entities: List<UizaEntity>) :
-    BaseAdapter<UizaEntity>(entities, R.layout.row_entity) {
+    BaseAdapter<UizaEntity>(entities,
+        R.layout.row_entity
+    ) {
 
 
     override fun onItemClick(itemView: View, position: Int) {

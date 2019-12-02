@@ -1,4 +1,4 @@
-package io.uiza.uiza_sdk_player
+package io.uiza.uiza_sdk_player.custom
 
 
 import androidx.annotation.LayoutRes
@@ -72,19 +72,28 @@ abstract class BaseAdapter<ITEM>(private var itemList: List<ITEM>,
         when (viewType) {
             TYPE_HEADER -> {
                 val headerView = parent inflate headerLayoutResId
-                return BaseViewHolder(headerView)
+                return BaseViewHolder(
+                    headerView
+                )
             }
             TYPE_FOOTER -> {
                 val footer = parent inflate footerLayoutResId
-                return BaseViewHolder(footer)
+                return BaseViewHolder(
+                    footer
+                )
             }
             TYPE_EMPTY -> {
                 val emptyView = parent inflate emptyLayoutResId
-                return BaseViewHolder(emptyView)
+                return BaseViewHolder(
+                    emptyView
+                )
             }
             TYPE_ITEM_LOADED -> {
                 val view = parent inflate itemLayoutResId
-                val viewHolder = BaseViewHolder(view)
+                val viewHolder =
+                    BaseViewHolder(
+                        view
+                    )
                 val itemView = viewHolder.itemView
                 itemView.onClick {
                     val adapterPosition = viewHolder.adapterPosition

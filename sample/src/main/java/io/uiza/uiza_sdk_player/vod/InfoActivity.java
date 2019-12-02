@@ -1,9 +1,10 @@
-package io.uiza.uiza_sdk_player;
+package io.uiza.uiza_sdk_player.vod;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -15,6 +16,7 @@ import io.uiza.core.utils.StringKt;
 import io.uiza.core.utils.UizaLog;
 import io.uiza.extensions.MediaExtension;
 import io.uiza.player.UizaPlayerActivity;
+import io.uiza.uiza_sdk_player.R;
 
 public class InfoActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -37,10 +39,13 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.playBtn) {
-            if (entity.playback != null)
+            if (entity.playback != null) {
                 UizaLog.e("InfoActivity", "uri = " + entity.playback.hls);
-            startActivity(buildIntent(false,
-                    UizaPlayerActivity.ABR_ALGORITHM_RANDOM, "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8"));
+                startActivity(buildIntent(false,
+                        UizaPlayerActivity.ABR_ALGORITHM_RANDOM, entity.playback.getLinkPlay()));
+            } else  {
+                Toast.makeText(this, "No play url", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

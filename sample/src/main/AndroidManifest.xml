@@ -8,10 +8,15 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- for live -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- needed by background Rtp service to keep service alive -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- Optional for play store -->
     <uses-feature
-        android:name="android.software.leanback"
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
         android:required="false" />
     <uses-feature
         android:name="android.hardware.touchscreen"
@@ -19,7 +24,8 @@
 
     <application
         android:name=".SampleApplication"
-        android:allowBackup="false"
+        android:allowBackup="true"
+        android:banner="@drawable/abc_vector_test"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -28,21 +34,32 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="false"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
-        <activity android:name=".MainActivity">
+
+        <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".InfoActivity" />
+        <activity
+            android:name=".vod.VODListActivity"
+            android:label="@string/app_player_name"
+            android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".vod.InfoActivity"
+            android:label="@string/app_player_name"
+            android:parentActivityName=".vod.VODListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="io.uiza.player.UizaPlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:label="@string/app_name"
             android:launchMode="singleTop"
+            android:parentActivityName=".vod.InfoActivity"
             android:theme="@style/PlayerTheme">
             <intent-filter>
                 <action android:name="io.uiza.player.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="http" />
@@ -53,23 +70,19 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="io.uiza.player.action.VIEW_LIST" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-<!--        <service-->
-<!--            android:name=".DemoDownloadService"-->
-<!--            android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.google.android.exoplayer.downloadService.action.RESTART" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
-
-<!--        <service-->
-<!--            android:name="com.google.android.exoplayer2.scheduler.PlatformScheduler$PlatformSchedulerService"-->
-<!--            android:exported="true"-->
-<!--            android:permission="android.permission.BIND_JOB_SERVICE" />-->
+        <activity
+            android:name=".live.UizaLiveActivity"
+            android:label="@string/app_player_name"
+            android:parentActivityName=".live.CreateLiveActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".live.CreateLiveActivity"
+            android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

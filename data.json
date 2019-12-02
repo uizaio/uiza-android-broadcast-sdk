@@ -1,0 +1,593 @@
+{
+	"info": {
+		"_postman_id": "098b29ae-1de0-4791-9555-afe1f5c5fc9c",
+		"name": "UIZA ULAS NEW API",
+		"description": "Version 5 of ULAS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Entity",
+			"item": [
+				{
+					"name": "Get An Entity Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Grpc-Metadata-duyqt",
+								"value": "duyqt",
+								"type": "text"
+							},
+							{
+								"key": "Grpc-Metadata-X-Customer-ID",
+								"value": "uiza",
+								"type": "text"
+							},
+							{
+								"key": "Grpc-Metadata-X-Customer-Custom-ID",
+								"value": "uiza",
+								"type": "text"
+							},
+							{
+								"key": "X-Customer-ID",
+								"value": "uiza",
+								"type": "text"
+							},
+							{
+								"key": "X-Customer-Custom-ID",
+								"value": "uiza",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "uap-c1ffbff4db954ddcb050c6af0b43ba56-41193b64",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/entities/3e30cd57-45a9-4e93-b758-8b3038e3ffc71",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"entities",
+								"3e30cd57-45a9-4e93-b758-8b3038e3ffc71"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Entities",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Customer-ID",
+								"value": "uiza",
+								"type": "text"
+							},
+							{
+								"key": "X-Customer-Custom-ID",
+								"value": "uiza",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "uap-c1ffbff4db954ddcb050c6af0b43ba56-41193b64",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/entities?",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"entities"
+							],
+							"query": [
+								{
+									"key": "ctreate_at_lt",
+									"value": "1574222252143",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create An Entity",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-Customer-ID",
+								"value": "uiza",
+								"type": "text"
+							},
+							{
+								"key": "X-Customer-Custom-ID",
+								"value": "uiza",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "uap-c1ffbff4db954ddcb050c6af0b43ba56-41193b64",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Demo ap\",\n\t\"region\": \"asia-southeast-1\",\n\t\"description\": \"AFF CUP\",\n\t\"app_id\": \"duyqt-app\",\n\t\"user_id\": \"duyqt1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/entities",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"entities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Entity's Stream Key",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/entities/7937dcfc-e7ec-4855-ba5c-b7cbe21a5db5/stream-key",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"entities",
+								"7937dcfc-e7ec-4855-ba5c-b7cbe21a5db5",
+								"stream-key"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update An Entity",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"XXX\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/entities/7937dcfc-e7ec-4855-ba5c-b7cbe21a5db5",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"entities",
+								"7937dcfc-e7ec-4855-ba5c-b7cbe21a5db5"
+							]
+						},
+						"description": "Only allow update name and description of entity"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete An Entity",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"XXX\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/entities/7937dcfc-e7ec-4855-ba5c-b7cbe21a5db5",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"entities",
+								"7937dcfc-e7ec-4855-ba5c-b7cbe21a5db5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "On Publish ",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uX2lkIjoiZDQ2OGQ2NzYtOGU5Ny00ZDAwLTk1MTItMWRmZDgxOTYyNTU3IiwiY2FsbCI6InBsYXkiLCJub2RlX2lkIjoiNGQ5ZTU1MjctZTMxNC1lOTJjLTdlNWYtN2VhNDdmZTMzOTM2IiwiYWRkciI6IjEyNy4wLjAuMSIsInN0cmVhbV9rZXkiOiJsaXZlX0lOcFJqWWxUYkIiLCJhcHBfbmFtZSI6ImhscyIsImNsaWVudF9pZCI6IiJ9.TSDE4eIICM-ZrvY_czGH-Xxa8pnjIniJvcFFUeSvTgs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call\": \"play\",\n    \"addr\": \"127.0.0.1\",\n    \"app_name\": \"hls\",\n    \"stream_key\": \"live_vuq2MQY60S\",\n    \"session_id\": \"11112\",\n    \"node_id\": \"909c3de2-e4f6-dfd7-3391-b853c2703b5f\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/entities/on-publish",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"entities",
+								"on-publish"
+							]
+						},
+						"description": "Http hook for live stream server using ngnix-rtmp when user send signal to server"
+					},
+					"response": []
+				},
+				{
+					"name": "On Unpublish",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uX2lkIjoiZDQ2OGQ2NzYtOGU5Ny00ZDAwLTk1MTItMWRmZDgxOTYyNTU3IiwiY2FsbCI6InBsYXkiLCJub2RlX2lkIjoiNGQ5ZTU1MjctZTMxNC1lOTJjLTdlNWYtN2VhNDdmZTMzOTM2IiwiYWRkciI6IjEyNy4wLjAuMSIsInN0cmVhbV9rZXkiOiJsaXZlX0lOcFJqWWxUYkIiLCJhcHBfbmFtZSI6ImhscyIsImNsaWVudF9pZCI6IiJ9.TSDE4eIICM-ZrvY_czGH-Xxa8pnjIniJvcFFUeSvTgs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"call\": \"play\",\n    \"addr\": \"127.0.0.1\",\n    \"app_name\": \"hls\",\n    \"stream_key\": \"live_vuq2MQY60S\",\n    \"session_id\": \"11112\",\n    \"node_id\": \"909c3de2-e4f6-dfd7-3391-b853c2703b5f\"\n}"
+						},
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/entities/on-publish-done",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"entities",
+								"on-publish-done"
+							]
+						},
+						"description": "Http hook for live stream server using ngnix-rtmp when user stop send signal to server"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Session",
+			"item": [
+				{
+					"name": "List Sessions of an Entity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Grpc-Metadata-duyqt",
+								"value": "duyqt",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/entities/7937dcfc-e7ec-4855-ba5c-b7cbe21a5db5/sessions?page_size=1",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"entities",
+								"7937dcfc-e7ec-4855-ba5c-b7cbe21a5db5",
+								"sessions"
+							],
+							"query": [
+								{
+									"key": "page_size",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Session Detail of an Entity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Grpc-Metadata-duyqt",
+								"value": "duyqt",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/entities/b92a4a54-70bb-4277-9a70-35eef4e4b326/sessions/34404d3d-4270-4d57-a233-436fbe8927d1",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"entities",
+								"b92a4a54-70bb-4277-9a70-35eef4e4b326",
+								"sessions",
+								"34404d3d-4270-4d57-a233-436fbe8927d1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Certificate",
+			"item": [
+				{
+					"name": "Get Certificate",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.bswqKOZjfH3EjZ2AWxMiekzoLlXUtJ3vSrZSNYPQoSg",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/certificate/wildcard-streamwiz-dev-tls",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"certificate",
+								"wildcard-streamwiz-dev-tls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tls Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.bswqKOZjfH3EjZ2AWxMiekzoLlXUtJ3vSrZSNYPQoSg",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/live/tls/wildcard-streamwiz-dev-tls",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"tls",
+								"wildcard-streamwiz-dev-tls"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Health check",
+			"item": [
+				{
+					"name": "Health check",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.bswqKOZjfH3EjZ2AWxMiekzoLlXUtJ3vSrZSNYPQoSg",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "development-api.uizadev.io/api/v5/live/ulas/health-check",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"live",
+								"ulas",
+								"health-check"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "uap-c1ffbff4db954ddcb050c6af0b43ba56-41193b64",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"trunglh@uiza.io\",\n\t\"password\": \"Uiza123!@#\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://development-api.uizadev.io/api/v5/admin/user/auth",
+							"protocol": "https",
+							"host": [
+								"development-api",
+								"uizadev",
+								"io"
+							],
+							"path": [
+								"api",
+								"v5",
+								"admin",
+								"user",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	]
+}

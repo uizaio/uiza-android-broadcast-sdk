@@ -200,7 +200,7 @@ public final class TrackSelectionDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // We need to own the view to let tab layout work correctly on all API levels. We can't use
+        // We need to own the view to let tab layout_live work correctly on all API levels. We can't use
         // AlertDialog because it owns the view itself, so we use AppCompatDialog instead, themed using
         // the AlertDialog theme overlay with force-enabled title.
         AppCompatDialog dialog =
