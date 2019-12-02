@@ -1,6 +1,7 @@
 package io.uiza.uiza_sdk_player.vod
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
@@ -24,13 +25,16 @@ class VODListActivity : AppCompatActivity() {
     }
 
     private fun loadEntities() {
+        progress_bar.visibility = View.VISIBLE
         compositeDisposable.add((application as SampleApplication).liveService.getEntities()
             .map { response -> response.entities }.execSubscribe(Consumer { entities ->
                 entities?.let {
                     contentList.adapter =
                         EntityAdapter(it)
                 }
+                progress_bar.visibility = View.GONE
             }, Consumer { throwable ->
+                progress_bar.visibility = View.GONE
                 UizaLog.e("MainActivity", "error: " + throwable?.localizedMessage)
             })
         )
