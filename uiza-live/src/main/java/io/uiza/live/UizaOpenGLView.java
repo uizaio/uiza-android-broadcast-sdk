@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -13,8 +12,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import androidx.core.content.res.ResourcesCompat;
+import android.widget.Toast;
 
 import com.pedro.encoder.input.gl.SpriteGestureController;
 import com.pedro.encoder.input.gl.render.filters.BaseFilterRender;
@@ -27,7 +25,6 @@ import net.ossrs.rtmp.ConnectCheckerRtmp;
 
 import java.io.IOException;
 
-import io.uiza.core.utils.UizaLog;
 import io.uiza.live.interfaces.ProfileEncode;
 import io.uiza.live.interfaces.UizaLiveListener;
 
@@ -36,7 +33,6 @@ public class UizaOpenGLView extends RelativeLayout implements ConnectCheckerRtmp
 
     private RtmpCamera2 rtmpCamera2; // API 21+
     private SpriteGestureController spriteGestureController = new SpriteGestureController();
-    private Handler handler = new Handler();
     private ProfileEncode profile;
     private OpenGlView openGlView;
     private ProgressBar progressBar;
@@ -81,9 +77,13 @@ public class UizaOpenGLView extends RelativeLayout implements ConnectCheckerRtmp
     public void hideLiveStatus() {
         if (tvLiveStatus != null) {
             tvLiveStatus.setVisibility(View.GONE);
+            tvLiveStatus.clearAnimation();
         }
     }
 
+    /**
+     * run on main Thread
+     */
     public void showLiveStatus() {
         if (tvLiveStatus != null) {
             tvLiveStatus.setVisibility(View.VISIBLE);
@@ -205,40 +205,43 @@ public class UizaOpenGLView extends RelativeLayout implements ConnectCheckerRtmp
 
     @Override
     public void onConnectionSuccessRtmp() {
-        if (tvLiveStatus != null) {
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    UizaLog.e("UizaOpenGLView", "tvLiveStatus visible");
-//                    tvLiveStatus.setVisibility(View.VISIBLE);
-                    tvLiveStatus.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.background_live, null));
-                    LiveKt.blinking(tvLiveStatus);
-                    progressBar.setVisibility(View.GONE);
-                    requestLayout();
+        ((Activity) getContext()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showLiveStatus();
+                progressBar.setVisibility(View.GONE);
+                invalidate();
+                requestLayout();
+                if (liveListener != null) {
+                    liveListener.onConnectionSuccess();
                 }
-            });
-        }
+            }
+        });
 
-        if (liveListener != null) {
-            liveListener.onConnectionSuccess();
-        }
     }
 
     @Override
     public void onConnectionFailedRtmp(final String reason) {
-        handler.post(new Runnable() {
+        ((Activity) getContext()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                rtmpCamera2.stopStream();
-                if (tvLiveStatus != null) {
-                    tvLiveStatus.setVisibility(View.GONE);
-                    tvLiveStatus.clearAnimation();
+                if (rtmpCamera2.shouldRetry(reason)) {
+                    Toast.makeText(getContext(), "Retry", Toast.LENGTH_SHORT)
+                            .show();
+                    rtmpCamera2.reTry(5000);  //Wait 5s and retry connect stream
+                } else {
+                    rtmpCamera2.stopStream();
+                    progressBar.setVisibility(View.GONE);
+                    hideLiveStatus();
+                    invalidate();
+                    requestLayout();
+                    if (liveListener != null) {
+                        liveListener.onConnectionFailed(reason);
+                    }
                 }
             }
         });
-        if (liveListener != null) {
-            liveListener.onConnectionFailed(reason);
-        }
+
     }
 
     @Override
@@ -250,19 +253,19 @@ public class UizaOpenGLView extends RelativeLayout implements ConnectCheckerRtmp
 
     @Override
     public void onDisconnectRtmp() {
-        handler.post(new Runnable() {
+        ((Activity) getContext()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (tvLiveStatus != null) {
-                    tvLiveStatus.setVisibility(View.GONE);
-                    tvLiveStatus.clearAnimation();
-                }
+                hideLiveStatus();
                 progressBar.setVisibility(View.GONE);
+                invalidate();
+                requestLayout();
+                if (liveListener != null) {
+                    liveListener.onDisconnect();
+                }
             }
         });
-        if (liveListener != null) {
-            liveListener.onDisconnect();
-        }
+
     }
 
     @Override
@@ -274,15 +277,18 @@ public class UizaOpenGLView extends RelativeLayout implements ConnectCheckerRtmp
 
     @Override
     public void onAuthSuccessRtmp() {
-        handler.post(new Runnable() {
+        ((Activity) getContext()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 progressBar.setVisibility(View.GONE);
+                invalidate();
+                requestLayout();
+                if (liveListener != null) {
+                    liveListener.onAuthSuccess();
+                }
             }
         });
-        if (liveListener != null) {
-            liveListener.onAuthSuccess();
-        }
+
     }
 
     @Override

@@ -27,3 +27,19 @@ Use [Exoplayer](https://github.com/google/ExoPlayer)
 ## uiza-live
 Use [rtmp-rtsp-stream-client-java](https://github.com/pedroSG94/rtmp-rtsp-stream-client-java).
 > Thanks Pedro Sánchez
+
+### Permissions
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<!--Optional for play store-->
+<uses-feature android:name="android.hardware.camera" android:required="false" />
+<uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+```
+- Require minSDK 21 (android 5).
+- This library use [MediaCodec](https://developer.android.com/reference/android/media/MediaCodec.html) Android class to do hardware encoding.
+- Create a RTP packets of video and audio, encapsulate it in flv packets and send to server
+- Get audio data from microphone in PCM buffer and from [camera API2](https://developer.android.com/reference/android/hardware/camera2/package-summary.html) rendering a MediaCodec inputsurface. This builder can be executed in background mode if you use a context in the constructor instead of a surfaceview.

@@ -26,6 +26,7 @@ class LiveListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vod_list)
+        progress_bar.visibility = View.GONE
         contentList.setVertical()
         fb_btn.setOnClickListener { showCreateLiveDialog() }
         loadEntities()

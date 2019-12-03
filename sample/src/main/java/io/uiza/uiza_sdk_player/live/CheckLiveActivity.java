@@ -2,6 +2,7 @@ package io.uiza.uiza_sdk_player.live;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,6 +31,8 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
     AppCompatButton liveBtn;
     ProgressBar progressBar;
     UizaEntity entity;
+
+    Handler handler = new Handler();
 
     private static final int MAX_RETRY = 10;
     int currentRetry = 0;
@@ -122,7 +125,7 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
             if (!entity.hasLive() && currentRetry < MAX_RETRY) {
                 UizaLog.e("CheckLive", "currentRetry:" + currentRetry);
                 currentRetry += 1;
-                getEntity(entityId);
+                handler.postDelayed(() -> getEntity(entityId), 3000);
             } else {
                 updateLiveStats();
                 progressBar.setVisibility(View.GONE);
