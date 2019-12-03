@@ -1,6 +1,7 @@
 package io.uiza.uiza_sdk_player.vod
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
@@ -20,6 +21,7 @@ class VODListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vod_list)
+        fb_btn.hide()
         contentList.setVertical()
         loadEntities()
     }
@@ -27,16 +29,18 @@ class VODListActivity : AppCompatActivity() {
     private fun loadEntities() {
         progress_bar.visibility = View.VISIBLE
         compositeDisposable.add((application as SampleApplication).liveService.getEntities()
-            .map { response -> response.entities }.execSubscribe(Consumer { entities ->
-                entities?.let {
-                    contentList.adapter =
-                        EntityAdapter(it)
-                }
-                progress_bar.visibility = View.GONE
-            }, Consumer { throwable ->
-                progress_bar.visibility = View.GONE
-                UizaLog.e("MainActivity", "error: " + throwable?.localizedMessage)
-            })
+            .map { response -> response.entities?.filter { entity -> !TextUtils.isEmpty(entity.playback?.getLinkPlay()) } }.execSubscribe(
+                Consumer { entities ->
+                    entities?.let {
+                        contentList.adapter =
+                            EntityAdapter(it)
+                    }
+                    progress_bar.visibility = View.GONE
+                },
+                Consumer { throwable ->
+                    progress_bar.visibility = View.GONE
+                    UizaLog.e("MainActivity", "error: " + throwable?.localizedMessage)
+                })
         )
     }
 

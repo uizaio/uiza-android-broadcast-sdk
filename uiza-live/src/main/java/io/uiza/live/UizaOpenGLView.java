@@ -19,6 +19,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.pedro.encoder.input.gl.SpriteGestureController;
 import com.pedro.encoder.input.gl.render.filters.BaseFilterRender;
 import com.pedro.encoder.input.gl.render.filters.object.BaseObjectFilterRender;
+import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.rtplibrary.rtmp.RtmpCamera2;
 import com.pedro.rtplibrary.view.OpenGlView;
 
@@ -83,6 +84,13 @@ public class UizaOpenGLView extends RelativeLayout implements ConnectCheckerRtmp
         }
     }
 
+    public void showLiveStatus() {
+        if (tvLiveStatus != null) {
+            tvLiveStatus.setVisibility(View.VISIBLE);
+            LiveKt.blinking(tvLiveStatus);
+        }
+    }
+
     public void setProfile(ProfileEncode profile) {
         this.profile = profile;
     }
@@ -121,7 +129,7 @@ public class UizaOpenGLView extends RelativeLayout implements ConnectCheckerRtmp
     }
 
     public boolean prepareStream() {
-        return rtmpCamera2.prepareAudio() && rtmpCamera2.prepareVideo();
+        return rtmpCamera2.prepareAudio() && prepareVideo();
     }
 
 
@@ -130,7 +138,12 @@ public class UizaOpenGLView extends RelativeLayout implements ConnectCheckerRtmp
     }
 
     public boolean prepareVideo() {
-        return prepareVideo();
+        if (profile == null)
+            return rtmpCamera2.prepareVideo();
+        else {
+            int rotation = CameraHelper.getCameraOrientation(getContext());
+            return rtmpCamera2.prepareVideo(profile.getWidth(), profile.getHeight(), 24, profile.getBandwidth(), false, rotation);
+        }
     }
 
     public void enableAA(boolean enable) {

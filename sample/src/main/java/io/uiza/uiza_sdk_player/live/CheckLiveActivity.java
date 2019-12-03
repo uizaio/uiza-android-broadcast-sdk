@@ -17,17 +17,22 @@ import io.uiza.core.models.CreateEntityBody;
 import io.uiza.core.models.UizaEntity;
 import io.uiza.core.utils.ObservableKt;
 import io.uiza.core.utils.StringKt;
+import io.uiza.core.utils.UizaLog;
 import io.uiza.uiza_sdk_player.R;
 import io.uiza.uiza_sdk_player.SampleApplication;
 
-public class CreateLiveActivity extends AppCompatActivity implements View.OnClickListener {
+public class CheckLiveActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String EXTRA_ENTITY = "uiza_extra_entity";
     AppCompatEditText streamNameEdt;
     NestedScrollView contentScroll;
     TextView content;
     AppCompatButton liveBtn;
     ProgressBar progressBar;
     UizaEntity entity;
+
+    private static final int MAX_RETRY = 10;
+    int currentRetry = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,10 @@ public class CreateLiveActivity extends AppCompatActivity implements View.OnClic
         liveBtn = findViewById(R.id.live_btn);
         progressBar = findViewById(R.id.progress_bar);
         liveBtn.setOnClickListener(this);
+        entity = getIntent().getParcelableExtra(EXTRA_ENTITY);
+        if (entity != null) {
+            content.setText(StringKt.toPrettyFormat(entity.toString()));
+        }
         updateLiveStats();
     }
 
@@ -46,13 +55,12 @@ public class CreateLiveActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         if (v.getId() == R.id.live_btn) {
             if (streamNameEdt.getVisibility() == View.VISIBLE) {
-
                 createLive(streamNameEdt.getText().toString());
             } else {
                 if (entity != null) {
                     if (entity.hasLive()) {
                         if (entity.ingest != null) {
-                            Intent liveIntent = new Intent(CreateLiveActivity.this, UizaLiveActivity.class);
+                            Intent liveIntent = new Intent(CheckLiveActivity.this, UizaLiveActivity.class);
                             liveIntent.putExtra(SampleApplication.EXTRA_STREAM_ENDPOINT, entity.ingest.getLiveUrl());
                             startActivity(liveIntent);
                         } else {
@@ -60,6 +68,8 @@ public class CreateLiveActivity extends AppCompatActivity implements View.OnClic
                         }
 
                     } else if (entity.needGetInfo()) {
+                        currentRetry = 0;
+                        liveBtn.setEnabled(false);
                         getEntity(entity.id);
                     }
 
@@ -83,7 +93,6 @@ public class CreateLiveActivity extends AppCompatActivity implements View.OnClic
                 liveBtn.setText("Check Status");
             } else if (entity.hasLive()) {
                 liveBtn.setText("Go Live");
-
             }
         }
     }
@@ -110,10 +119,18 @@ public class CreateLiveActivity extends AppCompatActivity implements View.OnClic
         ObservableKt.execSubscribe(obs, ent -> {
             entity = ent;
             content.setText(StringKt.toPrettyFormat(ent.toString()));
-            updateLiveStats();
-            progressBar.setVisibility(View.GONE);
+            if (!entity.hasLive() && currentRetry < MAX_RETRY) {
+                UizaLog.e("CheckLive", "currentRetry:" + currentRetry);
+                currentRetry += 1;
+                getEntity(entityId);
+            } else {
+                updateLiveStats();
+                progressBar.setVisibility(View.GONE);
+                liveBtn.setEnabled(true);
+            }
         }, throwable -> {
             progressBar.setVisibility(View.GONE);
+            liveBtn.setEnabled(true);
             Toast.makeText(this, throwable.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             updateLiveStats();
         });

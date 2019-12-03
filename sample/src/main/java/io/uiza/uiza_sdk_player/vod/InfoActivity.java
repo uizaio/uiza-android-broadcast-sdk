@@ -20,6 +20,8 @@ import io.uiza.uiza_sdk_player.R;
 
 public class InfoActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String EXTRA_ENTITY = "uiza_extra_entity";
+
     AppCompatTextView content;
     DrmInfo drmInfo = null;
     UizaEntity entity = null;
@@ -29,7 +31,7 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedState);
         setContentView(R.layout.activity_info);
         content = findViewById(R.id.content);
-        entity = getIntent().getParcelableExtra("extra_uiza_entity");
+        entity = getIntent().getParcelableExtra(EXTRA_ENTITY);
         assert (entity != null);
         content.setText(StringKt.toPrettyFormat(entity.toString()));
         findViewById(R.id.playBtn).setOnClickListener(this);

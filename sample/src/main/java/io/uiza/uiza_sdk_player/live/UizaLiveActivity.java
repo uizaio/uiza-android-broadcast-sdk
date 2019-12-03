@@ -117,7 +117,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //Stop listener for image, text and gif stream objects.
-        openGlView.setBaseObjectFilterRender(null);
+        openGlView.setFilter(null);
         int itemId = item.getItemId();
         if (itemId == R.id.e_d_fxaa) {
             openGlView.enableAA(!openGlView.isAAEnabled());
@@ -259,7 +259,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
             mediaPlayer.start();
             //Video is 360x240 so select a percent to keep aspect ratio (50% x 33.3% screen)
             surfaceFilterRender.setScale(50f, 33.3f);
-            openGlView.setBaseObjectFilterRender(surfaceFilterRender); //Optional
+            openGlView.setFilter(surfaceFilterRender); //Optional
             return true;
         } else if (itemId == R.id.temperature) {
             openGlView.setFilter(new TemperatureFilterRender());
@@ -281,7 +281,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
         textObjectFilterRender.setDefaultScale(openGlView.getStreamWidth(),
                 openGlView.getStreamHeight());
         textObjectFilterRender.setPosition(TranslateTo.CENTER);
-        openGlView.setBaseObjectFilterRender(textObjectFilterRender); //Optional
+        openGlView.setFilter(textObjectFilterRender); //Optional
     }
 
     private void setImageToStream() {
@@ -292,8 +292,8 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
         imageObjectFilterRender.setDefaultScale(openGlView.getStreamWidth(),
                 openGlView.getStreamHeight());
         imageObjectFilterRender.setPosition(TranslateTo.RIGHT);
-        openGlView.setBaseObjectFilterRender(imageObjectFilterRender); //Optional
-        openGlView.setPreventMoveOutside(false); //Optional
+        openGlView.setFilter(imageObjectFilterRender); //Optional
+//        openGlView.setPreventMoveOutside(false); //Optional
     }
 
     private void setGifToStream() {
@@ -304,7 +304,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
             gifObjectFilterRender.setDefaultScale(openGlView.getStreamWidth(),
                     openGlView.getStreamHeight());
             gifObjectFilterRender.setPosition(TranslateTo.BOTTOM);
-            openGlView.setBaseObjectFilterRender(gifObjectFilterRender); //Optional
+            openGlView.setFilter(gifObjectFilterRender); //Optional
         } catch (IOException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -374,13 +374,17 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public void onConnectionSuccess() {
-        runOnUiThread(() -> Toast.makeText(UizaLiveActivity.this, "Connection success", Toast.LENGTH_SHORT).show());
+        runOnUiThread(() -> {
+            Toast.makeText(UizaLiveActivity.this, "Connection success", Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override
     public void onConnectionFailed(@Nullable final String reason) {
-        runOnUiThread(() -> Toast.makeText(UizaLiveActivity.this, "Connection failed. " + reason, Toast.LENGTH_SHORT)
-                .show());
+        runOnUiThread(() -> {
+            Toast.makeText(UizaLiveActivity.this, "Connection failed. " + reason, Toast.LENGTH_SHORT)
+                    .show();
+        });
     }
 
     @Override
@@ -404,7 +408,9 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public void onAuthSuccess() {
-        runOnUiThread(() -> Toast.makeText(UizaLiveActivity.this, "Auth success", Toast.LENGTH_SHORT).show());
+        runOnUiThread(() -> {
+            Toast.makeText(UizaLiveActivity.this, "Auth success", Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override

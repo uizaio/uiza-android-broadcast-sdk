@@ -6,8 +6,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import io.uiza.uiza_sdk_player.live.CreateLiveActivity;
-import io.uiza.uiza_sdk_player.live.UizaLiveActivity;
+import io.uiza.uiza_sdk_player.live.LiveListActivity;
 import io.uiza.uiza_sdk_player.vod.VODListActivity;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
@@ -28,7 +27,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(HomeActivity.this, VODListActivity.class));
                 break;
             case R.id.live_btn:
-                Intent liveIntent = new Intent(HomeActivity.this, CreateLiveActivity.class);
+                Intent liveIntent = new Intent(HomeActivity.this, LiveListActivity.class);
                 startActivity(liveIntent);
                 break;
             default:

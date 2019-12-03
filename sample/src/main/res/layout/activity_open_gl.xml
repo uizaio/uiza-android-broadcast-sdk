@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_example_rtmp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
 
     <io.uiza.live.UizaOpenGLView
         android:id="@+id/uiza_open_glview"
@@ -11,13 +12,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_padding_half"
+        android:layout_marginTop="@dimen/activity_padding_half"
+        android:layout_marginEnd="@dimen/activity_padding_half">
 
         <androidx.appcompat.widget.AppCompatImageButton
             style="@style/UizaMediaLiveButton"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/activity_padding_half"
-            android:layout_marginEnd="@dimen/activity_padding_half"
             android:src="@drawable/ic_settings_white_24"
             android:tint="@android:color/white"
             android:tintMode="src_in" />
