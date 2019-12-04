@@ -1,0 +1,128 @@
+<!--
+  ~ Copyright 2018 The app Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:iconSpaceReserved="false">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:key="pref_camera"
+        app:title="@string/camera_title">
+
+        <ListPreference
+            app:defaultValue="0"
+            app:entries="@array/camera_entries"
+            app:entryValues="@array/camera_values"
+            app:iconSpaceReserved="false"
+            app:key="camera_key"
+            app:title="@string/camera_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="360"
+            app:entries="@array/video_entries"
+            app:entryValues="@array/video_values"
+            app:iconSpaceReserved="false"
+            app:key="video_size_key"
+            app:title="@string/video_size_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="24"
+            app:entries="@array/fps_entries"
+            app:entryValues="@array/fps_values"
+            app:iconSpaceReserved="false"
+            app:key="fps_key"
+            app:title="@string/fps_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:key="pref_encoder"
+        app:title="@string/encoder_title">
+
+        <EditTextPreference
+            app:defaultValue="24"
+            app:iconSpaceReserved="false"
+            app:key="bitrate_key"
+            app:title="@string/bitrate_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="0"
+            app:entries="@array/adaptive_bitrate_entries"
+            app:entryValues="@array/adaptive_bitrate_values"
+            app:iconSpaceReserved="false"
+            app:key="adaptive_bitrate_key"
+            app:title="@string/adaptive_bitrate_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:defaultValue="24"
+            app:iconSpaceReserved="false"
+            app:key="keyframe_key"
+            app:title="@string/keyframe_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="h264"
+            app:entries="@array/format_entries"
+            app:entryValues="@array/format_values"
+            app:iconSpaceReserved="false"
+            app:key="format_key"
+            app:title="@string/format_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:key="pref_audio"
+        app:title="@string/audio_title">
+
+        <ListPreference
+            app:defaultValue="1"
+            app:entries="@array/chanels"
+            app:entryValues="@array/chanels"
+            app:iconSpaceReserved="false"
+            app:key="channel_key"
+            app:title="@string/channel_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="0"
+            app:entries="@array/bitrate_entries"
+            app:entryValues="@array/bitrate_entries"
+            app:iconSpaceReserved="false"
+            app:key="audio_bitrate_key"
+            app:title="@string/bitrate_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="24"
+            app:entries="@array/sample_rates"
+            app:entryValues="@array/sample_rates"
+            app:iconSpaceReserved="false"
+            app:key="sample_rate_key"
+            app:title="@string/sample_rate_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

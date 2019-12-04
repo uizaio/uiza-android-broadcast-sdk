@@ -1,2 +1,2 @@
-include ':sample', ':uiza-core', ':uiza-player', ':uiza-live'
+include ':sample', ':uiza-core', ':uiza-player', ':uiza-live', ':samplelive'
 rootProject.name='uiza-sdk-player'

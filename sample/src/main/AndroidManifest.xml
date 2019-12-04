@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="io.uiza.uiza_sdk_player">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -8,16 +7,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- for live -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAMERA" /> <!-- needed by background Rtp service to keep service alive -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- Optional for play store -->
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.camera.autofocus"
-        android:required="false" />
 
     <application
         android:name=".SampleApplication"
@@ -30,27 +19,27 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="false">
 
-        <activity android:name=".HomeActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".vod.VODListActivity"
+            android:name=".VODListActivity"
             android:label="@string/app_player_name"
-            android:parentActivityName=".HomeActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".vod.InfoActivity"
+            android:name=".InfoActivity"
             android:label="@string/app_player_name"
-            android:parentActivityName=".vod.VODListActivity"
+            android:parentActivityName=".VODListActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="io.uiza.player.UizaPlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTop"
-            android:parentActivityName=".vod.InfoActivity"
+            android:parentActivityName=".InfoActivity"
             android:theme="@style/PlayerTheme">
             <intent-filter>
                 <action android:name="io.uiza.player.action.VIEW" />
@@ -69,19 +58,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".live.LiveListActivity"
-            android:parentActivityName=".HomeActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".live.UizaLiveActivity"
-            android:label="@string/app_player_name"
-            android:parentActivityName=".live.CheckLiveActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".live.CheckLiveActivity"
-            android:parentActivityName=".live.LiveListActivity"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
