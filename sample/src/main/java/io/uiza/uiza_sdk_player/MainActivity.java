@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.force_vod_btn:
                 startActivity(buildIntent(false,
-                        UizaPlayerActivity.ABR_ALGORITHM_RANDOM, "https://tungtt.uiza-dev.workers.dev/00db136b-50b9-4f15-9fd3-1deb1989873e/e83daf9c-2981-4ce7-9a6b-929cc51c0d4d/master.m3u8"));
+                        UizaPlayerActivity.ABR_ALGORITHM_RANDOM, "http://14.161.15.87/live/sk.m3u8"));
 
             default:
                 break;

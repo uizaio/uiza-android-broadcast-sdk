@@ -1,23 +1,24 @@
 package io.uiza.extensions
 
 
-import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 
 
 /**
  *
  * Created by namnd on 10/21/17.
  */
-abstract class BaseAdapter<ITEM>(private var itemList: List<ITEM>,
-                                 @LayoutRes private val itemLayoutResId: Int,
-                                 @LayoutRes private val headerLayoutResId: Int = 0,
-                                 @LayoutRes private val footerLayoutResId: Int = 0,
-                                 @LayoutRes private val emptyLayoutResId: Int = 0,
-                                 private val emptyCount: Int = 1)
-    : RecyclerView.Adapter<BaseAdapter.BaseViewHolder>() {
+abstract class BaseAdapter<ITEM>(
+    private var itemList: List<ITEM>,
+    @LayoutRes private val itemLayoutResId: Int,
+    @LayoutRes private val headerLayoutResId: Int = 0,
+    @LayoutRes private val footerLayoutResId: Int = 0,
+    @LayoutRes private val emptyLayoutResId: Int = 0,
+    private val emptyCount: Int = 1
+) : RecyclerView.Adapter<BaseAdapter.BaseViewHolder>() {
 
     var numberPerPage: Int = 8
 
@@ -43,6 +44,19 @@ abstract class BaseAdapter<ITEM>(private var itemList: List<ITEM>,
     @SuppressWarnings("WeakerAccess")
     open fun getData(): List<ITEM> = itemList
 
+    open fun setData(data: List<ITEM>) {
+        this.itemList = data
+        notifyDataSetChanged()
+    }
+
+    open fun removeItem(item: ITEM) {
+        val pos = itemList.indexOf(item)
+        if (pos >= 0 && pos < getCount()) {
+            itemList = itemList.minus(item)
+            notifyItemRemoved(pos)
+        }
+    }
+
     final override fun getItemCount(): Int {
         return when {
             itemList.isEmpty() -> viewCountWhenEmptyItems()
@@ -51,7 +65,8 @@ abstract class BaseAdapter<ITEM>(private var itemList: List<ITEM>,
     }
 
     @SuppressWarnings("WeakerAccess")
-    open fun getItem(position: Int): ITEM? = if (itemList.isNotEmpty() && position >= 0 && position < getCount()) itemList[position] else null
+    open fun getItem(position: Int): ITEM? =
+        if (itemList.isNotEmpty() && position >= 0 && position < getCount()) itemList[position] else null
 
     final override fun getItemViewType(position: Int): Int {
         return if (itemList.isEmpty()) {

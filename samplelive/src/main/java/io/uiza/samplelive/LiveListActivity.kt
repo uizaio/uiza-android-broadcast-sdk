@@ -1,14 +1,18 @@
 package io.uiza.samplelive
 
 import android.os.Bundle
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import io.uiza.core.models.CreateEntityBody
-import io.uiza.core.models.UizaEntity
+import io.uiza.core.models.DeleteEntityResponse
+import io.uiza.core.models.UizaLiveEntity
 import io.uiza.core.utils.UizaLog
 import io.uiza.core.utils.execSubscribe
 import io.uiza.extensions.lauchActivity
@@ -16,15 +20,20 @@ import io.uiza.extensions.setVertical
 import kotlinx.android.synthetic.main.activity_live_list.*
 import kotlinx.android.synthetic.main.dlg_create_live.view.*
 
-class LiveListActivity : AppCompatActivity() {
+class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
+    PopupMenu.OnMenuItemClickListener {
 
     private val compositeDisposable = CompositeDisposable()
+    private var currentEntityId: String? = null
+    private var adapter: EntityAdapter = EntityAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_live_list)
         progress_bar.visibility = View.GONE
         contentList.setVertical()
+        adapter.listener = this
+        contentList.adapter = adapter
         fb_btn.setOnClickListener { showCreateLiveDialog() }
         loadEntities()
     }
@@ -34,10 +43,9 @@ class LiveListActivity : AppCompatActivity() {
         compositeDisposable.add(
             (application as SampleLiveApplication).liveService.getEntities()
                 .map { response -> response.entities?.filter { entity -> entity.needGetInfo() } }.execSubscribe(
-                    Consumer { entities ->
+                    Consumer { entities: List<UizaLiveEntity>? ->
                         entities?.let {
-                            contentList.adapter =
-                                EntityAdapter(it)
+                            adapter.setData(it)
                         }
                         progress_bar.visibility = View.GONE
                     },
@@ -80,6 +88,37 @@ class LiveListActivity : AppCompatActivity() {
         builder.show()
     }
 
+    private fun showPopup(v: View) {
+        val popup = PopupMenu(v.context, v)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.del_menu, popup.menu)
+        popup.setOnMenuItemClickListener(this)
+        popup.show()
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!compositeDisposable.isDisposed) {
+            compositeDisposable.dispose()
+        }
+    }
+
+    override fun onMoreClick(v: View, entityId: String) {
+        currentEntityId = entityId
+        showPopup(v)
+    }
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.del_entity) {
+            removeEntity()
+            return true
+        }
+        return false
+    }
+
+    /// CALL API
+
     private fun createLive(streamName: String) {
         progress_bar.visibility = View.VISIBLE
         val body = CreateEntityBody(
@@ -91,7 +130,7 @@ class LiveListActivity : AppCompatActivity() {
         )
         val obs =
             (application as SampleLiveApplication).liveService.createEntity(body)
-        obs.execSubscribe(Consumer { res: UizaEntity ->
+        obs.execSubscribe(Consumer { res: UizaLiveEntity ->
             lauchActivity<CheckLiveActivity> {
                 putExtra(CheckLiveActivity.EXTRA_ENTITY, res)
             }
@@ -100,10 +139,24 @@ class LiveListActivity : AppCompatActivity() {
         })
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (!compositeDisposable.isDisposed) {
-            compositeDisposable.dispose()
+    private fun removeEntity() {
+        currentEntityId?.let {
+            val obs = (application as SampleLiveApplication).liveService.deleteEntity(it)
+            obs.execSubscribe(
+                Consumer { res: DeleteEntityResponse ->
+                    res.id?.let { entityId ->
+                        if (res.deleted == true) {
+                            adapter.getItem(entityId)?.let { entity ->
+                                adapter.removeItem(entity)
+                            }
+                        }
+                        UizaLog.e("LiveList", res.toString())
+                    }
+                },
+                Consumer { throwable ->
+                    Toast.makeText(this, throwable.localizedMessage, Toast.LENGTH_SHORT).show()
+                })
         }
     }
+
 }

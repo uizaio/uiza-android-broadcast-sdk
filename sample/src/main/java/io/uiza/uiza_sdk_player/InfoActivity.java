@@ -11,12 +11,11 @@ import androidx.appcompat.widget.AppCompatTextView;
 
 import com.google.android.exoplayer2.util.Assertions;
 
-import io.uiza.core.models.UizaEntity;
+import io.uiza.core.models.UizaLiveEntity;
 import io.uiza.core.utils.StringKt;
 import io.uiza.core.utils.UizaLog;
 import io.uiza.extensions.MediaExtension;
 import io.uiza.player.UizaPlayerActivity;
-import io.uiza.uiza_sdk_player.R;
 
 public class InfoActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -24,7 +23,7 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
 
     AppCompatTextView content;
     DrmInfo drmInfo = null;
-    UizaEntity entity = null;
+    UizaLiveEntity entity = null;
 
     @Override
     protected void onCreate(Bundle savedState) {
