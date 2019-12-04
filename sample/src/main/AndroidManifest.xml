@@ -43,9 +43,7 @@
             android:theme="@style/PlayerTheme">
             <intent-filter>
                 <action android:name="io.uiza.player.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:scheme="content" />
@@ -54,7 +52,6 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="io.uiza.player.action.VIEW_LIST" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

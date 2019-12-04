@@ -38,7 +38,7 @@ public class UizaClient {
             this.baseApiUrl = baseApiUrl;
         }
 
-        public void setToken(String token) {
+        public void withToken(String token) {
             this.token = token;
         }
 
@@ -47,7 +47,7 @@ public class UizaClient {
          *
          * @param logLevel
          */
-        public void setLogLevel(HttpLoggingInterceptor.Level logLevel) {
+        public void withLogLevel(HttpLoggingInterceptor.Level logLevel) {
             this.logLevel = logLevel;
         }
 
@@ -57,7 +57,7 @@ public class UizaClient {
          *
          * @param timeout (seconds)
          */
-        public void setTimeout(long timeout) {
+        public void withTimeout(long timeout) {
             this.timeout = timeout;
         }
 
@@ -66,7 +66,7 @@ public class UizaClient {
          *
          * @param retryOnConnectionFailure
          */
-        public void setRetryOnConnectionFailure(boolean retryOnConnectionFailure) {
+        public void withRetryOnConnectionFailure(boolean retryOnConnectionFailure) {
             this.retryOnConnectionFailure = retryOnConnectionFailure;
         }
 
@@ -75,7 +75,7 @@ public class UizaClient {
          *
          * @param compressedRequest
          */
-        public void setCompressedRequest(boolean compressedRequest) {
+        public void withCompressedRequest(boolean compressedRequest) {
             this.compressedRequest = compressedRequest;
         }
 

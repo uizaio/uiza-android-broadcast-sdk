@@ -24,6 +24,44 @@ Use [Exoplayer](https://github.com/google/ExoPlayer)
 
 > Thanks Google
 
+### Use
+
+In `AndroidManifest.xml` added:
+
+```xml
+  <activity
+            android:name="io.uiza.player.UizaPlayerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:launchMode="singleTop"
+            android:parentActivityName=".InfoActivity"
+            android:theme="@style/PlayerTheme">
+            <intent-filter>
+                <action android:name="io.uiza.player.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="content" />
+                <data android:scheme="asset" />
+                <data android:scheme="file" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="io.uiza.player.action.VIEW_LIST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+```
+
+Implement in java:
+
+```java
+Intent intent = new Intent();
+intent.setData(Uri.parse(uri));
+intent.putExtra(UizaPlayerActivity.EXTENSION_EXTRA, "m3u8"); // or "mpd"
+intent.setAction(UizaPlayerActivity.ACTION_VIEW);
+startActivity(intent);
+```
+
+
 ## uiza-live
 Use [rtmp-rtsp-stream-client-java](https://github.com/pedroSG94/rtmp-rtsp-stream-client-java).
 > Thanks Pedro Sánchez
