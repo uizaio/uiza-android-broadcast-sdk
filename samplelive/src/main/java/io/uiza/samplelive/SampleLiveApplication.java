@@ -15,8 +15,8 @@ public class SampleLiveApplication extends MultiDexApplication {
 
     private static final String TAG = "SampleApplication";
 
-    public static final String LIVE_URL = "rtmp://35.197.159.184/transcode";
-    public static final String STREAM_KEY = "live_XlK2fJWOio";
+    public static final String LIVE_URL = "rtmp://35.240.155.117/transcode";
+    public static final String STREAM_KEY = "live_OqHu8SLArw";
 
     public static final String REGION = "asia-southeast-1";
     public static final String APP_ID = "duyqt-app";

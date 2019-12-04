@@ -24,6 +24,20 @@
         android:drawableTint="@android:color/background_dark"
         android:text="Sample Player"
         app:layout_constraintBaseline_creator="@integer/exo_media_button_opacity_percentage_disabled"
+        app:layout_constraintBottom_toTopOf="@+id/force_vod_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/force_vod_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_padding"
+        android:drawableStart="@drawable/ic_copyright_white_24"
+        android:drawablePadding="@dimen/activity_padding"
+        android:drawableTint="@android:color/background_dark"
+        android:text="Force Player"
+        app:layout_constraintBaseline_creator="@integer/exo_media_button_opacity_percentage_disabled"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

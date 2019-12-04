@@ -1,5 +1,7 @@
 package io.uiza.samplelive;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -12,8 +14,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.pedro.encoder.input.gl.render.filters.AnalogTVFilterRender;
@@ -94,18 +98,37 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
         openGlView.setLiveListener(this);
         startButton = findViewById(R.id.b_start_stop);
         startButton.setOnClickListener(this);
+        startButton.setEnabled(false);
         bRecord = findViewById(R.id.b_record);
         bRecord.setOnClickListener(this);
         AppCompatImageButton switchCamera = findViewById(R.id.switch_camera);
         switchCamera.setOnClickListener(this);
         liveStreamUrl = getIntent().getStringExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT);
         if (TextUtils.isEmpty(liveStreamUrl)) {
-            Toast.makeText(this,
-                    "Live stream url is empty", Toast.LENGTH_SHORT).show();
-            finish();
+            liveStreamUrl = SampleLiveApplication.getLiveEndpoint();
         }
+        ActivityCompat.requestPermissions(UizaLiveActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, 1001);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == 1001) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startButton.setEnabled(true);
+                // permission was granted, yay! Do the
+                // contacts-related task you need to do.
+            } else {
+                startButton.setEnabled(false);
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
+                Toast.makeText(UizaLiveActivity.this, "Permission denied to access your Camera and Record Audio", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.gl_menu, menu);
