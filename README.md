@@ -39,7 +39,111 @@ Use [rtmp-rtsp-stream-client-java](https://github.com/pedroSG94/rtmp-rtsp-stream
 <uses-feature android:name="android.hardware.camera" android:required="false" />
 <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 ```
-- Require minSDK 21 (android 5).
+- Require `minSDK 21 (android 5)`.
 - This library use [MediaCodec](https://developer.android.com/reference/android/media/MediaCodec.html) Android class to do hardware encoding.
 - Create a RTP packets of video and audio, encapsulate it in flv packets and send to server
-- Get audio data from microphone in PCM buffer and from [camera API2](https://developer.android.com/reference/android/hardware/camera2/package-summary.html) rendering a MediaCodec inputsurface. This builder can be executed in background mode if you use a context in the constructor instead of a surfaceview.
+- Get audio data from microphone in PCM buffer and from [camera API2](https://developer.android.com/reference/android/hardware/camera2/package-summary.html) rendering a MediaCodec inputsurface.
+
+### Implement
+
+```xml
+<io.uiza.live.UizaOpenGLView
+        android:id="@+id/uiza_open_glview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />        
+```
+
+```java
+openGlView = findViewById(R.id.uiza_open_glview);
+```
+
+```java
+  openGlView.setLiveListener(new UizaLiveListener() {
+        @Override
+        public void onConnectionSuccess() {
+            
+        }
+
+        @Override
+        public void onConnectionFailed(@Nullable String reason) {
+
+        }
+
+        @Override
+        public void onNewBitrate(long bitrate) {
+
+        }
+
+        @Override
+        public void onDisconnect() {
+
+        }
+
+        @Override
+        public void onAuthError() {
+
+        }
+
+        @Override
+        public void onAuthSuccess() {
+
+        }
+
+        @Override
+        public void surfaceCreated() {
+
+        }
+
+        @Override
+        public void surfaceChanged(int format, int width, int height) {
+
+        }
+
+        @Override
+        public void surfaceDestroyed() {
+
+        }
+    });
+```
+
+__Start stream__
+
+```java
+if (openGlView.prepareStream()) {
+	openGlView.startStream(liveStreamUrl);
+}
+```
+
+__Stop stream__
+
+```java
+openGlView.stopStream();
+```
+
+__Switch camera__
+
+
+```java
+try {
+    openGlView.switchCamera();
+} catch (CameraOpenException e) { }
+```
+
+
+__Record__
+
+```java
+openGlView.startRecord(<file_name>);
+```
+
+__Stop record__
+
+```java
+openGlView.stopRecord();
+```
+
+__Set Filter__
+
+```java
+openGlView.setFilter(new BeautyFilterRender());
+```

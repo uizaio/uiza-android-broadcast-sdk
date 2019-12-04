@@ -11,13 +11,13 @@ public class SampleLiveApplication extends MultiDexApplication {
 
 
     private static final String DEV_HOST = "https://development-api.uizadev.io";
-    private static final String APP_SECRET = "uap-c1ffbff4db954ddcb050c6af0b43ba56-41193b64";
 
     private static final String TAG = "SampleApplication";
 
     public static final String LIVE_URL = "rtmp://35.240.155.117/transcode";
     public static final String STREAM_KEY = "live_OqHu8SLArw";
 
+    private static final String APP_SECRET = "uap-c1ffbff4db954ddcb050c6af0b43ba56-41193b64";
     public static final String REGION = "asia-southeast-1";
     public static final String APP_ID = "duyqt-app";
     public static final String USER_ID = "duyqt1";
