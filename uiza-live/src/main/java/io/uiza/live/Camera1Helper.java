@@ -45,9 +45,15 @@ public class Camera1Helper implements ICameraHelper {
         this.cameraChangeListener = cameraChangeListener;
     }
 
+
     @Override
     public void setFilter(@NotNull BaseFilterRender filterReader) {
         rtmpCamera1.getGlInterface().setFilter(filterReader);
+    }
+
+    @Override
+    public void setFilter(int filterPosition, @NotNull BaseFilterRender filterReader) {
+        rtmpCamera1.getGlInterface().setFilter(filterPosition, filterReader);
     }
 
     @Override

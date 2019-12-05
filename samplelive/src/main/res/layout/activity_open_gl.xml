@@ -13,7 +13,7 @@
         app:adaptiveBitrate="false"
         app:audioStereo="true"
         app:fps="24"
-        app:useCamera2="true"
+        app:useCamera2="false"
         app:videoSize="p720" />
 
     <LinearLayout

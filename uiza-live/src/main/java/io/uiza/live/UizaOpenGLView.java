@@ -34,7 +34,6 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
         SurfaceHolder.Callback {
 
     private ICameraHelper cameraHelper;
-//    private SpriteGestureController spriteGestureController = new SpriteGestureController();
     /**
      * ProfileEncoder default 360p
      */
@@ -162,7 +161,6 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
         LiveKt.blinking(tvLiveStatus);
     }
 
-
     public ProfileEncode getProfile() {
         return profile;
     }
@@ -219,17 +217,13 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
     public boolean isAAEnabled() {
         return cameraHelper.isAAEnabled();
     }
-//
-//    public void setBaseObjectFilterRender(BaseObjectFilterRender baseObjectFilterRender) {
-//        spriteGestureController.setBaseObjectFilterRender(baseObjectFilterRender);
-//    }
-//
-//    public void setPreventMoveOutside(boolean preventMoveOutside) {
-//        spriteGestureController.setPreventMoveOutside(preventMoveOutside);
-//    }
 
     public void setFilter(BaseFilterRender baseFilterRender) {
         cameraHelper.setFilter(baseFilterRender);
+    }
+
+    public void setFilter(int position, BaseFilterRender baseFilterRender) {
+        cameraHelper.setFilter(position, baseFilterRender);
     }
 
     public int getStreamWidth() {
@@ -258,8 +252,12 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        cameraHelper.startPreview(CameraHelper.Facing.FRONT, width, height);
-//        updateUISurfaceView(width, height);
+        if (useCamera2) {
+            cameraHelper.startPreview(CameraHelper.Facing.FRONT, width, height);
+        } else {
+            cameraHelper.startPreview(CameraHelper.Facing.FRONT);
+        }
+//            updateUISurfaceView(width, height);
         if (liveListener != null) {
             liveListener.surfaceChanged(format, width, height);
         }
@@ -375,16 +373,6 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
         });
 
     }
-
-//    @Override
-//    public boolean onTouch(View v, MotionEvent event) {
-//        if (spriteGestureController.spriteTouched(v, event)) {
-//            spriteGestureController.moveSprite(v, event);
-//            spriteGestureController.scaleSprite(event);
-//            return true;
-//        }
-//        return false;
-//    }
 
     // SETTER
 

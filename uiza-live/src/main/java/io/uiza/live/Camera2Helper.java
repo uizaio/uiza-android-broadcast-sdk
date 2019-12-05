@@ -49,6 +49,11 @@ public class Camera2Helper implements ICameraHelper {
     }
 
     @Override
+    public void setFilter(int filterPosition, @NotNull BaseFilterRender filterReader) {
+        rtmpCamera2.getGlInterface().setFilter(filterPosition, filterReader);
+    }
+
+    @Override
     public void enableAA(boolean aAEnabled) {
         rtmpCamera2.getGlInterface().enableAA(aAEnabled);
     }

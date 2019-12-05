@@ -17,6 +17,12 @@ interface ICameraHelper {
     fun setFilter(filterReader: BaseFilterRender)
 
     /**
+     * Set filter in position 0.
+     * @param filterReader filter to set. You can modify parameters to filter after set it to stream.
+     */
+    fun setFilter(filterPosition: Int, filterReader: BaseFilterRender)
+
+    /**
      * Get Anti alias is enabled.
      * @return true is enabled, false is disabled.
      */
