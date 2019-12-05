@@ -58,7 +58,7 @@ dependencies {
     implementation project(':uiza-core')
     implementation project(':uiza-live')
     implementation 'io.reactivex.rxjava2:rxjava:2.2.15'
-    implementation "com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:$pedrosg94_version"
+//    implementation "com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:$pedrosg94_version"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

@@ -20,51 +20,6 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.pedro.encoder.input.gl.render.filters.AnalogTVFilterRender;
-import com.pedro.encoder.input.gl.render.filters.AndroidViewFilterRender;
-import com.pedro.encoder.input.gl.render.filters.BasicDeformationFilterRender;
-import com.pedro.encoder.input.gl.render.filters.BeautyFilterRender;
-import com.pedro.encoder.input.gl.render.filters.BlackFilterRender;
-import com.pedro.encoder.input.gl.render.filters.BlurFilterRender;
-import com.pedro.encoder.input.gl.render.filters.BrightnessFilterRender;
-import com.pedro.encoder.input.gl.render.filters.CartoonFilterRender;
-import com.pedro.encoder.input.gl.render.filters.CircleFilterRender;
-import com.pedro.encoder.input.gl.render.filters.ColorFilterRender;
-import com.pedro.encoder.input.gl.render.filters.ContrastFilterRender;
-import com.pedro.encoder.input.gl.render.filters.DuotoneFilterRender;
-import com.pedro.encoder.input.gl.render.filters.EarlyBirdFilterRender;
-import com.pedro.encoder.input.gl.render.filters.EdgeDetectionFilterRender;
-import com.pedro.encoder.input.gl.render.filters.ExposureFilterRender;
-import com.pedro.encoder.input.gl.render.filters.FireFilterRender;
-import com.pedro.encoder.input.gl.render.filters.GammaFilterRender;
-import com.pedro.encoder.input.gl.render.filters.GlitchFilterRender;
-import com.pedro.encoder.input.gl.render.filters.GreyScaleFilterRender;
-import com.pedro.encoder.input.gl.render.filters.HalftoneLinesFilterRender;
-import com.pedro.encoder.input.gl.render.filters.Image70sFilterRender;
-import com.pedro.encoder.input.gl.render.filters.LamoishFilterRender;
-import com.pedro.encoder.input.gl.render.filters.MoneyFilterRender;
-import com.pedro.encoder.input.gl.render.filters.NegativeFilterRender;
-import com.pedro.encoder.input.gl.render.filters.NoFilterRender;
-import com.pedro.encoder.input.gl.render.filters.PixelatedFilterRender;
-import com.pedro.encoder.input.gl.render.filters.PolygonizationFilterRender;
-import com.pedro.encoder.input.gl.render.filters.RGBSaturationFilterRender;
-import com.pedro.encoder.input.gl.render.filters.RainbowFilterRender;
-import com.pedro.encoder.input.gl.render.filters.RippleFilterRender;
-import com.pedro.encoder.input.gl.render.filters.RotationFilterRender;
-import com.pedro.encoder.input.gl.render.filters.SaturationFilterRender;
-import com.pedro.encoder.input.gl.render.filters.SepiaFilterRender;
-import com.pedro.encoder.input.gl.render.filters.SharpnessFilterRender;
-import com.pedro.encoder.input.gl.render.filters.SnowFilterRender;
-import com.pedro.encoder.input.gl.render.filters.SwirlFilterRender;
-import com.pedro.encoder.input.gl.render.filters.TemperatureFilterRender;
-import com.pedro.encoder.input.gl.render.filters.ZebraFilterRender;
-import com.pedro.encoder.input.gl.render.filters.object.GifObjectFilterRender;
-import com.pedro.encoder.input.gl.render.filters.object.ImageObjectFilterRender;
-import com.pedro.encoder.input.gl.render.filters.object.SurfaceFilterRender;
-import com.pedro.encoder.input.gl.render.filters.object.TextObjectFilterRender;
-import com.pedro.encoder.input.video.CameraOpenException;
-import com.pedro.encoder.utils.gl.TranslateTo;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -75,6 +30,9 @@ import java.util.Locale;
 
 import io.uiza.core.utils.UizaLog;
 import io.uiza.live.UizaOpenGLView;
+import io.uiza.live.interfaces.FilterRender;
+import io.uiza.live.interfaces.Translate;
+import io.uiza.live.interfaces.UizaCameraOpenException;
 import io.uiza.live.interfaces.UizaLiveListener;
 
 public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListener,
@@ -153,128 +111,128 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
             // rtmpCamera2.setFilter(color);
             // color.setRGBColor(255, 0, 0); //red tint
         } else if (itemId == R.id.no_filter) {
-            openGlView.setFilter(new NoFilterRender());
+            openGlView.setFilter(FilterRender.None);
             return true;
         } else if (itemId == R.id.analog_tv) {
-            openGlView.setFilter(new AnalogTVFilterRender());
+            openGlView.setFilter(FilterRender.AnalogTV);
             return true;
         } else if (itemId == R.id.android_view) {
-            AndroidViewFilterRender androidViewFilterRender = new AndroidViewFilterRender();
-            androidViewFilterRender.setView(findViewById(R.id.switch_camera));
-            openGlView.setFilter(androidViewFilterRender);
+//            AndroidViewFilterRender androidViewFilterRender = new AndroidViewFilterRender();
+//            androidViewFilterRender.setView(findViewById(R.id.switch_camera));
+            openGlView.setFilter(FilterRender.AndroidView);
             return true;
         } else if (itemId == R.id.basic_deformation) {
-            openGlView.setFilter(new BasicDeformationFilterRender());
+            openGlView.setFilter(FilterRender.BasicDeformation);
             return true;
         } else if (itemId == R.id.beauty) {
-            openGlView.setFilter(new BeautyFilterRender());
+            openGlView.setFilter(FilterRender.Beauty);
             return true;
         } else if (itemId == R.id.black) {
-            openGlView.setFilter(new BlackFilterRender());
+            openGlView.setFilter(FilterRender.Black);
             return true;
         } else if (itemId == R.id.blur) {
-            openGlView.setFilter(new BlurFilterRender());
+            openGlView.setFilter(FilterRender.Blur);
             return true;
         } else if (itemId == R.id.brightness) {
-            openGlView.setFilter(new BrightnessFilterRender());
+            openGlView.setFilter(FilterRender.Brightness);
             return true;
         } else if (itemId == R.id.cartoon) {
-            openGlView.setFilter(new CartoonFilterRender());
+            openGlView.setFilter(FilterRender.Cartoon);
             return true;
         } else if (itemId == R.id.circle) {
-            openGlView.setFilter(new CircleFilterRender());
+            openGlView.setFilter(FilterRender.Circle);
             return true;
         } else if (itemId == R.id.color) {
-            openGlView.setFilter(new ColorFilterRender());
+            openGlView.setFilter(FilterRender.Color);
             return true;
         } else if (itemId == R.id.contrast) {
-            openGlView.setFilter(new ContrastFilterRender());
+            openGlView.setFilter(FilterRender.Contrast);
             return true;
         } else if (itemId == R.id.duotone) {
-            openGlView.setFilter(new DuotoneFilterRender());
+            openGlView.setFilter(FilterRender.Duotone);
             return true;
         } else if (itemId == R.id.early_bird) {
-            openGlView.setFilter(new EarlyBirdFilterRender());
+            openGlView.setFilter(FilterRender.EarlyBird);
             return true;
         } else if (itemId == R.id.edge_detection) {
-            openGlView.setFilter(new EdgeDetectionFilterRender());
+            openGlView.setFilter(FilterRender.EdgeDetection);
             return true;
         } else if (itemId == R.id.exposure) {
-            openGlView.setFilter(new ExposureFilterRender());
+            openGlView.setFilter(FilterRender.Exposure);
             return true;
         } else if (itemId == R.id.fire) {
-            openGlView.setFilter(new FireFilterRender());
+            openGlView.setFilter(FilterRender.Fire);
             return true;
         } else if (itemId == R.id.gamma) {
-            openGlView.setFilter(new GammaFilterRender());
+            openGlView.setFilter(FilterRender.Gamma);
             return true;
         } else if (itemId == R.id.glitch) {
-            openGlView.setFilter(new GlitchFilterRender());
+            openGlView.setFilter(FilterRender.Glitch);
             return true;
         } else if (itemId == R.id.gif) {
             setGifToStream();
             return true;
         } else if (itemId == R.id.grey_scale) {
-            openGlView.setFilter(new GreyScaleFilterRender());
+            openGlView.setFilter(FilterRender.GreyScale);
             return true;
         } else if (itemId == R.id.halftone_lines) {
-            openGlView.setFilter(new HalftoneLinesFilterRender());
+            openGlView.setFilter(FilterRender.HalftoneLines);
             return true;
         } else if (itemId == R.id.image) {
             setImageToStream();
             return true;
         } else if (itemId == R.id.image_70s) {
-            openGlView.setFilter(new Image70sFilterRender());
+            openGlView.setFilter(FilterRender.Image70s);
             return true;
         } else if (itemId == R.id.lamoish) {
-            openGlView.setFilter(new LamoishFilterRender());
+            openGlView.setFilter(FilterRender.Lamoish);
             return true;
         } else if (itemId == R.id.money) {
-            openGlView.setFilter(new MoneyFilterRender());
+            openGlView.setFilter(FilterRender.Money);
             return true;
         } else if (itemId == R.id.negative) {
-            openGlView.setFilter(new NegativeFilterRender());
+            openGlView.setFilter(FilterRender.Negative);
             return true;
         } else if (itemId == R.id.pixelated) {
-            openGlView.setFilter(new PixelatedFilterRender());
+            openGlView.setFilter(FilterRender.Pixelated);
             return true;
         } else if (itemId == R.id.polygonization) {
-            openGlView.setFilter(new PolygonizationFilterRender());
+            openGlView.setFilter(FilterRender.Polygonization);
             return true;
         } else if (itemId == R.id.rainbow) {
-            openGlView.setFilter(new RainbowFilterRender());
+            openGlView.setFilter(FilterRender.Rainbow);
             return true;
         } else if (itemId == R.id.rgb_saturate) {
-            RGBSaturationFilterRender rgbSaturationFilterRender = new RGBSaturationFilterRender();
-            openGlView.setFilter(rgbSaturationFilterRender);
+            FilterRender rgbSaturation = FilterRender.RGBSaturation;
+            openGlView.setFilter(rgbSaturation);
             //Reduce green and blue colors 20%. Red will predominate.
-            rgbSaturationFilterRender.setRGBSaturation(1f, 0.8f, 0.8f);
+            rgbSaturation.setRGBSaturation(1f, 0.8f, 0.8f);
             return true;
         } else if (itemId == R.id.ripple) {
-            openGlView.setFilter(new RippleFilterRender());
+            openGlView.setFilter(FilterRender.Ripple);
             return true;
         } else if (itemId == R.id.rotation) {
-            RotationFilterRender rotationFilterRender = new RotationFilterRender();
-            openGlView.setFilter(rotationFilterRender);
-            rotationFilterRender.setRotation(90);
+            FilterRender filterRender = FilterRender.Rotation;
+            openGlView.setFilter(filterRender);
+            filterRender.setRotation(90);
             return true;
         } else if (itemId == R.id.saturation) {
-            openGlView.setFilter(new SaturationFilterRender());
+            openGlView.setFilter(FilterRender.Saturation);
             return true;
         } else if (itemId == R.id.sepia) {
-            openGlView.setFilter(new SepiaFilterRender());
+            openGlView.setFilter(FilterRender.Sepia);
             return true;
         } else if (itemId == R.id.sharpness) {
-            openGlView.setFilter(new SharpnessFilterRender());
+            openGlView.setFilter(FilterRender.Sharpness);
             return true;
         } else if (itemId == R.id.snow) {
-            openGlView.setFilter(new SnowFilterRender());
+            openGlView.setFilter(FilterRender.Snow);
             return true;
         } else if (itemId == R.id.swirl) {
-            openGlView.setFilter(new SwirlFilterRender());
+            openGlView.setFilter(FilterRender.Swirl);
             return true;
         } else if (itemId == R.id.surface_filter) {//You can render this filter with other api that draw in a surface. for example you can use VLC
-            SurfaceFilterRender surfaceFilterRender = new SurfaceFilterRender();
+            FilterRender surfaceFilterRender = FilterRender.Surface;
             openGlView.setFilter(surfaceFilterRender);
             MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.big_bunny_240p);
             mediaPlayer.setSurface(surfaceFilterRender.getSurface());
@@ -284,48 +242,48 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
             openGlView.setFilter(surfaceFilterRender); //Optional
             return true;
         } else if (itemId == R.id.temperature) {
-            openGlView.setFilter(new TemperatureFilterRender());
+            openGlView.setFilter(FilterRender.Temperature);
             return true;
         } else if (itemId == R.id.text) {
             setTextToStream();
             return true;
         } else if (itemId == R.id.zebra) {
-            openGlView.setFilter(new ZebraFilterRender());
+            openGlView.setFilter(FilterRender.Zebra);
             return true;
         }
         return false;
     }
 
     private void setTextToStream() {
-        TextObjectFilterRender textObjectFilterRender = new TextObjectFilterRender();
-        openGlView.setFilter(textObjectFilterRender);
-        textObjectFilterRender.setText("Hello world", 22, Color.RED);
-        textObjectFilterRender.setDefaultScale(openGlView.getStreamWidth(),
+        FilterRender textObject = FilterRender.TextObject;
+        openGlView.setFilter(textObject);
+        textObject.setText("Hello world", 22, Color.RED);
+        textObject.setDefaultScale(openGlView.getStreamWidth(),
                 openGlView.getStreamHeight());
-        textObjectFilterRender.setPosition(TranslateTo.CENTER);
-        openGlView.setFilter(textObjectFilterRender); //Optional
+        textObject.setPosition(Translate.CENTER);
+        openGlView.setFilter(textObject); //Optional
     }
 
     private void setImageToStream() {
-        ImageObjectFilterRender imageObjectFilterRender = new ImageObjectFilterRender();
+        FilterRender imageObjectFilterRender = FilterRender.ImageObject;
         openGlView.setFilter(imageObjectFilterRender);
         imageObjectFilterRender.setImage(
                 BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
         imageObjectFilterRender.setDefaultScale(openGlView.getStreamWidth(),
                 openGlView.getStreamHeight());
-        imageObjectFilterRender.setPosition(TranslateTo.RIGHT);
+        imageObjectFilterRender.setPosition(Translate.RIGHT);
         openGlView.setFilter(imageObjectFilterRender); //Optional
 //        openGlView.setPreventMoveOutside(false); //Optional
     }
 
     private void setGifToStream() {
         try {
-            GifObjectFilterRender gifObjectFilterRender = new GifObjectFilterRender();
+            FilterRender gifObjectFilterRender = FilterRender.GifObject;
             gifObjectFilterRender.setGif(getResources().openRawResource(R.raw.banana));
             openGlView.setFilter(gifObjectFilterRender);
             gifObjectFilterRender.setDefaultScale(openGlView.getStreamWidth(),
                     openGlView.getStreamHeight());
-            gifObjectFilterRender.setPosition(TranslateTo.BOTTOM);
+            gifObjectFilterRender.setPosition(Translate.BOTTOM);
             openGlView.setFilter(gifObjectFilterRender); //Optional
         } catch (IOException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -352,14 +310,19 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
         } else if (id == R.id.switch_camera) {
             try {
                 openGlView.switchCamera();
-            } catch (CameraOpenException e) {
+            } catch (UizaCameraOpenException e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         } else if (id == R.id.b_record) {
             if (!openGlView.isRecording()) {
                 try {
                     if (!folder.exists()) {
-                        folder.mkdir();
+                        try {
+                            folder.mkdir();
+                        } catch (SecurityException ex) {
+                            Toast.makeText(this, ex.getLocalizedMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                     currentDateAndTime = sdf.format(new Date());

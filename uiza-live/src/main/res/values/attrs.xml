@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="UizaOpenGLView">
+        <attr name="viewType" format="enum">
+            <enum name="SurfaceView" value="0" />
+            <enum name="OpenGL" value="1" />
+        </attr>
         <attr name="useCamera2" format="boolean" />
         <attr name="videoSize" format="enum">
             <enum name="p360" value="360" />
@@ -10,7 +14,7 @@
         <attr name="fps" format="integer" />
         <attr name="adaptiveBitrate" format="boolean" />
         <attr name="keyframe" format="integer" />
-        <attr name="audioStereo" format="boolean"/>
+        <attr name="audioStereo" format="boolean" />
         <attr name="audioBitrate" format="integer" />
         <attr name="audioSampleRate" format="integer" />
     </declare-styleable>

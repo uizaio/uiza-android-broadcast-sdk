@@ -113,7 +113,7 @@ interface ICameraHelper {
      *
      * @throws CameraOpenException If the other camera doesn't support same resolution.
      */
-    @Throws(CameraOpenException::class)
+    @Throws(UizaCameraOpenException::class)
     fun switchCamera()
 
     fun startPreview(cameraFacing: CameraHelper.Facing)

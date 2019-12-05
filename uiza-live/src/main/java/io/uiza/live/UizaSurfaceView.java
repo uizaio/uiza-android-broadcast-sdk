@@ -11,6 +11,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
@@ -21,18 +22,16 @@ import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.rtplibrary.rtmp.RtmpCamera1;
 import com.pedro.rtplibrary.rtmp.RtmpCamera2;
 import com.pedro.rtplibrary.util.BitrateAdapter;
-import com.pedro.rtplibrary.view.OpenGlView;
 
 import net.ossrs.rtmp.ConnectCheckerRtmp;
 
 import java.io.IOException;
 
-import io.uiza.live.interfaces.FilterRender;
 import io.uiza.live.interfaces.ICameraHelper;
 import io.uiza.live.interfaces.ProfileEncode;
 import io.uiza.live.interfaces.UizaLiveListener;
 
-public class UizaOpenGLView extends FrameLayout implements
+public class UizaSurfaceView extends FrameLayout implements
         SurfaceHolder.Callback {
 
     private ICameraHelper cameraHelper;
@@ -72,23 +71,23 @@ public class UizaOpenGLView extends FrameLayout implements
 
     private BitrateAdapter bitrateAdapter;
 
-    private OpenGlView openGlView;
+    private SurfaceView surfaceView;
 
-    public UizaOpenGLView(Context context) {
+    public UizaSurfaceView(Context context) {
         this(context, null);
     }
 
-    public UizaOpenGLView(Context context, AttributeSet attrs) {
+    public UizaSurfaceView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public UizaOpenGLView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public UizaSurfaceView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
         initView(attrs, defStyleAttr);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public UizaOpenGLView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public UizaSurfaceView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initView(attrs, defStyleAttr);
     }
@@ -127,21 +126,21 @@ public class UizaOpenGLView extends FrameLayout implements
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        inflate(getContext(), R.layout.layout_uiza_glview, this);
-        openGlView = findViewById(R.id.camera_view);
+        inflate(getContext(), R.layout.layout_uiza_surfaceview, this);
+        surfaceView = findViewById(R.id.camera_view);
         tvLiveStatus = findViewById(R.id.live_status);
         progressBar = findViewById(R.id.pb);
         progressBar.getIndeterminateDrawable().setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY));
         if (useCamera2) {
-            RtmpCamera2 rtmpCamera2 = new RtmpCamera2(openGlView, connectCheckerRtmp);
+            RtmpCamera2 rtmpCamera2 = new RtmpCamera2(surfaceView, connectCheckerRtmp);
             rtmpCamera2.setReTries(10);
             cameraHelper = new Camera2Helper(rtmpCamera2);
         } else {
-            RtmpCamera1 rtmpCamera1 = new RtmpCamera1(openGlView, connectCheckerRtmp);
+            RtmpCamera1 rtmpCamera1 = new RtmpCamera1(surfaceView, connectCheckerRtmp);
             rtmpCamera1.setReTries(10);
             cameraHelper = new Camera1Helper(rtmpCamera1);
         }
-        openGlView.getHolder().addCallback(this);
+        surfaceView.getHolder().addCallback(this);
 //        openGlView.setOnTouchListener(this);
     }
 
@@ -213,22 +212,6 @@ public class UizaOpenGLView extends FrameLayout implements
         return cameraHelper.prepareVideo(profile, fps, keyframe, CameraHelper.getCameraOrientation(getContext()));
     }
 
-    public void enableAA(boolean enable) {
-        cameraHelper.enableAA(enable);
-    }
-
-    public boolean isAAEnabled() {
-        return cameraHelper.isAAEnabled();
-    }
-
-    public void setFilter(FilterRender filterRender) {
-        cameraHelper.setFilter(filterRender.getFilterRender());
-    }
-
-    public void setFilter(int position, FilterRender filterRender) {
-        cameraHelper.setFilter(position, filterRender.getFilterRender());
-    }
-
     public int getStreamWidth() {
         return cameraHelper.getStreamWidth();
     }
@@ -238,11 +221,11 @@ public class UizaOpenGLView extends FrameLayout implements
     }
 
     private void updateUISurfaceView(int width, int height) {
-        if (openGlView == null) return;
+        if (surfaceView == null) return;
         int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-        openGlView.getLayoutParams().width = screenWidth;
-        openGlView.getLayoutParams().height = width * screenWidth / height;
-        openGlView.requestLayout();
+        surfaceView.getLayoutParams().width = screenWidth;
+        surfaceView.getLayoutParams().height = width * screenWidth / height;
+        surfaceView.requestLayout();
     }
 
 
@@ -405,3 +388,4 @@ public class UizaOpenGLView extends FrameLayout implements
         this.audioSampleRate = audioSampleRate;
     }
 }
+

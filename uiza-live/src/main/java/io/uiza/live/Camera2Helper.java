@@ -21,6 +21,7 @@ import java.io.IOException;
 import io.uiza.live.interfaces.CameraChangeListener;
 import io.uiza.live.interfaces.ICameraHelper;
 import io.uiza.live.interfaces.ProfileEncode;
+import io.uiza.live.interfaces.UizaCameraOpenException;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class Camera2Helper implements ICameraHelper {
@@ -123,8 +124,12 @@ public class Camera2Helper implements ICameraHelper {
     }
 
     @Override
-    public void switchCamera() throws CameraOpenException {
-        rtmpCamera2.switchCamera();
+    public void switchCamera() throws UizaCameraOpenException {
+        try {
+            rtmpCamera2.switchCamera();
+        } catch (CameraOpenException e) {
+            throw new UizaCameraOpenException(e.getMessage());
+        }
         if (cameraChangeListener != null)
             cameraChangeListener.onCameraChange(rtmpCamera2.isFrontCamera());
     }
