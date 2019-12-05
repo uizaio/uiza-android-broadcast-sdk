@@ -1,5 +1,6 @@
 package io.uiza.live;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -7,6 +8,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -85,6 +87,7 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
         initView(attrs, defStyleAttr);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public UizaOpenGLView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initView(attrs, defStyleAttr);
@@ -99,7 +102,7 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
      */
     private void initView(AttributeSet attrs, int defStyleAttr) {
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.UizaOpenGLView, defStyleAttr, 0);
-        useCamera2 = a.getBoolean(R.styleable.UizaOpenGLView_useCamera2, true);
+        useCamera2 = a.getBoolean(R.styleable.UizaOpenGLView_useCamera2, Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
         int res = a.getInt(R.styleable.UizaOpenGLView_videoSize, 360);
         if (res == 1080) {
             profile = ProfileEncode.P1080;
@@ -113,7 +116,7 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
         keyframe = a.getInt(R.styleable.UizaOpenGLView_keyframe, 2);
         adaptiveBitrate = a.getBoolean(R.styleable.UizaOpenGLView_adaptiveBitrate, false);
         audioStereo = a.getBoolean(R.styleable.UizaOpenGLView_audioStereo, true);
-        audioBitrate = a.getInt(R.styleable.UizaOpenGLView_audioBitrate, 64 * 1024); //64 Kbps
+        audioBitrate = a.getInt(R.styleable.UizaOpenGLView_audioBitrate, 64) * 1024; //64 Kbps
         audioSampleRate = a.getInt(R.styleable.UizaOpenGLView_audioSampleRate, 32000); // 32 KHz
     }
 
@@ -393,7 +396,7 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
     }
 
     public void setAudioBitrate(int audioBitrate) {
-        this.audioBitrate = audioBitrate;
+        this.audioBitrate = audioBitrate * 1024;
     }
 
     public void setAudioSampleRate(int audioSampleRate) {

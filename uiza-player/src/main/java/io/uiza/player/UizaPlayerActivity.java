@@ -305,20 +305,15 @@ public class UizaPlayerActivity extends AppCompatActivity
         }
     }
 
-    // PlaybackControlView.PlaybackPreparer implementation
-
     @Override
     public void preparePlayback() {
         player.retry();
     }
 
-    // PlaybackControlView.VisibilityListener implementation
 
     @Override
     public void onVisibilityChange(int visibility) {
-
         UizaLog.e("Player", "visibility = " + visibility);
-
     }
 
     // Internal methods

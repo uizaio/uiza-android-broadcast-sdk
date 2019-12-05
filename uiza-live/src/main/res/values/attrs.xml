@@ -8,7 +8,6 @@
             <enum name="p1080" value="1080" />
         </attr>
         <attr name="fps" format="integer" />
-        <attr name="bitrate" format="integer" />
         <attr name="adaptiveBitrate" format="boolean" />
         <attr name="keyframe" format="integer" />
         <attr name="audioStereo" format="boolean"/>

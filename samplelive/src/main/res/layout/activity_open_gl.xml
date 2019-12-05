@@ -14,7 +14,10 @@
         app:audioStereo="true"
         app:fps="24"
         app:useCamera2="false"
-        app:videoSize="p720" />
+        app:videoSize="p720"
+        app:audioBitrate="64"
+        app:audioSampleRate="32000"
+        app:keyframe="2"/>
 
     <LinearLayout
         android:layout_width="match_parent"

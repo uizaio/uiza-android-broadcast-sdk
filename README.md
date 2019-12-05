@@ -77,7 +77,8 @@ Use [rtmp-rtsp-stream-client-java](https://github.com/pedroSG94/rtmp-rtsp-stream
 <uses-feature android:name="android.hardware.camera" android:required="false" />
 <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 ```
-- Require `minSDK 21 (android 5)`.
+
+- Support [camera1](https://developer.android.com/reference/android/hardware/Camera.html) and [camera2](https://developer.android.com/reference/android/hardware/camera2/package-summary.html) API
 - This library use [MediaCodec](https://developer.android.com/reference/android/media/MediaCodec.html) Android class to do hardware encoding.
 - Create a RTP packets of video and audio, encapsulate it in flv packets and send to server
 - Get audio data from microphone in PCM buffer and from [camera API2](https://developer.android.com/reference/android/hardware/camera2/package-summary.html) rendering a MediaCodec inputsurface.
@@ -86,9 +87,17 @@ Use [rtmp-rtsp-stream-client-java](https://github.com/pedroSG94/rtmp-rtsp-stream
 
 ```xml
 <io.uiza.live.UizaOpenGLView
-        android:id="@+id/uiza_open_glview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />        
+    android:id="@+id/uiza_open_glview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:adaptiveBitrate="false"
+    app:audioStereo="true"
+    app:fps="24"
+    app:useCamera2="false" // API < 21 always false
+    app:videoSize="p720" // p1080, p360
+    app:audioBitrate="64" // Kbps
+    app:audioSampleRate="32000" // KHz
+    app:keyframe="2"/>       
 ```
 
 ```java
