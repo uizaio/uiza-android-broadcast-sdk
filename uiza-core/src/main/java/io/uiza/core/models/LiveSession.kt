@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
-data class UizaLiveSession @JvmOverloads constructor(
+data class LiveSession @JvmOverloads constructor(
     @JvmField @SerializedName("id") var id: String,
     @JvmField @SerializedName("entity_id") var entityId: String,
     @JvmField @SerializedName("stream_key") var streamKey: String,
@@ -17,7 +17,7 @@ data class UizaLiveSession @JvmOverloads constructor(
     @JvmField @SerializedName("updated_at") var updateAt: Date? = null
 ) : Parcelable {
     override fun equals(other: Any?): Boolean {
-        if (other is UizaLiveEntity) {
+        if (other is LiveSession) {
             return other.id == this.id
         }
         return false
@@ -31,9 +31,3 @@ data class UizaLiveSession @JvmOverloads constructor(
         return (Gson().toJson(this))
     }
 }
-
-
-class ListSessionResponse @JvmOverloads constructor(
-    @JvmField @SerializedName("next_page_token") var nextPageToken: String? = null,
-    @JvmField @SerializedName("data") var sessions: List<UizaLiveSession>? = null
-)

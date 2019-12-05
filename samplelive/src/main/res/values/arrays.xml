@@ -1,23 +1,12 @@
 <resources>
-    <!-- Camera Preference -->
-    <string-array name="camera_entries">
-        <item>0 (Back)</item>
-        <item>1 (Front)</item>
-    </string-array>
-
-    <string-array name="camera_values">
-        <item>0</item>
-        <item>1</item>
-    </string-array>
-
     <!-- Video Size Preference -->
-    <string-array name="video_entries">
-        <item>1920x1080</item>
-        <item>1280x720</item>
-        <item>640x360</item>
+    <string-array name="profile_entries">
+        <item>1080p (2800 Kbps)</item>
+        <item>720p (1400 Kbps)</item>
+        <item>360p (600 Kbps)</item>
     </string-array>
 
-    <string-array name="video_values">
+    <string-array name="profile_values">
         <item>1080</item>
         <item>720</item>
         <item>360</item>
@@ -37,46 +26,14 @@
         <item>30</item>
     </string-array>
 
-
-    <string-array name="adaptive_bitrate_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
-    <string-array name="adaptive_bitrate_entries">
-        <item>Off</item>
-        <item>Logarithmic descend</item>
-        <item>Ladder ascend</item>
-    </string-array>
-
-    <!-- Bitrate Preference -->
-    <string-array name="format_entries">
-        <item>H.264</item>
-        <item>HEVC</item>
-    </string-array>
-
-    <string-array name="format_values">
-        <item>h264</item>
-        <item>hevc</item>
-    </string-array>
-
-    <!-- Audio Channel Preference -->
-    <string-array name="chanels">
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
     <!-- Bitrate Preference -->
     <string-array name="bitrate_entries">
-        <item>Auto</item>
         <item>96 Kbps</item>
         <item>128 Kbps</item>
         <item>160 Kbps</item>
     </string-array>
 
     <string-array name="bitrate_values">
-        <item>0</item>
         <item>96</item>
         <item>128</item>
         <item>160</item>
@@ -84,13 +41,20 @@
 
     <!-- Sample rate Preference -->
     <string-array name="sample_rates">
-        <item>8000</item>
-        <item>11025</item>
+        <item>12 KHz</item>
+        <item>16 KHz</item>
+        <item>22,05 KHz</item>
+        <item>24 KHz</item>
+        <item>32 KHz</item>
+        <item>44,1 KHz</item>
+        <item>48 KHz</item>
+    </string-array>
+    <string-array name="sample_rate_values">
         <item>12000</item>
         <item>16000</item>
         <item>22050</item>
         <item>24000</item>
-        <item>42000</item>
+        <item>32000</item>
         <item>44100</item>
         <item>48000</item>
     </string-array>

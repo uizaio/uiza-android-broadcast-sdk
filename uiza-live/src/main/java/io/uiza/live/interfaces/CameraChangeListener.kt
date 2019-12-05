@@ -1,5 +1,5 @@
 package io.uiza.live.interfaces
 
-interface CameraCallback{
+interface CameraChangeListener{
     fun onCameraChange(isFrontCamera: Boolean)
 }

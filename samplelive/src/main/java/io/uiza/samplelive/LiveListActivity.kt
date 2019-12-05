@@ -10,11 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.uiza.core.models.CreateEntityBody
-import io.uiza.core.models.DeleteEntityResponse
-import io.uiza.core.models.UizaLiveEntity
+import io.uiza.core.models.CreateLiveEntityBody
+import io.uiza.core.models.DeleteLiveEntityResponse
+import io.uiza.core.models.LiveEntity
 import io.uiza.core.utils.UizaLog
 import io.uiza.core.utils.execSubscribe
+import io.uiza.core.utils.getData
 import io.uiza.extensions.lauchActivity
 import io.uiza.extensions.setVertical
 import kotlinx.android.synthetic.main.activity_live_list.*
@@ -42,8 +43,8 @@ class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
         progress_bar.visibility = View.VISIBLE
         compositeDisposable.add(
             (application as SampleLiveApplication).liveService.getEntities()
-                .map { response -> response.entities?.filter { entity -> entity.needGetInfo() } }.execSubscribe(
-                    Consumer { entities: List<UizaLiveEntity>? ->
+                .getData().execSubscribe(
+                    Consumer { entities: List<LiveEntity>? ->
                         entities?.let {
                             adapter.setData(it)
                         }
@@ -121,7 +122,7 @@ class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
 
     private fun createLive(streamName: String) {
         progress_bar.visibility = View.VISIBLE
-        val body = CreateEntityBody(
+        val body = CreateLiveEntityBody(
             streamName,
             "Demo of $streamName",
             SampleLiveApplication.REGION,
@@ -130,7 +131,7 @@ class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
         )
         val obs =
             (application as SampleLiveApplication).liveService.createEntity(body)
-        obs.execSubscribe(Consumer { res: UizaLiveEntity ->
+        obs.execSubscribe(Consumer { res: LiveEntity ->
             lauchActivity<CheckLiveActivity> {
                 putExtra(CheckLiveActivity.EXTRA_ENTITY, res)
             }
@@ -143,7 +144,7 @@ class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
         currentEntityId?.let {
             val obs = (application as SampleLiveApplication).liveService.deleteEntity(it)
             obs.execSubscribe(
-                Consumer { res: DeleteEntityResponse ->
+                Consumer { res: DeleteLiveEntityResponse ->
                     res.id?.let { entityId ->
                         if (res.deleted == true) {
                             adapter.getItem(entityId)?.let { entity ->

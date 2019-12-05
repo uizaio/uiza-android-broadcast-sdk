@@ -19,26 +19,18 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:key="pref_camera"
-        app:title="@string/camera_title">
-
-        <ListPreference
-            app:defaultValue="0"
-            app:entries="@array/camera_entries"
-            app:entryValues="@array/camera_values"
-            app:iconSpaceReserved="false"
-            app:key="camera_key"
-            app:title="@string/camera_title"
-            app:useSimpleSummaryProvider="true" />
+        app:key="pref_video"
+        app:title="@string/video_title">
 
         <ListPreference
             app:defaultValue="360"
-            app:entries="@array/video_entries"
-            app:entryValues="@array/video_values"
+            app:entries="@array/profile_entries"
+            app:entryValues="@array/profile_values"
             app:iconSpaceReserved="false"
-            app:key="video_size_key"
-            app:title="@string/video_size_title"
+            app:key="camera_key"
+            app:title="@string/profile_title"
             app:useSimpleSummaryProvider="true" />
+
 
         <ListPreference
             app:defaultValue="24"
@@ -49,29 +41,6 @@
             app:title="@string/fps_title"
             app:useSimpleSummaryProvider="true" />
 
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:key="pref_encoder"
-        app:title="@string/encoder_title">
-
-        <EditTextPreference
-            app:defaultValue="24"
-            app:iconSpaceReserved="false"
-            app:key="bitrate_key"
-            app:title="@string/bitrate_title"
-            app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            app:defaultValue="0"
-            app:entries="@array/adaptive_bitrate_entries"
-            app:entryValues="@array/adaptive_bitrate_values"
-            app:iconSpaceReserved="false"
-            app:key="adaptive_bitrate_key"
-            app:title="@string/adaptive_bitrate_title"
-            app:useSimpleSummaryProvider="true" />
-
         <EditTextPreference
             app:defaultValue="24"
             app:iconSpaceReserved="false"
@@ -79,15 +48,14 @@
             app:title="@string/keyframe_title"
             app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="h264"
-            app:entries="@array/format_entries"
-            app:entryValues="@array/format_values"
+        <SwitchPreference
+            app:defaultValue="false"
             app:iconSpaceReserved="false"
-            app:key="format_key"
-            app:title="@string/format_title"
+            app:key="adaptive_bitrate_key"
+            app:summaryOff="Off adaptive video bitrate"
+            app:summaryOn="On adaptive video bitrate"
+            app:title="@string/adaptive_bitrate_title"
             app:useSimpleSummaryProvider="true" />
-
     </PreferenceCategory>
 
 
@@ -97,16 +65,7 @@
         app:title="@string/audio_title">
 
         <ListPreference
-            app:defaultValue="1"
-            app:entries="@array/chanels"
-            app:entryValues="@array/chanels"
-            app:iconSpaceReserved="false"
-            app:key="channel_key"
-            app:title="@string/channel_title"
-            app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            app:defaultValue="0"
+            app:defaultValue="96"
             app:entries="@array/bitrate_entries"
             app:entryValues="@array/bitrate_entries"
             app:iconSpaceReserved="false"
@@ -115,14 +74,22 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="24"
+            app:defaultValue="32000"
             app:entries="@array/sample_rates"
-            app:entryValues="@array/sample_rates"
+            app:entryValues="@array/sample_rate_values"
             app:iconSpaceReserved="false"
             app:key="sample_rate_key"
             app:title="@string/sample_rate_title"
             app:useSimpleSummaryProvider="true" />
 
+        <SwitchPreference
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="audio_stereo_key"
+            app:summaryOff="1 Channel"
+            app:summaryOn="2 Channel"
+            app:title="@string/stereo_title"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>

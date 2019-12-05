@@ -1,14 +1,14 @@
 package io.uiza.samplelive
 
 import android.view.View
-import io.uiza.core.models.UizaLiveEntity
+import io.uiza.core.models.LiveEntity
 import io.uiza.extensions.BaseAdapter
 import io.uiza.extensions.lauchActivity
 import kotlinx.android.synthetic.main.row_entity.view.*
 
 
-class EntityAdapter(var entities: List<UizaLiveEntity> = emptyList()) :
-    BaseAdapter<UizaLiveEntity>(
+class EntityAdapter(var entities: List<LiveEntity> = emptyList()) :
+    BaseAdapter<LiveEntity>(
         entities,
         R.layout.row_entity,
         emptyLayoutResId = R.layout.layout_empty
@@ -26,13 +26,13 @@ class EntityAdapter(var entities: List<UizaLiveEntity> = emptyList()) :
 
     }
 
-    fun getItem(id: String): UizaLiveEntity? {
+    fun getItem(id: String): LiveEntity? {
         return getData().firstOrNull { item -> item.id == id }
     }
 
-    override fun View.bind(item: UizaLiveEntity, position: Int) {
+    override fun View.bind(item: LiveEntity, position: Int) {
         title.text = item.name
-        description.text = item.description
+        description.text = item.status
         listener?.let { l ->
             action_button.setOnClickListener {
                 l.onMoreClick(it, item.id)

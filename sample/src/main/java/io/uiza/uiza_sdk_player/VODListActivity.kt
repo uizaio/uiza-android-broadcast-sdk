@@ -8,6 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import io.uiza.core.utils.UizaLog
 import io.uiza.core.utils.execSubscribe
+import io.uiza.core.utils.getData
 import io.uiza.extensions.setVertical
 import kotlinx.android.synthetic.main.activity_vod_list.*
 
@@ -27,7 +28,10 @@ class VODListActivity : AppCompatActivity() {
     private fun loadEntities() {
         progress_bar.visibility = View.VISIBLE
         compositeDisposable.add((application as SampleApplication).liveService.getEntities()
-            .map { response -> response.entities?.filter { entity -> !TextUtils.isEmpty(entity.playback?.getLinkPlay()) } }.execSubscribe(
+            .getData { entity ->
+                !TextUtils.isEmpty(entity.playback?.hls)
+            }
+            .execSubscribe(
                 Consumer { entities ->
                     entities?.let {
                         contentList.adapter =

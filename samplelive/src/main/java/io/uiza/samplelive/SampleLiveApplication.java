@@ -28,11 +28,7 @@ public class SampleLiveApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
 //        UizaPlayer.get().setServiceClazz(DemoDownloadService.class);
-        restClient = new UizaClient.Builder(DEV_HOST).builder();
-        restClient.addHeader("X-Customer-ID", "uiza");
-        restClient.addHeader("X-Customer-Custom-ID", "uiza");
-        restClient.addHeader("Authorization", APP_SECRET);
-        restClient.addHeader("Content-Type", "application/json");
+        restClient = new UizaClient.Builder(DEV_HOST).withToken(APP_SECRET).builder();
     }
 
     public UizaLiveV5Service getLiveService() {

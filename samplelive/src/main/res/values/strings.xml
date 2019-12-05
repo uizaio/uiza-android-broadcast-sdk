@@ -7,10 +7,8 @@
     <!-- Video Preferences -->
     <string name="video_title">Video</string>
 
-    <string name="camera_title">Camera</string>
-    <string name="video_size_title">Video size</string>
+    <string name="profile_title">Profile Encoder</string>
     <string name="fps_title">Fps</string>
-    <string name="encoder_title">Encoder</string>
     <string name="bitrate_title">Bitrate</string>
     <string name="adaptive_bitrate_title">Adaptive bitrate</string>
     <string name="keyframe_title">Keyframe frequency</string>
@@ -18,6 +16,6 @@
 
     <!-- Sync Preferences -->
     <string name="audio_title">Audio</string>
-    <string name="channel_title">Channel count</string>
+    <string name="stereo_title">Stereo</string>
     <string name="sample_rate_title">Sample rate</string>
 </resources>

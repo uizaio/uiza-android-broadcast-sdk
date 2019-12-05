@@ -11,6 +11,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import io.uiza.core.helpers.ThreadHelper
+import io.uiza.core.models.ListWrapper
 
 /**
  * Use {@link AndroidSchedulers.mainThread} and {@link Schedulers.newThread}
@@ -44,4 +45,11 @@ fun <T> Observable<T>.execSubscribe(
 }
 
 
+fun <T> Observable<ListWrapper<T>>.getData(filter: (T) -> Boolean): Observable<List<T>> {
+    return this.map { m -> m.data?.filter(filter) }
+}
+
+fun <T> Observable<ListWrapper<T>>.getData(): Observable<List<T>> {
+    return this.map { m -> m.data }
+}
 

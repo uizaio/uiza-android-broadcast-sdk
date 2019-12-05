@@ -138,7 +138,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //Stop listener for image, text and gif stream objects.
-        openGlView.setFilter(null);
+//        openGlView.setFilter(null);
         int itemId = item.getItemId();
         if (itemId == R.id.e_d_fxaa) {
             openGlView.enableAA(!openGlView.isAAEnabled());

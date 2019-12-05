@@ -23,6 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class UizaClient {
     private static final int CONNECT_TIMEOUT_TIME = 20;//20s
     private static final String AUTHORIZATION = "Authorization";
+    private static final String CONTENT_TYPE = "Content-Type";
     private static Retrofit retrofit;
     private static RestRequestInterceptor restRequestInterceptor;
 
@@ -38,8 +39,9 @@ public class UizaClient {
             this.baseApiUrl = baseApiUrl;
         }
 
-        public void withToken(String token) {
+        public Builder withToken(String token) {
             this.token = token;
+            return this;
         }
 
         /**
@@ -47,8 +49,9 @@ public class UizaClient {
          *
          * @param logLevel
          */
-        public void withLogLevel(HttpLoggingInterceptor.Level logLevel) {
+        public Builder withLogLevel(HttpLoggingInterceptor.Level logLevel) {
             this.logLevel = logLevel;
+            return this;
         }
 
         /**
@@ -66,8 +69,9 @@ public class UizaClient {
          *
          * @param retryOnConnectionFailure
          */
-        public void withRetryOnConnectionFailure(boolean retryOnConnectionFailure) {
+        public Builder withRetryOnConnectionFailure(boolean retryOnConnectionFailure) {
             this.retryOnConnectionFailure = retryOnConnectionFailure;
+            return this;
         }
 
         /**
@@ -75,8 +79,9 @@ public class UizaClient {
          *
          * @param compressedRequest
          */
-        public void withCompressedRequest(boolean compressedRequest) {
+        public Builder withCompressedRequest(boolean compressedRequest) {
             this.compressedRequest = compressedRequest;
+            return this;
         }
 
         public UizaClient builder() {
@@ -127,6 +132,7 @@ public class UizaClient {
         if (!TextUtils.isEmpty(token)) {
             addAuthorization(token);
         }
+        addHeader(CONTENT_TYPE, "application/json");
     }
 
     public <S> S createService(Class<S> serviceClass) {

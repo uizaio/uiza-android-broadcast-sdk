@@ -14,8 +14,8 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.widget.NestedScrollView;
 
 import io.reactivex.Observable;
-import io.uiza.core.models.CreateEntityBody;
-import io.uiza.core.models.UizaLiveEntity;
+import io.uiza.core.models.CreateLiveEntityBody;
+import io.uiza.core.models.LiveEntity;
 import io.uiza.core.utils.ObservableKt;
 import io.uiza.core.utils.StringKt;
 import io.uiza.core.utils.UizaLog;
@@ -28,7 +28,7 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
     TextView content;
     AppCompatButton liveBtn;
     ProgressBar progressBar;
-    UizaLiveEntity entity;
+    LiveEntity entity;
 
     Handler handler = new Handler();
 
@@ -100,8 +100,8 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
 
     private void createLive(String streamName) {
         progressBar.setVisibility(View.VISIBLE);
-        CreateEntityBody body = new CreateEntityBody(streamName, "Uiza Demo Live Stream", SampleLiveApplication.REGION, SampleLiveApplication.APP_ID, SampleLiveApplication.USER_ID);
-        Observable<UizaLiveEntity> obs = ((SampleLiveApplication) getApplication()).getLiveService().createEntity(body);
+        CreateLiveEntityBody body = new CreateLiveEntityBody(streamName, "Uiza Demo Live Stream", SampleLiveApplication.REGION, SampleLiveApplication.APP_ID, SampleLiveApplication.USER_ID);
+        Observable<LiveEntity> obs = ((SampleLiveApplication) getApplication()).getLiveService().createEntity(body);
         ObservableKt.execSubscribe(obs, res -> {
             entity = res;
             content.setText(StringKt.toPrettyFormat(res.toString()));
@@ -116,7 +116,7 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
 
     private void getEntity(String entityId) {
         progressBar.setVisibility(View.VISIBLE);
-        Observable<UizaLiveEntity> obs = ((SampleLiveApplication) getApplication()).getLiveService().getEntity(entityId);
+        Observable<LiveEntity> obs = ((SampleLiveApplication) getApplication()).getLiveService().getEntity(entityId);
         ObservableKt.execSubscribe(obs, ent -> {
             entity = ent;
             content.setText(StringKt.toPrettyFormat(ent.toString()));
