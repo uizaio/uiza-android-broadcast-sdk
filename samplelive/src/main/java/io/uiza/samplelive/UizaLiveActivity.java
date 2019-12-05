@@ -129,6 +129,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.gl_menu, menu);
@@ -346,7 +347,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
                 }
             } else {
                 startButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_play_circle_outline_white_48, null));
-                    openGlView.stopStream();
+                openGlView.stopStream();
             }
         } else if (id == R.id.switch_camera) {
             try {

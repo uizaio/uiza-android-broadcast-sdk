@@ -56,7 +56,11 @@ public class PreviewTimeBar extends DefaultTimeBar implements PreviewView,
 
         a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PreviewTimeBar, 0, 0);
         frameLayoutId = a.getResourceId(R.styleable.PreviewTimeBar_previewFrameLayout, View.NO_ID);
+    }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
         delegate = new PreviewDelegate(this, scrubberColor);
         delegate.setEnabled(isEnabled());
         addListener(this);

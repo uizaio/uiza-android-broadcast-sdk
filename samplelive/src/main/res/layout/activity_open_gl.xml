@@ -10,28 +10,11 @@
         android:id="@+id/uiza_open_glview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:audioStereo="true"
         app:adaptiveBitrate="false"
+        app:audioStereo="true"
         app:fps="24"
         app:useCamera2="true"
-        app:videoSize="p720"
-        />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp">
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            style="@style/UizaMediaLiveButton"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_settings_white_24"
-            android:tint="@android:color/white"
-            android:tintMode="src_in" />
-
-    </RelativeLayout>
+        app:videoSize="p720" />
 
     <LinearLayout
         android:layout_width="match_parent"

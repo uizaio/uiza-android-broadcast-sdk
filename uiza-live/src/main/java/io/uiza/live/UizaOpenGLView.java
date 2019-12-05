@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -16,9 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pedro.encoder.input.gl.SpriteGestureController;
 import com.pedro.encoder.input.gl.render.filters.BaseFilterRender;
-import com.pedro.encoder.input.gl.render.filters.object.BaseObjectFilterRender;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.rtplibrary.rtmp.RtmpCamera1;
 import com.pedro.rtplibrary.rtmp.RtmpCamera2;
@@ -34,10 +31,10 @@ import io.uiza.live.interfaces.ProfileEncode;
 import io.uiza.live.interfaces.UizaLiveListener;
 
 public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
-        SurfaceHolder.Callback, View.OnTouchListener {
+        SurfaceHolder.Callback {
 
     private ICameraHelper cameraHelper;
-    private SpriteGestureController spriteGestureController = new SpriteGestureController();
+//    private SpriteGestureController spriteGestureController = new SpriteGestureController();
     /**
      * ProfileEncoder default 360p
      */
@@ -117,8 +114,8 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
         keyframe = a.getInt(R.styleable.UizaOpenGLView_keyframe, 2);
         adaptiveBitrate = a.getBoolean(R.styleable.UizaOpenGLView_adaptiveBitrate, false);
         audioStereo = a.getBoolean(R.styleable.UizaOpenGLView_audioStereo, true);
-        audioBitrate = a.getInt(R.styleable.UizaOpenGLView_audioBitrate, 64 * 1024);
-        audioSampleRate = a.getInt(R.styleable.UizaOpenGLView_audioSampleRate, 32000);
+        audioBitrate = a.getInt(R.styleable.UizaOpenGLView_audioBitrate, 64 * 1024); //64 Kbps
+        audioSampleRate = a.getInt(R.styleable.UizaOpenGLView_audioSampleRate, 32000); // 32 KHz
     }
 
     /**
@@ -143,7 +140,7 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
             cameraHelper = new Camera1Helper(rtmpCamera1);
         }
         openGlView.getHolder().addCallback(this);
-        openGlView.setOnTouchListener(this);
+//        openGlView.setOnTouchListener(this);
     }
 
     public void setLiveListener(UizaLiveListener liveListener) {
@@ -222,14 +219,14 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
     public boolean isAAEnabled() {
         return cameraHelper.isAAEnabled();
     }
-
-    public void setBaseObjectFilterRender(BaseObjectFilterRender baseObjectFilterRender) {
-        spriteGestureController.setBaseObjectFilterRender(baseObjectFilterRender);
-    }
-
-    public void setPreventMoveOutside(boolean preventMoveOutside) {
-        spriteGestureController.setPreventMoveOutside(preventMoveOutside);
-    }
+//
+//    public void setBaseObjectFilterRender(BaseObjectFilterRender baseObjectFilterRender) {
+//        spriteGestureController.setBaseObjectFilterRender(baseObjectFilterRender);
+//    }
+//
+//    public void setPreventMoveOutside(boolean preventMoveOutside) {
+//        spriteGestureController.setPreventMoveOutside(preventMoveOutside);
+//    }
 
     public void setFilter(BaseFilterRender baseFilterRender) {
         cameraHelper.setFilter(baseFilterRender);
@@ -379,15 +376,15 @@ public class UizaOpenGLView extends FrameLayout implements ConnectCheckerRtmp,
 
     }
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (spriteGestureController.spriteTouched(v, event)) {
-            spriteGestureController.moveSprite(v, event);
-            spriteGestureController.scaleSprite(event);
-            return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onTouch(View v, MotionEvent event) {
+//        if (spriteGestureController.spriteTouched(v, event)) {
+//            spriteGestureController.moveSprite(v, event);
+//            spriteGestureController.scaleSprite(event);
+//            return true;
+//        }
+//        return false;
+//    }
 
     // SETTER
 
