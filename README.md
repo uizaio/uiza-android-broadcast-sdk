@@ -159,7 +159,7 @@ __Start stream__
 
 ```java
 if (uizaLiveView.prepareStream()) {
-	openGlView.startStream(liveStreamUrl);
+	uizaLiveView.startStream(liveStreamUrl);
 }
 ```
 
