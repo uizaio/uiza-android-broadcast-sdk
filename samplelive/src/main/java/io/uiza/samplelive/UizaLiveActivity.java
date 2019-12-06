@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import io.uiza.core.utils.UizaLog;
-import io.uiza.live.UizaOpenGLView;
+import io.uiza.live.UizaLiveView;
 import io.uiza.live.interfaces.FilterRender;
 import io.uiza.live.interfaces.Translate;
 import io.uiza.live.interfaces.UizaCameraOpenException;
@@ -45,15 +45,15 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
     private String currentDateAndTime = "";
     private File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
             + "/uiza-live");
-    private UizaOpenGLView openGlView;
+    private UizaLiveView liveView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_open_gl);
-        openGlView = findViewById(R.id.uiza_open_glview);
-        openGlView.setLiveListener(this);
+        liveView = findViewById(R.id.uiza_open_glview);
+        liveView.setLiveListener(this);
         startButton = findViewById(R.id.b_start_stop);
         startButton.setOnClickListener(this);
         startButton.setEnabled(false);
@@ -90,8 +90,11 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.gl_menu, menu);
-        return true;
+        if (liveView.supportFilter()) {
+            getMenuInflater().inflate(R.menu.gl_menu, menu);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -100,9 +103,9 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 //        openGlView.setFilter(null);
         int itemId = item.getItemId();
         if (itemId == R.id.e_d_fxaa) {
-            openGlView.enableAA(!openGlView.isAAEnabled());
+            liveView.enableAA(!liveView.isAAEnabled());
             Toast.makeText(this,
-                    "FXAA " + (openGlView.isAAEnabled() ? "enabled" : "disabled"),
+                    "FXAA " + (liveView.isAAEnabled() ? "enabled" : "disabled"),
                     Toast.LENGTH_SHORT).show();
             return true;
             //filters. NOTE: You can change filter values on fly without reset the filter.
@@ -111,144 +114,144 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
             // rtmpCamera2.setFilter(color);
             // color.setRGBColor(255, 0, 0); //red tint
         } else if (itemId == R.id.no_filter) {
-            openGlView.setFilter(FilterRender.None);
+            liveView.setFilter(FilterRender.None);
             return true;
         } else if (itemId == R.id.analog_tv) {
-            openGlView.setFilter(FilterRender.AnalogTV);
+            liveView.setFilter(FilterRender.AnalogTV);
             return true;
         } else if (itemId == R.id.android_view) {
 //            AndroidViewFilterRender androidViewFilterRender = new AndroidViewFilterRender();
 //            androidViewFilterRender.setView(findViewById(R.id.switch_camera));
-            openGlView.setFilter(FilterRender.AndroidView);
+            liveView.setFilter(FilterRender.AndroidView);
             return true;
         } else if (itemId == R.id.basic_deformation) {
-            openGlView.setFilter(FilterRender.BasicDeformation);
+            liveView.setFilter(FilterRender.BasicDeformation);
             return true;
         } else if (itemId == R.id.beauty) {
-            openGlView.setFilter(FilterRender.Beauty);
+            liveView.setFilter(FilterRender.Beauty);
             return true;
         } else if (itemId == R.id.black) {
-            openGlView.setFilter(FilterRender.Black);
+            liveView.setFilter(FilterRender.Black);
             return true;
         } else if (itemId == R.id.blur) {
-            openGlView.setFilter(FilterRender.Blur);
+            liveView.setFilter(FilterRender.Blur);
             return true;
         } else if (itemId == R.id.brightness) {
-            openGlView.setFilter(FilterRender.Brightness);
+            liveView.setFilter(FilterRender.Brightness);
             return true;
         } else if (itemId == R.id.cartoon) {
-            openGlView.setFilter(FilterRender.Cartoon);
+            liveView.setFilter(FilterRender.Cartoon);
             return true;
         } else if (itemId == R.id.circle) {
-            openGlView.setFilter(FilterRender.Circle);
+            liveView.setFilter(FilterRender.Circle);
             return true;
         } else if (itemId == R.id.color) {
-            openGlView.setFilter(FilterRender.Color);
+            liveView.setFilter(FilterRender.Color);
             return true;
         } else if (itemId == R.id.contrast) {
-            openGlView.setFilter(FilterRender.Contrast);
+            liveView.setFilter(FilterRender.Contrast);
             return true;
         } else if (itemId == R.id.duotone) {
-            openGlView.setFilter(FilterRender.Duotone);
+            liveView.setFilter(FilterRender.Duotone);
             return true;
         } else if (itemId == R.id.early_bird) {
-            openGlView.setFilter(FilterRender.EarlyBird);
+            liveView.setFilter(FilterRender.EarlyBird);
             return true;
         } else if (itemId == R.id.edge_detection) {
-            openGlView.setFilter(FilterRender.EdgeDetection);
+            liveView.setFilter(FilterRender.EdgeDetection);
             return true;
         } else if (itemId == R.id.exposure) {
-            openGlView.setFilter(FilterRender.Exposure);
+            liveView.setFilter(FilterRender.Exposure);
             return true;
         } else if (itemId == R.id.fire) {
-            openGlView.setFilter(FilterRender.Fire);
+            liveView.setFilter(FilterRender.Fire);
             return true;
         } else if (itemId == R.id.gamma) {
-            openGlView.setFilter(FilterRender.Gamma);
+            liveView.setFilter(FilterRender.Gamma);
             return true;
         } else if (itemId == R.id.glitch) {
-            openGlView.setFilter(FilterRender.Glitch);
+            liveView.setFilter(FilterRender.Glitch);
             return true;
         } else if (itemId == R.id.gif) {
             setGifToStream();
             return true;
         } else if (itemId == R.id.grey_scale) {
-            openGlView.setFilter(FilterRender.GreyScale);
+            liveView.setFilter(FilterRender.GreyScale);
             return true;
         } else if (itemId == R.id.halftone_lines) {
-            openGlView.setFilter(FilterRender.HalftoneLines);
+            liveView.setFilter(FilterRender.HalftoneLines);
             return true;
         } else if (itemId == R.id.image) {
             setImageToStream();
             return true;
         } else if (itemId == R.id.image_70s) {
-            openGlView.setFilter(FilterRender.Image70s);
+            liveView.setFilter(FilterRender.Image70s);
             return true;
         } else if (itemId == R.id.lamoish) {
-            openGlView.setFilter(FilterRender.Lamoish);
+            liveView.setFilter(FilterRender.Lamoish);
             return true;
         } else if (itemId == R.id.money) {
-            openGlView.setFilter(FilterRender.Money);
+            liveView.setFilter(FilterRender.Money);
             return true;
         } else if (itemId == R.id.negative) {
-            openGlView.setFilter(FilterRender.Negative);
+            liveView.setFilter(FilterRender.Negative);
             return true;
         } else if (itemId == R.id.pixelated) {
-            openGlView.setFilter(FilterRender.Pixelated);
+            liveView.setFilter(FilterRender.Pixelated);
             return true;
         } else if (itemId == R.id.polygonization) {
-            openGlView.setFilter(FilterRender.Polygonization);
+            liveView.setFilter(FilterRender.Polygonization);
             return true;
         } else if (itemId == R.id.rainbow) {
-            openGlView.setFilter(FilterRender.Rainbow);
+            liveView.setFilter(FilterRender.Rainbow);
             return true;
         } else if (itemId == R.id.rgb_saturate) {
             FilterRender rgbSaturation = FilterRender.RGBSaturation;
-            openGlView.setFilter(rgbSaturation);
+            liveView.setFilter(rgbSaturation);
             //Reduce green and blue colors 20%. Red will predominate.
             rgbSaturation.setRGBSaturation(1f, 0.8f, 0.8f);
             return true;
         } else if (itemId == R.id.ripple) {
-            openGlView.setFilter(FilterRender.Ripple);
+            liveView.setFilter(FilterRender.Ripple);
             return true;
         } else if (itemId == R.id.rotation) {
             FilterRender filterRender = FilterRender.Rotation;
-            openGlView.setFilter(filterRender);
+            liveView.setFilter(filterRender);
             filterRender.setRotation(90);
             return true;
         } else if (itemId == R.id.saturation) {
-            openGlView.setFilter(FilterRender.Saturation);
+            liveView.setFilter(FilterRender.Saturation);
             return true;
         } else if (itemId == R.id.sepia) {
-            openGlView.setFilter(FilterRender.Sepia);
+            liveView.setFilter(FilterRender.Sepia);
             return true;
         } else if (itemId == R.id.sharpness) {
-            openGlView.setFilter(FilterRender.Sharpness);
+            liveView.setFilter(FilterRender.Sharpness);
             return true;
         } else if (itemId == R.id.snow) {
-            openGlView.setFilter(FilterRender.Snow);
+            liveView.setFilter(FilterRender.Snow);
             return true;
         } else if (itemId == R.id.swirl) {
-            openGlView.setFilter(FilterRender.Swirl);
+            liveView.setFilter(FilterRender.Swirl);
             return true;
         } else if (itemId == R.id.surface_filter) {//You can render this filter with other api that draw in a surface. for example you can use VLC
             FilterRender surfaceFilterRender = FilterRender.Surface;
-            openGlView.setFilter(surfaceFilterRender);
+            liveView.setFilter(surfaceFilterRender);
             MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.big_bunny_240p);
             mediaPlayer.setSurface(surfaceFilterRender.getSurface());
             mediaPlayer.start();
             //Video is 360x240 so select a percent to keep aspect ratio (50% x 33.3% screen)
             surfaceFilterRender.setScale(50f, 33.3f);
-            openGlView.setFilter(surfaceFilterRender); //Optional
+            liveView.setFilter(surfaceFilterRender); //Optional
             return true;
         } else if (itemId == R.id.temperature) {
-            openGlView.setFilter(FilterRender.Temperature);
+            liveView.setFilter(FilterRender.Temperature);
             return true;
         } else if (itemId == R.id.text) {
             setTextToStream();
             return true;
         } else if (itemId == R.id.zebra) {
-            openGlView.setFilter(FilterRender.Zebra);
+            liveView.setFilter(FilterRender.Zebra);
             return true;
         }
         return false;
@@ -256,35 +259,35 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     private void setTextToStream() {
         FilterRender textObject = FilterRender.TextObject;
-        openGlView.setFilter(textObject);
+        liveView.setFilter(textObject);
         textObject.setText("Hello world", 22, Color.RED);
-        textObject.setDefaultScale(openGlView.getStreamWidth(),
-                openGlView.getStreamHeight());
+        textObject.setDefaultScale(liveView.getStreamWidth(),
+                liveView.getStreamHeight());
         textObject.setPosition(Translate.CENTER);
-        openGlView.setFilter(textObject); //Optional
+        liveView.setFilter(textObject); //Optional
     }
 
     private void setImageToStream() {
         FilterRender imageObjectFilterRender = FilterRender.ImageObject;
-        openGlView.setFilter(imageObjectFilterRender);
+        liveView.setFilter(imageObjectFilterRender);
         imageObjectFilterRender.setImage(
                 BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-        imageObjectFilterRender.setDefaultScale(openGlView.getStreamWidth(),
-                openGlView.getStreamHeight());
+        imageObjectFilterRender.setDefaultScale(liveView.getStreamWidth(),
+                liveView.getStreamHeight());
         imageObjectFilterRender.setPosition(Translate.RIGHT);
-        openGlView.setFilter(imageObjectFilterRender); //Optional
-//        openGlView.setPreventMoveOutside(false); //Optional
+        liveView.setFilter(imageObjectFilterRender); //Optional
+//        liveView.setPreventMoveOutside(false); //Optional
     }
 
     private void setGifToStream() {
         try {
             FilterRender gifObjectFilterRender = FilterRender.GifObject;
             gifObjectFilterRender.setGif(getResources().openRawResource(R.raw.banana));
-            openGlView.setFilter(gifObjectFilterRender);
-            gifObjectFilterRender.setDefaultScale(openGlView.getStreamWidth(),
-                    openGlView.getStreamHeight());
+            liveView.setFilter(gifObjectFilterRender);
+            gifObjectFilterRender.setDefaultScale(liveView.getStreamWidth(),
+                    liveView.getStreamHeight());
             gifObjectFilterRender.setPosition(Translate.BOTTOM);
-            openGlView.setFilter(gifObjectFilterRender); //Optional
+            liveView.setFilter(gifObjectFilterRender); //Optional
         } catch (IOException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -294,27 +297,27 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.b_start_stop) {
-            if (!openGlView.isStreaming()) {
-                if (openGlView.isRecording()
-                        || openGlView.prepareStream()) {
+            if (!liveView.isStreaming()) {
+                if (liveView.isRecording()
+                        || liveView.prepareStream()) {
                     startButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_white_48, null));
-                    openGlView.startStream(liveStreamUrl);
+                    liveView.startStream(liveStreamUrl);
                 } else {
                     Toast.makeText(this, "Error preparing stream, This device cant do it",
                             Toast.LENGTH_SHORT).show();
                 }
             } else {
                 startButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_play_circle_outline_white_48, null));
-                openGlView.stopStream();
+                liveView.stopStream();
             }
         } else if (id == R.id.switch_camera) {
             try {
-                openGlView.switchCamera();
+                liveView.switchCamera();
             } catch (UizaCameraOpenException e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         } else if (id == R.id.b_record) {
-            if (!openGlView.isRecording()) {
+            if (!liveView.isRecording()) {
                 try {
                     if (!folder.exists()) {
                         try {
@@ -326,9 +329,9 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
                     }
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                     currentDateAndTime = sdf.format(new Date());
-                    if (!openGlView.isStreaming()) {
-                        if (openGlView.prepareStream()) {
-                            openGlView.startRecord(
+                    if (!liveView.isStreaming()) {
+                        if (liveView.prepareStream()) {
+                            liveView.startRecord(
                                     folder.getAbsolutePath() + "/" + currentDateAndTime + ".mp4");
                             bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_white_24, null));
                             Toast.makeText(this, "Recording... ", Toast.LENGTH_SHORT).show();
@@ -337,17 +340,17 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
                                     Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        openGlView.startRecord(folder.getAbsolutePath() + "/" + currentDateAndTime + ".mp4");
+                        liveView.startRecord(folder.getAbsolutePath() + "/" + currentDateAndTime + ".mp4");
                         bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_white_24, null));
                         Toast.makeText(this, "Recording... ", Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
-                    openGlView.stopRecord();
+                    liveView.stopRecord();
                     bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_white_24, null));
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             } else {
-                openGlView.stopRecord();
+                liveView.stopRecord();
                 bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_white_24, null));
                 Toast.makeText(this,
                         "file " + currentDateAndTime + ".mp4 saved in " + folder.getAbsolutePath(),
@@ -374,7 +377,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public void onNewBitrate(long bitrate) {
-        UizaLog.e("UizaOpenGLView", "newBitrate: " + bitrate);
+        UizaLog.e("UizaliveView", "newBitrate: " + bitrate);
     }
 
     @Override

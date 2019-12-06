@@ -79,6 +79,7 @@ Use [rtmp-rtsp-stream-client-java](https://github.com/pedroSG94/rtmp-rtsp-stream
 ```
 
 - Support [camera1](https://developer.android.com/reference/android/hardware/Camera.html) and [camera2](https://developer.android.com/reference/android/hardware/camera2/package-summary.html) API
+- Support [SurfaceView](https://developer.android.com/reference/android/view/SurfaceView), [TextureView](https://developer.android.com/reference/android/view/TextureView), OpenGLView and LightOpenGLView
 - This library use [MediaCodec](https://developer.android.com/reference/android/media/MediaCodec.html) Android class to do hardware encoding.
 - Create a RTP packets of video and audio, encapsulate it in flv packets and send to server
 - Get audio data from microphone in PCM buffer and from [camera API2](https://developer.android.com/reference/android/hardware/camera2/package-summary.html) rendering a MediaCodec inputsurface.
@@ -86,26 +87,27 @@ Use [rtmp-rtsp-stream-client-java](https://github.com/pedroSG94/rtmp-rtsp-stream
 ### Implement
 
 ```xml
-<io.uiza.live.UizaOpenGLView
-    android:id="@+id/uiza_open_glview"
+<io.uiza.live.UizaLiveView
+    android:id="@+id/uiza_live_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:viewType="surfaceView" // textureView, lightOpenGLView and default openGLView
     app:adaptiveBitrate="false"
     app:audioStereo="true"
     app:fps="24"
-    app:useCamera2="false" // API < 21 always false
+    app:useCamera2="true" // API < 21 always false
     app:videoSize="p720" // p1080, p360
     app:audioBitrate="64" // Kbps
-    app:audioSampleRate="32000" // KHz
+    app:audioSampleRate="32000" // Hz
     app:keyframe="2"/>       
 ```
 
 ```java
-openGlView = findViewById(R.id.uiza_open_glview);
+uizaLiveView = findViewById(uiza_live_view);
 ```
 
 ```java
-  openGlView.setLiveListener(new UizaLiveListener() {
+  uizaLiveView.setLiveListener(new UizaLiveListener() {
         @Override
         public void onConnectionSuccess() {
             
@@ -156,7 +158,7 @@ openGlView = findViewById(R.id.uiza_open_glview);
 __Start stream__
 
 ```java
-if (openGlView.prepareStream()) {
+if (uizaLiveView.prepareStream()) {
 	openGlView.startStream(liveStreamUrl);
 }
 ```
@@ -164,7 +166,7 @@ if (openGlView.prepareStream()) {
 __Stop stream__
 
 ```java
-openGlView.stopStream();
+uizaLiveView.stopStream();
 ```
 
 __Switch camera__
@@ -172,25 +174,25 @@ __Switch camera__
 
 ```java
 try {
-    openGlView.switchCamera();
-} catch (CameraOpenException e) { }
+    uizaLiveView.switchCamera();
+} catch (UizaCameraOpenException e) { }
 ```
 
 
 __Record__
 
 ```java
-openGlView.startRecord(<file_name>);
+uizaLiveView.startRecord(<file_name>);
 ```
 
 __Stop record__
 
 ```java
-openGlView.stopRecord();
+uizaLiveView.stopRecord();
 ```
 
 __Set Filter__
 
 ```java
-openGlView.setFilter(new BeautyFilterRender());
+uizaLiveView.setFilter(FilterRender.Beauty);
 ```

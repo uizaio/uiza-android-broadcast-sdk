@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <io.uiza.live.UizaOpenGLView
+    <io.uiza.live.UizaLiveView
         android:id="@+id/uiza_open_glview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:viewType="surfaceView"
         app:adaptiveBitrate="false"
         app:audioStereo="true"
         app:fps="24"

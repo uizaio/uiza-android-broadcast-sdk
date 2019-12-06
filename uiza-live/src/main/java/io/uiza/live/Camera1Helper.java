@@ -31,6 +31,12 @@ public class Camera1Helper implements ICameraHelper {
         this.rtmpCamera1 = camera;
     }
 
+
+    @Override
+    public void setConnectReTries(int reTries) {
+        rtmpCamera1.setReTries(reTries);
+    }
+
     @Override
     public void reTry(long delay) {
         rtmpCamera1.reTry(delay);
@@ -46,6 +52,14 @@ public class Camera1Helper implements ICameraHelper {
         this.cameraChangeListener = cameraChangeListener;
     }
 
+    @Override
+    public boolean supportFilter() {
+        try {
+            return rtmpCamera1.getGlInterface() != null;
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
 
     @Override
     public void setFilter(@NotNull BaseFilterRender filterReader) {
@@ -78,6 +92,21 @@ public class Camera1Helper implements ICameraHelper {
     }
 
     @Override
+    public void enableAudio() {
+        rtmpCamera1.enableAudio();
+    }
+
+    @Override
+    public void disableAudio() {
+        rtmpCamera1.disableAudio();
+    }
+
+    @Override
+    public boolean isAudioMuted() {
+        return rtmpCamera1.isAudioMuted();
+    }
+
+    @Override
     public boolean prepareAudio() {
         return rtmpCamera1.prepareAudio();
     }
@@ -85,6 +114,11 @@ public class Camera1Helper implements ICameraHelper {
     @Override
     public boolean prepareAudio(int bitrate, int sampleRate, boolean isStereo) {
         return rtmpCamera1.prepareAudio(bitrate, sampleRate, isStereo, AcousticEchoCanceler.isAvailable(), NoiseSuppressor.isAvailable());
+    }
+
+    @Override
+    public boolean isVideoEnabled() {
+        return rtmpCamera1.isVideoEnabled();
     }
 
     @Override
@@ -140,7 +174,7 @@ public class Camera1Helper implements ICameraHelper {
 
     @Override
     public void startPreview(@NotNull CameraHelper.Facing cameraFacing) {
-        rtmpCamera1.startPreview(cameraFacing);
+        rtmpCamera1.startPreview(cameraFacing, 480, 640);
     }
 
     @Override
@@ -170,5 +204,25 @@ public class Camera1Helper implements ICameraHelper {
         rtmpCamera1.startPreview();
     }
 
+
+    @Override
+    public boolean isLanternSupported() {
+        return false;
+    }
+
+    @Override
+    public void enableLantern() throws Exception {
+        rtmpCamera1.enableLantern();
+    }
+
+    @Override
+    public void disableLantern() {
+        rtmpCamera1.disableLantern();
+    }
+
+    @Override
+    public boolean isLanternEnabled() {
+        return rtmpCamera1.isLanternEnabled();
+    }
 
 }

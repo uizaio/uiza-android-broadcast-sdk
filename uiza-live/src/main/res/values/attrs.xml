@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="UizaOpenGLView">
+    <declare-styleable name="UizaLiveView">
         <attr name="viewType" format="enum">
-            <enum name="SurfaceView" value="0" />
-            <enum name="OpenGL" value="1" />
+            <enum name="surfaceView" value="0" />
+            <enum name="textureView" value="1" />
+            <enum name="openGlView" value="2" />
+            <enum name="lightOpenGlView" value="3" />
         </attr>
         <attr name="useCamera2" format="boolean" />
         <attr name="videoSize" format="enum">

@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
+import io.uiza.core.utils.UizaLog;
 import io.uiza.live.interfaces.CameraChangeListener;
 import io.uiza.live.interfaces.ICameraHelper;
 import io.uiza.live.interfaces.ProfileEncode;
@@ -35,6 +36,11 @@ public class Camera2Helper implements ICameraHelper {
     }
 
     @Override
+    public void setConnectReTries(int reTries) {
+        rtmpCamera2.setReTries(reTries);
+    }
+
+    @Override
     public void reTry(long delay) {
         rtmpCamera2.reTry(delay);
     }
@@ -42,6 +48,15 @@ public class Camera2Helper implements ICameraHelper {
     @Override
     public boolean shouldRetry(@NotNull String reason) {
         return rtmpCamera2.shouldRetry(reason);
+    }
+
+    @Override
+    public boolean supportFilter() {
+        try {
+            return rtmpCamera2.getGlInterface() != null;
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     @Override
@@ -89,8 +104,28 @@ public class Camera2Helper implements ICameraHelper {
     }
 
     @Override
+    public void enableAudio() {
+        rtmpCamera2.enableAudio();
+    }
+
+    @Override
+    public void disableAudio() {
+        rtmpCamera2.disableAudio();
+    }
+
+    @Override
+    public boolean isAudioMuted() {
+        return rtmpCamera2.isAudioMuted();
+    }
+
+    @Override
     public boolean prepareAudio(int bitrate, int sampleRate, boolean isStereo) {
         return rtmpCamera2.prepareAudio(bitrate, sampleRate, isStereo, AcousticEchoCanceler.isAvailable(), NoiseSuppressor.isAvailable());
+    }
+
+    @Override
+    public boolean isVideoEnabled() {
+        return rtmpCamera2.isVideoEnabled();
     }
 
     @Override
@@ -100,7 +135,13 @@ public class Camera2Helper implements ICameraHelper {
 
     @Override
     public boolean prepareVideo(@NotNull ProfileEncode profile, int fps, int iFrameInterval, int rotation) {
-        return rtmpCamera2.prepareVideo(profile.getWidth(), profile.getHeight(), fps, profile.getBitrate(), false, iFrameInterval, rotation);
+        UizaLog.e("Camera2Helper", "rotation = " + rotation);
+        if (supportFilter()) {
+            return rtmpCamera2.prepareVideo(profile.getWidth(), profile.getHeight(), fps, profile.getBitrate(), false, iFrameInterval, rotation);
+        } else {
+            return rtmpCamera2.prepareVideo(profile.getHeight(), profile.getWidth(), fps, profile.getBitrate(), false, iFrameInterval, rotation);
+        }
+
     }
 
     @Override
@@ -168,5 +209,25 @@ public class Camera2Helper implements ICameraHelper {
     @Override
     public void setCameraChangeListener(@NonNull CameraChangeListener cameraChangeListener) {
         this.cameraChangeListener = cameraChangeListener;
+    }
+
+    @Override
+    public boolean isLanternSupported() {
+        return rtmpCamera2.isLanternSupported();
+    }
+
+    @Override
+    public void enableLantern() throws Exception {
+        rtmpCamera2.enableLantern();
+    }
+
+    @Override
+    public void disableLantern() {
+        rtmpCamera2.disableLantern();
+    }
+
+    @Override
+    public boolean isLanternEnabled() {
+        return rtmpCamera2.isLanternEnabled();
     }
 }

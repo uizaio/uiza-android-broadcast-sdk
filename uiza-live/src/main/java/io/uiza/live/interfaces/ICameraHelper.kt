@@ -8,7 +8,18 @@ import java.io.IOException
 
 interface ICameraHelper {
 
+    /**
+     * @param reTries
+     * retry connect reTries times
+     */
+    fun setConnectReTries(reTries: Int)
+
     fun setCameraChangeListener(cameraChangeListener: CameraChangeListener)
+
+    /**
+     * Check support Filter
+     */
+    fun supportFilter(): Boolean
 
     /**
      * Set filter in position 0.
@@ -46,6 +57,25 @@ interface ICameraHelper {
     fun getStreamHeight(): Int
 
     /**
+     * Enable a muted microphone, can be called before, while and after stream.
+     */
+    fun enableAudio()
+
+
+    /**
+     * Mute microphone, can be called before, while and after stream.
+     */
+
+    fun disableAudio()
+
+    /**
+     * Get mute state of microphone.
+     *
+     * @return true if muted, false if enabled
+     */
+    fun isAudioMuted(): Boolean
+
+    /**
      * Same to call: prepareAudio(64 * 1024, 32000, true, false, false);
      *
      * @return true if success, false if you get a error (Normally because the encoder selected
@@ -64,6 +94,13 @@ interface ICameraHelper {
      * doesn't support any configuration seated or your device hasn't a AAC encoder).
      */
     fun prepareAudio(bitrate: Int, sampleRate: Int, isStereo: Boolean): Boolean
+
+    /**
+     * Get video camera state
+     *
+     * @return true if disabled, false if enabled
+     */
+    fun isVideoEnabled(): Boolean
 
     /**
      * Use profle
@@ -167,4 +204,24 @@ interface ICameraHelper {
     fun shouldRetry(reason: String): Boolean
 
     fun reTry(delay: Long)
+
+    /**
+     * Check support Flashlight
+     * if use Camera1 always return false
+     * @return true if support, false if not support.
+     */
+    fun isLanternSupported(): Boolean
+
+    /**
+     * @required: <uses-permission android:name="android.permission.FLASHLIGHT"/>
+     */
+    @Throws(Exception::class)
+    fun enableLantern()
+
+    /**
+     * @required: <uses-permission android:name="android.permission.FLASHLIGHT"/>
+     */
+    fun disableLantern()
+
+    fun isLanternEnabled(): Boolean
 }
