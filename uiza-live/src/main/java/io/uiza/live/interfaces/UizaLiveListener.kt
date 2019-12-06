@@ -4,6 +4,7 @@ interface UizaLiveListener {
     fun onInit(success: Boolean)
     fun onConnectionSuccess()
     fun onConnectionFailed(reason: String?)
+    fun onRetryConnection(delay: Long)
     fun onNewBitrate(bitrate: Long)
     fun onDisconnect()
     fun onAuthError()
@@ -13,5 +14,6 @@ interface UizaLiveListener {
         format: Int, width: Int,
         height: Int
     )
+
     fun surfaceDestroyed()
 }

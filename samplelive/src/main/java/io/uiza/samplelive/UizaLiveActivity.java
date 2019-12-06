@@ -363,6 +363,12 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
     }
 
     @Override
+    public void onRetryConnection(long delay) {
+        Toast.makeText(UizaLiveActivity.this, "Retry " + delay / 1000 + " s", Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    @Override
     public void onConnectionFailed(@Nullable final String reason) {
         Toast.makeText(UizaLiveActivity.this, "Connection failed. " + reason, Toast.LENGTH_SHORT)
                 .show();

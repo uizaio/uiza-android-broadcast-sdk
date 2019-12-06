@@ -23,7 +23,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -500,9 +499,10 @@ public class UizaLiveView extends RelativeLayout {
                 @Override
                 public void run() {
                     if (cameraHelper.shouldRetry(reason)) {
-                        Toast.makeText(getContext(), "Retry", Toast.LENGTH_SHORT)
-                                .show();
-                        cameraHelper.reTry(5000);  //Wait 5s and retry connect stream
+                        cameraHelper.reTry(5000); //Wait 5s and retry connect stream
+                        if (liveListener != null) {
+                            liveListener.onRetryConnection(5000);
+                        }
                     } else {
                         cameraHelper.stopStream();
                         progressBar.setVisibility(View.GONE);
