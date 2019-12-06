@@ -65,7 +65,7 @@
         app:title="@string/audio_title">
 
         <ListPreference
-            app:defaultValue="96"
+            app:defaultValue="64"
             app:entries="@array/bitrate_entries"
             app:entryValues="@array/bitrate_entries"
             app:iconSpaceReserved="false"

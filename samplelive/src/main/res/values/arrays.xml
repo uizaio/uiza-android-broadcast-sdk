@@ -28,12 +28,14 @@
 
     <!-- Bitrate Preference -->
     <string-array name="bitrate_entries">
+        <item>64 Kbps</item>
         <item>96 Kbps</item>
         <item>128 Kbps</item>
         <item>160 Kbps</item>
     </string-array>
 
     <string-array name="bitrate_values">
+        <item>64</item>
         <item>96</item>
         <item>128</item>
         <item>160</item>
