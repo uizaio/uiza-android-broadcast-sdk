@@ -10,15 +10,15 @@
         android:id="@+id/uiza_open_glview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:viewType="openGlView"
         app:adaptiveBitrate="false"
-        app:audioStereo="true"
-        app:fps="24"
-        app:useCamera2="true"
-        app:videoSize="p720"
         app:audioBitrate="64"
         app:audioSampleRate="32000"
-        app:keyframe="2"/>
+        app:audioStereo="true"
+        app:fps="24"
+        app:keyframe="2"
+        app:useCamera2="true"
+        app:videoSize="p720"
+        app:viewType="openGlView" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,24 +29,28 @@
         android:orientation="horizontal">
 
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <io.uiza.samplelive.UizaMediaButton
             android:id="@+id/b_record"
             style="@style/UizaMediaLiveButton.Record"
             android:layout_marginEnd="5dp"
             android:tint="@android:color/holo_red_light"
-            android:tintMode="src_in" />
+            android:tintMode="src_in"
+            app:srcActive="@drawable/ic_stop_white_24"
+            app:srcInactive="@drawable/ic_record_white_24" />
 
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <androidx.appcompat.widget.AppCompatImageButton
+            <io.uiza.samplelive.UizaMediaButton
                 android:id="@+id/b_start_stop"
                 style="@style/UizaMediaLiveButton.Start"
                 android:layout_centerInParent="true"
                 android:layout_marginEnd="5dp"
-                android:tintMode="src_in" />
+                android:tintMode="src_in"
+                app:srcActive="@drawable/ic_stop_live"
+                app:srcInactive="@drawable/ic_start_live" />
         </RelativeLayout>
 
         <androidx.appcompat.widget.AppCompatImageButton

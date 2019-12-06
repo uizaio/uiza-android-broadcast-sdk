@@ -125,24 +125,37 @@ public class UizaLiveView extends RelativeLayout {
      * Node: Don't call inflate in this method
      */
     private void initView(AttributeSet attrs, int defStyleAttr) {
-        TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.UizaLiveView, defStyleAttr, 0);
-        boolean hasLollipop = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-        viewType = a.getInt(R.styleable.UizaLiveView_viewType, 2);
-        useCamera2 = a.getBoolean(R.styleable.UizaLiveView_useCamera2, hasLollipop) && hasLollipop;
-        int res = a.getInt(R.styleable.UizaLiveView_videoSize, 360);
-        if (res == 1080) {
-            profile = ProfileEncode.P1080;
-        } else if (res == 720) {
-            profile = ProfileEncode.P720;
+        if (attrs != null) {
+            TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.UizaLiveView, defStyleAttr, 0);
+            boolean hasLollipop = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+            viewType = a.getInt(R.styleable.UizaLiveView_viewType, OPENGL);
+            useCamera2 = a.getBoolean(R.styleable.UizaLiveView_useCamera2, hasLollipop) && hasLollipop;
+            int res = a.getInt(R.styleable.UizaLiveView_videoSize, 360);
+            if (res == 1080) {
+                profile = ProfileEncode.P1080;
+            } else if (res == 720) {
+                profile = ProfileEncode.P720;
+            } else {
+                profile = ProfileEncode.P360;
+            }
+            fps = a.getInt(R.styleable.UizaLiveView_fps, 24);
+            keyframe = a.getInt(R.styleable.UizaLiveView_keyframe, 2);
+            adaptiveBitrate = a.getBoolean(R.styleable.UizaLiveView_adaptiveBitrate, false);
+            audioStereo = a.getBoolean(R.styleable.UizaLiveView_audioStereo, true);
+            audioBitrate = a.getInt(R.styleable.UizaLiveView_audioBitrate, 64) * 1024; //64 Kbps
+            audioSampleRate = a.getInt(R.styleable.UizaLiveView_audioSampleRate, 32000); // 32 KHz
         } else {
+            boolean hasLollipop = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+            viewType = OPENGL;
+            useCamera2 = hasLollipop;
             profile = ProfileEncode.P360;
+            fps = 24;
+            keyframe = 2;
+            adaptiveBitrate = false;
+            audioStereo = true;
+            audioBitrate = 64 * 1024; //64 Kbps
+            audioSampleRate = 32000; // 32 KHz
         }
-        fps = a.getInt(R.styleable.UizaLiveView_fps, 24);
-        keyframe = a.getInt(R.styleable.UizaLiveView_keyframe, 2);
-        adaptiveBitrate = a.getBoolean(R.styleable.UizaLiveView_adaptiveBitrate, false);
-        audioStereo = a.getBoolean(R.styleable.UizaLiveView_audioStereo, true);
-        audioBitrate = a.getInt(R.styleable.UizaLiveView_audioBitrate, 64) * 1024; //64 Kbps
-        audioSampleRate = a.getInt(R.styleable.UizaLiveView_audioSampleRate, 32000); // 32 KHz
     }
 
     @Override
@@ -501,6 +514,7 @@ public class UizaLiveView extends RelativeLayout {
                     if (cameraHelper.shouldRetry(reason)) {
                         cameraHelper.reTry(5000); //Wait 5s and retry connect stream
                         if (liveListener != null) {
+
                             liveListener.onRetryConnection(5000);
                         }
                     } else {

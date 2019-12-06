@@ -18,12 +18,12 @@
     </style>
 
     <style name="UizaMediaLiveButton.Start">
-        <item name="android:src">@drawable/ic_play_circle_outline_white_48</item>
+        <item name="android:src">@drawable/ic_start_live</item>
         <item name="android:contentDescription">@string/live_controls_start_live_description</item>
     </style>
 
     <style name="UizaMediaLiveButton.Stop">
-        <item name="android:src">@drawable/ic_stop_white_48</item>
+        <item name="android:src">@drawable/ic_stop_white_24</item>
         <item name="android:contentDescription">@string/live_controls_stop_live_description</item>
     </style>
 </resources>

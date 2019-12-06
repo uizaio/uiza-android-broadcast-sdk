@@ -43,8 +43,8 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     private static final String TAG = "UizaLiveActivity";
     private static final String RECORD_FOLDER = "uiza-live";
-    private AppCompatImageButton startButton;
-    private AppCompatImageButton bRecord;
+    private UizaMediaButton startButton;
+    private UizaMediaButton bRecord;
 
     private String liveStreamUrl;
     private String currentDateAndTime = "";
@@ -329,14 +329,12 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
             if (!liveView.isStreaming()) {
                 if (liveView.isRecording()
                         || liveView.prepareStream()) {
-                    startButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_white_48, null));
                     liveView.startStream(liveStreamUrl);
                 } else {
                     Toast.makeText(this, "Error preparing stream, This device cant do it",
                             Toast.LENGTH_SHORT).show();
                 }
             } else {
-                startButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_play_circle_outline_white_48, null));
                 liveView.stopStream();
             }
         } else if (id == R.id.switch_camera) {
@@ -363,6 +361,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public void onConnectionSuccess() {
+        startButton.setChecked(true);
         Toast.makeText(UizaLiveActivity.this, "Connection success", Toast.LENGTH_SHORT).show();
     }
 
@@ -385,7 +384,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public void onDisconnect() {
-        startButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_play_circle_outline_white_48, null));
+        startButton.setChecked(false);
         Toast.makeText(UizaLiveActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
     }
 
@@ -422,11 +421,11 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public void onStatusChange(RecordStatus status) {
+        bRecord.setChecked(status == RecordStatus.RECORDING);
+        
         if (status == RecordStatus.RECORDING) {
-            bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_white_24, null));
             Toast.makeText(this, "Recording... ", Toast.LENGTH_SHORT).show();
         } else if (status == RecordStatus.STOPPED) {
-            bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_white_24, null));
             currentDateAndTime = "";
             Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
         } else {
