@@ -283,10 +283,20 @@ public class UizaLiveView extends RelativeLayout {
         this.liveListener = liveListener;
     }
 
+    /**
+     * you must call in onInit()
+     *
+     * @param cameraChangeListener
+     */
     public void setCameraChangeListener(CameraChangeListener cameraChangeListener) {
         cameraHelper.setCameraChangeListener(cameraChangeListener);
     }
 
+    /**
+     * you must call in oInit()
+     *
+     * @param recordListener
+     */
     public void setRecordListener(RecordListener recordListener) {
         cameraHelper.setRecordListener(recordListener);
     }
@@ -436,7 +446,6 @@ public class UizaLiveView extends RelativeLayout {
             } else {
                 cameraHelper.startPreview(CameraHelper.Facing.FRONT);
             }
-//            updateUISurfaceView(width, height);
             if (liveListener != null) {
                 liveListener.surfaceChanged(format, width, height);
             }
@@ -534,9 +543,16 @@ public class UizaLiveView extends RelativeLayout {
 
         @Override
         public void onAuthErrorRtmp() {
-            if (liveListener != null) {
-                liveListener.onAuthError();
-            }
+            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                    invalidate();
+                    requestLayout();
+                    if (liveListener != null)
+                        liveListener.onAuthError();
+                }
+            });
         }
 
         @Override
@@ -547,12 +563,10 @@ public class UizaLiveView extends RelativeLayout {
                     progressBar.setVisibility(View.GONE);
                     invalidate();
                     requestLayout();
-                    if (liveListener != null) {
+                    if (liveListener != null)
                         liveListener.onAuthSuccess();
-                    }
                 }
             });
-
         }
     };
 

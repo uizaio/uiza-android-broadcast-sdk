@@ -57,8 +57,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
         setContentView(R.layout.activity_live_stream);
         liveView = findViewById(R.id.uiza_open_glview);
         liveView.setLiveListener(this);
-        liveView.setCameraChangeListener(this::onCameraChange);
-        liveView.setRecordListener(this::onStatusChange);
+
         startButton = findViewById(R.id.b_start_stop);
         startButton.setOnClickListener(this);
         startButton.setEnabled(false);
@@ -354,21 +353,19 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
     @Override
     public void onInit(boolean success) {
         startButton.setEnabled(success);
+        liveView.setCameraChangeListener(this::onCameraChange);
+        liveView.setRecordListener(this::onStatusChange);
     }
 
     @Override
     public void onConnectionSuccess() {
-        runOnUiThread(() -> {
-            Toast.makeText(UizaLiveActivity.this, "Connection success", Toast.LENGTH_SHORT).show();
-        });
+        Toast.makeText(UizaLiveActivity.this, "Connection success", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onConnectionFailed(@Nullable final String reason) {
-        runOnUiThread(() -> {
-            Toast.makeText(UizaLiveActivity.this, "Connection failed. " + reason, Toast.LENGTH_SHORT)
-                    .show();
-        });
+        Toast.makeText(UizaLiveActivity.this, "Connection failed. " + reason, Toast.LENGTH_SHORT)
+                .show();
     }
 
     @Override
@@ -378,23 +375,19 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public void onDisconnect() {
-        runOnUiThread(() -> {
-            startButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_play_circle_outline_white_48, null));
-            Toast.makeText(UizaLiveActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
-        });
+        startButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_play_circle_outline_white_48, null));
+        Toast.makeText(UizaLiveActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onAuthError() {
-        runOnUiThread(() -> Toast.makeText(UizaLiveActivity.this, "Auth error", Toast.LENGTH_SHORT).show());
+        Toast.makeText(UizaLiveActivity.this, "Auth error", Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onAuthSuccess() {
-        runOnUiThread(() -> {
-            Toast.makeText(UizaLiveActivity.this, "Auth success", Toast.LENGTH_SHORT).show();
-        });
+        Toast.makeText(UizaLiveActivity.this, "Auth success", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -420,16 +413,14 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
     @Override
     public void onStatusChange(RecordStatus status) {
         if (status == RecordStatus.RECORDING) {
-            runOnUiThread(() -> {
-                bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_white_24, null));
-                Toast.makeText(this, "Recording... ", Toast.LENGTH_SHORT).show();
-            });
+            bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_white_24, null));
+            Toast.makeText(this, "Recording... ", Toast.LENGTH_SHORT).show();
         } else if (status == RecordStatus.STOPPED) {
             bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_white_24, null));
             currentDateAndTime = "";
             Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
         } else {
-            runOnUiThread(() -> Toast.makeText(UizaLiveActivity.this, "Record " + status.toString(), Toast.LENGTH_SHORT).show());
+            Toast.makeText(UizaLiveActivity.this, "Record " + status.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 }
