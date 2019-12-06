@@ -71,6 +71,8 @@ Use [rtmp-rtsp-stream-client-java](https://github.com/pedroSG94/rtmp-rtsp-stream
 
 ### Permissions
 
+This library require this permissions in your AndroidManifest.xml:
+
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -80,12 +82,21 @@ Use [rtmp-rtsp-stream-client-java](https://github.com/pedroSG94/rtmp-rtsp-stream
 <uses-feature android:name="android.hardware.camera" android:required="false" />
 <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 ```
+Remember that you need get runtime permissions in Android API 23+.
+
 - Support [camera1](https://developer.android.com/reference/android/hardware/Camera.html) and [camera2](https://developer.android.com/reference/android/hardware/camera2/package-summary.html).
 	- Camera1 (API 19+): Get audio data from microphone in PCM buffer and from camera API1 in NV21 frames.
 	- Camera2 (API 21+): Get audio data from microphone in PCM buffer and from camera API2 rendering a MediaCodec inputsurface.
 - Support [SurfaceView](https://developer.android.com/reference/android/view/SurfaceView), [TextureView](https://developer.android.com/reference/android/view/TextureView), OpenGLView and LightOpenGLView
 - This library use [MediaCodec](https://developer.android.com/reference/android/media/MediaCodec.html) Android class to do hardware encoding.
 - Create a RTP packets of video and audio, encapsulate it in flv packets and send to server.
+- Support OpenGL real time filters. By default you can choose between 36 different filters. If you want use this feature you need use the following:
+
+	```xml
+	...
+	app:viewType = "openGLView" <!-- or "lightOpenGLView" -->
+	...
+	```
 
 ### Implement
 
@@ -94,14 +105,14 @@ Use [rtmp-rtsp-stream-client-java](https://github.com/pedroSG94/rtmp-rtsp-stream
     android:id="@+id/uiza_live_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:viewType="surfaceView" // textureView, lightOpenGLView and default openGLView
+    app:viewType="surfaceView" <!-- textureView, lightOpenGLView and default openGLView -->
     app:adaptiveBitrate="false"
     app:audioStereo="true"
     app:fps="24"
-    app:useCamera2="true" // API < 21 always false
-    app:videoSize="p720" // p1080, p360
-    app:audioBitrate="64" // Kbps
-    app:audioSampleRate="32000" // Hz
+    app:useCamera2="true" <!-- API < 21 always false -->
+    app:videoSize="p720" <!-- p1080, default: p360 -->
+    app:audioBitrate="64" <!-- Kbps -->
+    app:audioSampleRate="32000" <!-- Hz -->
     app:keyframe="2"/>       
 ```
 
