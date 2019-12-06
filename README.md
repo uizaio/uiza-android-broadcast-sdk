@@ -123,15 +123,20 @@ To Hanlde live event:
 
 ```java
   uizaLiveView.setLiveListener(new UizaLiveListener() {
-	  @Override
-	    public void onInit(boolean success) {
+	    @Override
+	     public void onInit(boolean success) {
 			//  after request permission
-	    }
+	     }
         @Override
         public void onConnectionSuccess() {
             
         }
-
+        
+		 @Override
+    	 public void onRetryConnection(long delay) {
+    	 
+    	 }
+    	 
         @Override
         public void onConnectionFailed(@Nullable String reason) {
 
