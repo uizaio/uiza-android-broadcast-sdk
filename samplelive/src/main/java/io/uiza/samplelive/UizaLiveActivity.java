@@ -41,13 +41,14 @@ import io.uiza.live.interfaces.UizaLiveListener;
 public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListener,
         View.OnClickListener, RecordListener, CameraChangeListener {
 
+    private static final String TAG = "UizaLiveActivity";
+    private static final String RECORD_FOLDER = "uiza-live";
     private AppCompatImageButton startButton;
     private AppCompatImageButton bRecord;
 
     private String liveStreamUrl;
     private String currentDateAndTime = "";
-    private File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-            + "/uiza-live");
+    private File folder;
     private UizaLiveView liveView;
 
     @Override
@@ -57,7 +58,6 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
         setContentView(R.layout.activity_live_stream);
         liveView = findViewById(R.id.uiza_open_glview);
         liveView.setLiveListener(this);
-
         startButton = findViewById(R.id.b_start_stop);
         startButton.setOnClickListener(this);
         startButton.setEnabled(false);
@@ -65,6 +65,10 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
         bRecord.setOnClickListener(this);
         AppCompatImageButton switchCamera = findViewById(R.id.switch_camera);
         switchCamera.setOnClickListener(this);
+        File movieFolder = getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+        if (movieFolder != null)
+            folder = new File(movieFolder.getAbsolutePath()
+                    + RECORD_FOLDER);
         liveStreamUrl = getIntent().getStringExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT);
         if (TextUtils.isEmpty(liveStreamUrl)) {
             liveStreamUrl = SampleLiveApplication.getLiveEndpoint();
@@ -353,8 +357,8 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
     @Override
     public void onInit(boolean success) {
         startButton.setEnabled(success);
-        liveView.setCameraChangeListener(this::onCameraChange);
-        liveView.setRecordListener(this::onStatusChange);
+        liveView.setCameraChangeListener(this);
+        liveView.setRecordListener(this);
     }
 
     @Override
@@ -376,7 +380,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public void onNewBitrate(long bitrate) {
-        UizaLog.e("UizaliveView", "newBitrate: " + bitrate);
+        UizaLog.e(TAG, "newBitrate: " + bitrate);
     }
 
     @Override
@@ -398,22 +402,22 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public void surfaceCreated() {
-
+        UizaLog.e(TAG, "surfaceCreated");
     }
 
     @Override
     public void surfaceChanged(int format, int width, int height) {
-
+        UizaLog.e(TAG, "surfaceChanged: {" + format + ", " + width + ", " + height + "}");
     }
 
     @Override
     public void surfaceDestroyed() {
-
+        UizaLog.e(TAG, "surfaceDestroyed");
     }
 
     @Override
     public void onCameraChange(boolean isFrontCamera) {
-
+        UizaLog.e(TAG, "onCameraChange: " + isFrontCamera);
     }
 
     @Override
