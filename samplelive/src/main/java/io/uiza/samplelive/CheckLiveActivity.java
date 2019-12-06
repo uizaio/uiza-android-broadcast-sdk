@@ -53,6 +53,12 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        updateLiveStats();
+    }
+
+    @Override
     public void onClick(View v) {
         if (v.getId() == R.id.live_btn) {
             if (streamNameEdt.getVisibility() == View.VISIBLE) {
@@ -64,6 +70,7 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
                             Intent liveIntent = new Intent(CheckLiveActivity.this, UizaLiveActivity.class);
                             liveIntent.putExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT, entity.ingest.getLiveUrl());
                             startActivity(liveIntent);
+                            finish();
                         } else {
                             Toast.makeText(this, "No Live url", Toast.LENGTH_SHORT).show();
                         }

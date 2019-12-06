@@ -2,23 +2,20 @@ package io.uiza.live;
 
 import android.media.audiofx.AcousticEchoCanceler;
 import android.media.audiofx.NoiseSuppressor;
-
 import androidx.annotation.NonNull;
-
 import com.pedro.encoder.input.gl.render.filters.BaseFilterRender;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.encoder.input.video.CameraOpenException;
 import com.pedro.rtplibrary.rtmp.RtmpCamera1;
 import com.pedro.rtplibrary.util.RecordController;
-
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
-
+import io.uiza.core.utils.UizaLog;
+import io.uiza.live.enums.ProfileEncode;
+import io.uiza.live.enums.RecordStatus;
 import io.uiza.live.interfaces.CameraChangeListener;
 import io.uiza.live.interfaces.ICameraHelper;
-import io.uiza.live.interfaces.ProfileEncode;
+import io.uiza.live.interfaces.RecordListener;
 import io.uiza.live.interfaces.UizaCameraOpenException;
 
 public class Camera1Helper implements ICameraHelper {
@@ -26,6 +23,8 @@ public class Camera1Helper implements ICameraHelper {
     private RtmpCamera1 rtmpCamera1;
 
     private CameraChangeListener cameraChangeListener;
+
+    private RecordListener recordListener;
 
     Camera1Helper(@NonNull RtmpCamera1 camera) {
         this.rtmpCamera1 = camera;
@@ -53,7 +52,12 @@ public class Camera1Helper implements ICameraHelper {
     }
 
     @Override
-    public boolean supportFilter() {
+    public void setRecordListener(RecordListener recordListener) {
+        this.recordListener = recordListener;
+    }
+
+    @Override
+    public boolean supportGlInterface() {
         try {
             return rtmpCamera1.getGlInterface() != null;
         } catch (RuntimeException e) {
@@ -63,22 +67,33 @@ public class Camera1Helper implements ICameraHelper {
 
     @Override
     public void setFilter(@NotNull BaseFilterRender filterReader) {
-        rtmpCamera1.getGlInterface().setFilter(filterReader);
+        if (supportGlInterface())
+            rtmpCamera1.getGlInterface().setFilter(filterReader);
+        else
+            UizaLog.e("Camera1Helper", "Filter is not support in this view");
     }
 
     @Override
     public void setFilter(int filterPosition, @NotNull BaseFilterRender filterReader) {
-        rtmpCamera1.getGlInterface().setFilter(filterPosition, filterReader);
+        if (supportGlInterface())
+            rtmpCamera1.getGlInterface().setFilter(filterPosition, filterReader);
+        else
+            UizaLog.e("Camera1Helper", "Filter is not support in this view");
     }
 
     @Override
     public void enableAA(boolean aAEnabled) {
-        rtmpCamera1.getGlInterface().enableAA(aAEnabled);
+        if (supportGlInterface())
+            rtmpCamera1.getGlInterface().enableAA(aAEnabled);
+        else
+            UizaLog.e("Camera1Helper", "Filter is not support in this view");
     }
 
     @Override
-    public boolean isAAEnabled() {
-        return rtmpCamera1.getGlInterface().isAAEnabled();
+    public boolean isAAEnabled(){
+        if (supportGlInterface())
+            return rtmpCamera1.getGlInterface().isAAEnabled();
+        return false;
     }
 
     @Override
@@ -193,8 +208,18 @@ public class Camera1Helper implements ICameraHelper {
     }
 
     @Override
-    public void startRecord(@NotNull String savePath, @Nullable RecordController.Listener listener) throws IOException {
-        rtmpCamera1.startRecord(savePath, listener);
+    public void startRecord(@NotNull String savePath) throws IOException {
+        if (recordListener != null) {
+            rtmpCamera1.startRecord(savePath, new RecordController.Listener() {
+                @Override
+                public void onStatusChange(RecordController.Status status) {
+                    recordListener.onStatusChange(RecordStatus.lookup(status));
+                }
+            });
+        } else {
+            rtmpCamera1.startRecord(savePath);
+        }
+
 
     }
 

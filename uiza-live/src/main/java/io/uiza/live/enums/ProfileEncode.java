@@ -1,4 +1,4 @@
-package io.uiza.live.interfaces;
+package io.uiza.live.enums;
 
 //
 

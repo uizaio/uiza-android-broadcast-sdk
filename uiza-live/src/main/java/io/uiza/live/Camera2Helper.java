@@ -3,25 +3,21 @@ package io.uiza.live;
 import android.media.audiofx.AcousticEchoCanceler;
 import android.media.audiofx.NoiseSuppressor;
 import android.os.Build;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-
 import com.pedro.encoder.input.gl.render.filters.BaseFilterRender;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.encoder.input.video.CameraOpenException;
 import com.pedro.rtplibrary.rtmp.RtmpCamera2;
 import com.pedro.rtplibrary.util.RecordController;
-
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
-
 import io.uiza.core.utils.UizaLog;
+import io.uiza.live.enums.ProfileEncode;
+import io.uiza.live.enums.RecordStatus;
 import io.uiza.live.interfaces.CameraChangeListener;
 import io.uiza.live.interfaces.ICameraHelper;
-import io.uiza.live.interfaces.ProfileEncode;
+import io.uiza.live.interfaces.RecordListener;
 import io.uiza.live.interfaces.UizaCameraOpenException;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -30,6 +26,8 @@ public class Camera2Helper implements ICameraHelper {
     private RtmpCamera2 rtmpCamera2;
 
     private CameraChangeListener cameraChangeListener;
+
+    private RecordListener recordListener;
 
     Camera2Helper(@NonNull RtmpCamera2 camera) {
         this.rtmpCamera2 = camera;
@@ -51,7 +49,17 @@ public class Camera2Helper implements ICameraHelper {
     }
 
     @Override
-    public boolean supportFilter() {
+    public void setCameraChangeListener(@NonNull CameraChangeListener cameraChangeListener) {
+        this.cameraChangeListener = cameraChangeListener;
+    }
+
+    @Override
+    public void setRecordListener(RecordListener recordListener) {
+        this.recordListener = recordListener;
+    }
+
+    @Override
+    public boolean supportGlInterface() {
         try {
             return rtmpCamera2.getGlInterface() != null;
         } catch (RuntimeException e) {
@@ -61,22 +69,35 @@ public class Camera2Helper implements ICameraHelper {
 
     @Override
     public void setFilter(@NotNull BaseFilterRender filterReader) {
-        rtmpCamera2.getGlInterface().setFilter(filterReader);
+        if (supportGlInterface())
+            rtmpCamera2.getGlInterface().setFilter(filterReader);
+        else
+            UizaLog.e("Camera2Helper", "Filter is not support in this view");
     }
 
     @Override
     public void setFilter(int filterPosition, @NotNull BaseFilterRender filterReader) {
-        rtmpCamera2.getGlInterface().setFilter(filterPosition, filterReader);
+        if (supportGlInterface())
+            rtmpCamera2.getGlInterface().setFilter(filterPosition, filterReader);
+        else
+            UizaLog.e("Camera2Helper", "Filter is not support in this view");
     }
 
     @Override
     public void enableAA(boolean aAEnabled) {
-        rtmpCamera2.getGlInterface().enableAA(aAEnabled);
+        if (supportGlInterface()) {
+            rtmpCamera2.getGlInterface().enableAA(aAEnabled);
+        } else {
+            UizaLog.e("Camera2Helper", "AA is not support in this view");
+        }
     }
 
     @Override
     public boolean isAAEnabled() {
-        return rtmpCamera2.getGlInterface().isAAEnabled();
+        if (supportGlInterface()) {
+            return rtmpCamera2.getGlInterface().isAAEnabled();
+        }
+        return false;
     }
 
     @Override
@@ -136,7 +157,7 @@ public class Camera2Helper implements ICameraHelper {
     @Override
     public boolean prepareVideo(@NotNull ProfileEncode profile, int fps, int iFrameInterval, int rotation) {
         UizaLog.e("Camera2Helper", "rotation = " + rotation);
-        if (supportFilter()) {
+        if (supportGlInterface()) {
             return rtmpCamera2.prepareVideo(profile.getWidth(), profile.getHeight(), fps, profile.getBitrate(), false, iFrameInterval, rotation);
         } else {
             return rtmpCamera2.prepareVideo(profile.getHeight(), profile.getWidth(), fps, profile.getBitrate(), false, iFrameInterval, rotation);
@@ -197,8 +218,18 @@ public class Camera2Helper implements ICameraHelper {
 
 
     @Override
-    public void startRecord(@NotNull String savePath, @Nullable RecordController.Listener listener) throws IOException {
-        rtmpCamera2.startRecord(savePath, listener);
+    public void startRecord(@NotNull String savePath) throws IOException {
+        if (recordListener != null) {
+            rtmpCamera2.startRecord(savePath, new RecordController.Listener() {
+                @Override
+                public void onStatusChange(RecordController.Status status) {
+                    recordListener.onStatusChange(RecordStatus.lookup(status));
+                }
+            });
+        } else {
+            rtmpCamera2.startRecord(savePath);
+        }
+
     }
 
     @Override
@@ -206,10 +237,6 @@ public class Camera2Helper implements ICameraHelper {
         rtmpCamera2.stopRecord();
     }
 
-    @Override
-    public void setCameraChangeListener(@NonNull CameraChangeListener cameraChangeListener) {
-        this.cameraChangeListener = cameraChangeListener;
-    }
 
     @Override
     public boolean isLanternSupported() {

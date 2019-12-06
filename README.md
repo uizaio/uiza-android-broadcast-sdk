@@ -76,8 +76,8 @@ This library require this permissions in your AndroidManifest.xml:
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
-<uses-permission android:name="android.permission.CAMERA" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.CAMERA" /> 
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- for record -->
 <!--Optional for play store-->
 <uses-feature android:name="android.hardware.camera" android:required="false" />
 <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
@@ -119,9 +119,14 @@ Remember that you need get runtime permissions in Android API 23+.
 ```java
 uizaLiveView = findViewById(uiza_live_view);
 ```
+To Hanlde live event:
 
 ```java
   uizaLiveView.setLiveListener(new UizaLiveListener() {
+	  @Override
+	    public void onInit(boolean success) {
+			//  after request permission
+	    }
         @Override
         public void onConnectionSuccess() {
             
@@ -191,12 +196,31 @@ try {
     uizaLiveView.switchCamera();
 } catch (UizaCameraOpenException e) { }
 ```
+To handle camera change:
 
+```java
+uizaLiveView.setCameraChangeListener(new CameraChangeListener(){
+	@Override
+    public void onCameraChange(boolean isFrontCamera) {
+    }
+});
+```
 
 __Record__
 
 ```java
 uizaLiveView.startRecord(<file_name>);
+```
+
+To handle record status:
+
+```java
+liveView.setRecordListener(new RecordListener(){
+	@Override
+    public void onStatusChange(RecordStatus status) {
+    
+    }
+});
 ```
 
 __Stop record__

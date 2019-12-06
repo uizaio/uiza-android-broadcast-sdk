@@ -1,14 +1,20 @@
 package io.uiza.live;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.SurfaceTexture;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -19,6 +25,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.rtplibrary.rtmp.RtmpCamera1;
 import com.pedro.rtplibrary.rtmp.RtmpCamera2;
@@ -30,14 +41,23 @@ import com.pedro.rtplibrary.view.OpenGlView;
 import net.ossrs.rtmp.ConnectCheckerRtmp;
 
 import java.io.IOException;
+import java.util.List;
 
 import io.uiza.core.utils.UizaLog;
-import io.uiza.live.interfaces.FilterRender;
+import io.uiza.live.enums.FilterRender;
+import io.uiza.live.enums.ProfileEncode;
+import io.uiza.live.interfaces.CameraChangeListener;
 import io.uiza.live.interfaces.ICameraHelper;
-import io.uiza.live.interfaces.ProfileEncode;
+import io.uiza.live.interfaces.RecordListener;
 import io.uiza.live.interfaces.UizaLiveListener;
 
+/**
+ * @required: <uses-permission android:name="android.permission.CAMERA"/> and
+ * <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+ */
 public class UizaLiveView extends RelativeLayout {
+
+    private static final String TAG = "UizaLiveView";
 
     private static final int SURFACE = 0;
     private static final int TEXTURE = 1;
@@ -126,13 +146,44 @@ public class UizaLiveView extends RelativeLayout {
         audioSampleRate = a.getInt(R.styleable.UizaLiveView_audioSampleRate, 32000); // 32 KHz
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        checkLivePermission();
+    }
+
+
+    private void checkLivePermission() {
+        Dexter.withActivity((Activity) getContext()).withPermissions(Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO).withListener(new MultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                if (report.areAllPermissionsGranted()) {
+                    onCreateView();
+                    if (liveListener != null) {
+                        liveListener.onInit(true);
+                    }
+                } else if (report.isAnyPermissionPermanentlyDenied()) {
+                    showSettingsDialog();
+                } else {
+                    showShouldAcceptPermission();
+                }
+
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                token.continuePermissionRequest();
+            }
+        }).onSameThread()
+                .check();
+    }
+
     /**
      * Call one time
      * Note: you must call inflate in this method
      */
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    private void onCreateView() {
         UizaLog.e("UizaLiveView", "viewType: " + viewType);
         switch (viewType) {
             case SURFACE:
@@ -178,8 +229,66 @@ public class UizaLiveView extends RelativeLayout {
         cameraHelper.setConnectReTries(10);
     }
 
+    private void showShouldAcceptPermission() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.need_permission);
+        builder.setMessage(R.string.this_app_needs_permission);
+        builder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                checkLivePermission();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (liveListener != null) {
+                    liveListener.onInit(false);
+                }
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    private void showSettingsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.need_permission);
+        builder.setMessage(R.string.this_app_needs_permission_grant_it);
+        builder.setPositiveButton(R.string.goto_settings, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent =
+                        new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getContext().getPackageName(), null);
+                intent.setData(uri);
+                ((Activity) getContext()).startActivityForResult(intent, 101);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (liveListener != null) {
+                    liveListener.onInit(false);
+                }
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
     public void setLiveListener(UizaLiveListener liveListener) {
         this.liveListener = liveListener;
+    }
+
+    public void setCameraChangeListener(CameraChangeListener cameraChangeListener) {
+        cameraHelper.setCameraChangeListener(cameraChangeListener);
+    }
+
+    public void setRecordListener(RecordListener recordListener) {
+        cameraHelper.setRecordListener(recordListener);
     }
 
     public void hideLiveStatus() {
@@ -222,8 +331,11 @@ public class UizaLiveView extends RelativeLayout {
         cameraHelper.switchCamera();
     }
 
+    /**
+     * @required: <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+     */
     public void startRecord(String savePath) throws IOException {
-        cameraHelper.startRecord(savePath, null);
+        cameraHelper.startRecord(savePath);
     }
 
     public boolean isRecording() {
@@ -247,32 +359,19 @@ public class UizaLiveView extends RelativeLayout {
     }
 
     public void enableAA(boolean enable) {
-        if (viewType == 2 || viewType == 3)
-            cameraHelper.enableAA(enable);
-        else
-            UizaLog.e("UizaLiveView", "AA is not support this view");
+        cameraHelper.enableAA(enable);
     }
 
     public boolean isAAEnabled() {
-        if (viewType == 2 || viewType == 3)
-            return cameraHelper.isAAEnabled();
-        else
-            return false;
+        return cameraHelper.isAAEnabled();
     }
 
     public void setFilter(FilterRender filterRender) {
-        if (viewType == 2 || viewType == 3)
-            cameraHelper.setFilter(filterRender.getFilterRender());
-        else
-            UizaLog.e("UizaLiveView", "Filter is not support this view");
-
+        cameraHelper.setFilter(filterRender.getFilterRender());
     }
 
     public void setFilter(int position, FilterRender filterRender) {
-        if (viewType == 2 || viewType == 3)
-            cameraHelper.setFilter(position, filterRender.getFilterRender());
-        else
-            UizaLog.e("UizaLiveView", "Filter is not support this view");
+        cameraHelper.setFilter(position, filterRender.getFilterRender());
     }
 
     public int getStreamWidth() {
@@ -484,7 +583,9 @@ public class UizaLiveView extends RelativeLayout {
     }
 
     public boolean supportFilter() {
-        return cameraHelper.supportFilter();
+        if (cameraHelper != null)
+            return cameraHelper.supportGlInterface();
+        return (viewType == 2 || viewType == 3);
     }
 
     public void setVideoBitrateOnFly(int bitrate) {

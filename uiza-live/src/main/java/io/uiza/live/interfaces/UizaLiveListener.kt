@@ -1,6 +1,7 @@
 package io.uiza.live.interfaces
 
 interface UizaLiveListener {
+    fun onInit(success: Boolean)
     fun onConnectionSuccess()
     fun onConnectionFailed(reason: String?)
     fun onNewBitrate(bitrate: Long)

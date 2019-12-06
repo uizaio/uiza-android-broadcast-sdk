@@ -30,13 +30,16 @@ import java.util.Locale;
 
 import io.uiza.core.utils.UizaLog;
 import io.uiza.live.UizaLiveView;
-import io.uiza.live.interfaces.FilterRender;
-import io.uiza.live.interfaces.Translate;
+import io.uiza.live.enums.FilterRender;
+import io.uiza.live.enums.RecordStatus;
+import io.uiza.live.enums.Translate;
+import io.uiza.live.interfaces.CameraChangeListener;
+import io.uiza.live.interfaces.RecordListener;
 import io.uiza.live.interfaces.UizaCameraOpenException;
 import io.uiza.live.interfaces.UizaLiveListener;
 
 public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListener,
-        View.OnClickListener {
+        View.OnClickListener, RecordListener, CameraChangeListener {
 
     private AppCompatImageButton startButton;
     private AppCompatImageButton bRecord;
@@ -51,9 +54,11 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_open_gl);
+        setContentView(R.layout.activity_live_stream);
         liveView = findViewById(R.id.uiza_open_glview);
         liveView.setLiveListener(this);
+        liveView.setCameraChangeListener(this::onCameraChange);
+        liveView.setRecordListener(this::onStatusChange);
         startButton = findViewById(R.id.b_start_stop);
         startButton.setOnClickListener(this);
         startButton.setEnabled(false);
@@ -65,27 +70,6 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
         if (TextUtils.isEmpty(liveStreamUrl)) {
             liveStreamUrl = SampleLiveApplication.getLiveEndpoint();
         }
-        ActivityCompat.requestPermissions(UizaLiveActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, 1001);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        if (requestCode == 1001) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startButton.setEnabled(true);
-                // permission was granted, yay! Do the
-                // contacts-related task you need to do.
-            } else {
-                startButton.setEnabled(false);
-                // permission denied, boo! Disable the
-                // functionality that depends on this permission.
-                Toast.makeText(UizaLiveActivity.this, "Permission denied to access your Camera and Record Audio", Toast.LENGTH_SHORT).show();
-            }
-            return;
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -294,6 +278,48 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1001) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                recordAction();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void recordAction() {
+        try {
+            if (!folder.exists()) {
+                try {
+                    folder.mkdir();
+                } catch (SecurityException ex) {
+                    Toast.makeText(this, ex.getLocalizedMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+            currentDateAndTime = sdf.format(new Date());
+            if (!liveView.isStreaming()) {
+                if (liveView.prepareStream()) {
+                    liveView.startRecord(
+                            folder.getAbsolutePath() + "/" + currentDateAndTime + ".mp4");
+                } else {
+                    Toast.makeText(this, "Error preparing stream, This device cant do it",
+                            Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                liveView.startRecord(folder.getAbsolutePath() + "/" + currentDateAndTime + ".mp4");
+            }
+        } catch (IOException e) {
+            liveView.stopRecord();
+            bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_white_24, null));
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.b_start_stop) {
@@ -318,46 +344,16 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
             }
         } else if (id == R.id.b_record) {
             if (!liveView.isRecording()) {
-                try {
-                    if (!folder.exists()) {
-                        try {
-                            folder.mkdir();
-                        } catch (SecurityException ex) {
-                            Toast.makeText(this, ex.getLocalizedMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-                    currentDateAndTime = sdf.format(new Date());
-                    if (!liveView.isStreaming()) {
-                        if (liveView.prepareStream()) {
-                            liveView.startRecord(
-                                    folder.getAbsolutePath() + "/" + currentDateAndTime + ".mp4");
-                            bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_white_24, null));
-                            Toast.makeText(this, "Recording... ", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(this, "Error preparing stream, This device cant do it",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        liveView.startRecord(folder.getAbsolutePath() + "/" + currentDateAndTime + ".mp4");
-                        bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_white_24, null));
-                        Toast.makeText(this, "Recording... ", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (IOException e) {
-                    liveView.stopRecord();
-                    bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_white_24, null));
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                ActivityCompat.requestPermissions(UizaLiveActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1001);
             } else {
                 liveView.stopRecord();
-                bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_white_24, null));
-                Toast.makeText(this,
-                        "file " + currentDateAndTime + ".mp4 saved in " + folder.getAbsolutePath(),
-                        Toast.LENGTH_SHORT).show();
-                currentDateAndTime = "";
             }
         }
+    }
+
+    @Override
+    public void onInit(boolean success) {
+        startButton.setEnabled(success);
     }
 
     @Override
@@ -414,5 +410,26 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
     @Override
     public void surfaceDestroyed() {
 
+    }
+
+    @Override
+    public void onCameraChange(boolean isFrontCamera) {
+
+    }
+
+    @Override
+    public void onStatusChange(RecordStatus status) {
+        if (status == RecordStatus.RECORDING) {
+            runOnUiThread(() -> {
+                bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop_white_24, null));
+                Toast.makeText(this, "Recording... ", Toast.LENGTH_SHORT).show();
+            });
+        } else if (status == RecordStatus.STOPPED) {
+            bRecord.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_record_white_24, null));
+            currentDateAndTime = "";
+            Toast.makeText(this, "Stopped", Toast.LENGTH_SHORT).show();
+        } else {
+            runOnUiThread(() -> Toast.makeText(UizaLiveActivity.this, "Record " + status.toString(), Toast.LENGTH_SHORT).show());
+        }
     }
 }

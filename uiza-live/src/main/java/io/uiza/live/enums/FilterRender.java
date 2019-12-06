@@ -1,4 +1,4 @@
-package io.uiza.live.interfaces;
+package io.uiza.live.enums;
 
 import android.graphics.Bitmap;
 
@@ -48,7 +48,6 @@ import com.pedro.encoder.input.gl.render.filters.object.GifObjectFilterRender;
 import com.pedro.encoder.input.gl.render.filters.object.ImageObjectFilterRender;
 import com.pedro.encoder.input.gl.render.filters.object.SurfaceFilterRender;
 import com.pedro.encoder.input.gl.render.filters.object.TextObjectFilterRender;
-import com.pedro.encoder.utils.gl.TranslateTo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,35 +152,7 @@ public enum FilterRender {
     public void setPosition(Translate translate) {
         if (filterRender instanceof BaseObjectFilterRender) {
             BaseObjectFilterRender objectFilterRender = (BaseObjectFilterRender) filterRender;
-            switch (translate) {
-                case TOP:
-                    objectFilterRender.setPosition(TranslateTo.TOP);
-                    break;
-                case TOP_LEFT:
-                    objectFilterRender.setPosition(TranslateTo.TOP_LEFT);
-                    break;
-                case TOP_RIGHT:
-                    objectFilterRender.setPosition(TranslateTo.TOP_RIGHT);
-                    break;
-                case LEFT:
-                    objectFilterRender.setPosition(TranslateTo.LEFT);
-                    break;
-                case RIGHT:
-                    objectFilterRender.setPosition(TranslateTo.RIGHT);
-                    break;
-                case BOTTOM:
-                    objectFilterRender.setPosition(TranslateTo.BOTTOM);
-                    break;
-                case CENTER:
-                    objectFilterRender.setPosition(TranslateTo.CENTER);
-                    break;
-                case BOTTOM_LEFT:
-                    objectFilterRender.setPosition(TranslateTo.BOTTOM_LEFT);
-                    break;
-                case BOTTOM_RIGHT:
-                    objectFilterRender.setPosition(TranslateTo.BOTTOM_RIGHT);
-                    break;
-            }
+            objectFilterRender.setPosition(translate.getTranslateTo());
         }
     }
 

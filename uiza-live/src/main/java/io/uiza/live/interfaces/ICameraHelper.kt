@@ -3,7 +3,7 @@ package io.uiza.live.interfaces
 import com.pedro.encoder.input.gl.render.filters.BaseFilterRender
 import com.pedro.encoder.input.video.CameraHelper
 import com.pedro.encoder.input.video.CameraOpenException
-import com.pedro.rtplibrary.util.RecordController
+import io.uiza.live.enums.ProfileEncode
 import java.io.IOException
 
 interface ICameraHelper {
@@ -16,10 +16,11 @@ interface ICameraHelper {
 
     fun setCameraChangeListener(cameraChangeListener: CameraChangeListener)
 
+    fun setRecordListener(recordListener: RecordListener)
     /**
      * Check support Filter
      */
-    fun supportFilter(): Boolean
+    fun supportGlInterface(): Boolean
 
     /**
      * Set filter in position 0.
@@ -185,7 +186,7 @@ interface ICameraHelper {
      * @throws IOException If you init it before start stream.
      */
     @Throws(IOException::class)
-    fun startRecord(savePath: String, listener: RecordController.Listener? = null)
+    fun startRecord(savePath: String)
 
     /**
      * Stop record MP4 video started with @startRecord. If you don't call it file will be unreadable.
