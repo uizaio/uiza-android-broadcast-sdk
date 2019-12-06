@@ -56,8 +56,8 @@ Implement in java:
 ```java
 Intent intent = new Intent();
 intent.setData(Uri.parse(uri));
-intent.putExtra(UizaPlayerActivity.EXTENSION_EXTRA, "m3u8"); // or "mpd"
-intent.setAction(UizaPlayerActivity.ACTION_VIEW);
+intent.putExtra("extra_media_extension", "m3u8"); // or "mpd"
+intent.setAction("io.uiza.player.action.VIEW");
 startActivity(intent);
 ```
 
@@ -123,10 +123,12 @@ To Hanlde live event:
 
 ```java
   uizaLiveView.setLiveListener(new UizaLiveListener() {
+  
 	    @Override
-	     public void onInit(boolean success) {
+	    public void onInit(boolean success) {
 			//  after request permission
-	     }
+	    }
+	     
         @Override
         public void onConnectionSuccess() {
             
