@@ -19,6 +19,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 public class UizaClient {
     private static final int CONNECT_TIMEOUT_TIME = 20;//20s
@@ -30,7 +31,6 @@ public class UizaClient {
     public static class Builder {
         String baseApiUrl;
         String token;
-        HttpLoggingInterceptor.Level logLevel = HttpLoggingInterceptor.Level.BODY;
         long timeout = CONNECT_TIMEOUT_TIME;
         boolean retryOnConnectionFailure = true;
         boolean compressedRequest = false;
@@ -41,16 +41,6 @@ public class UizaClient {
 
         public Builder withToken(String token) {
             this.token = token;
-            return this;
-        }
-
-        /**
-         * Default HttpLoggingInterceptor.Level.NONE
-         *
-         * @param logLevel
-         */
-        public Builder withLogLevel(HttpLoggingInterceptor.Level logLevel) {
-            this.logLevel = logLevel;
             return this;
         }
 
@@ -88,23 +78,30 @@ public class UizaClient {
             if (TextUtils.isEmpty(baseApiUrl)) {
                 throw new InvalidParameterException("baseApiUrl cannot null or empty");
             }
-            return new UizaClient(baseApiUrl, token,
-                    logLevel, timeout,
+            return new UizaClient(baseApiUrl, token, timeout,
                     retryOnConnectionFailure, compressedRequest);
         }
     }
 
     private UizaClient(String baseApiUrl,
                        String token,
-                       HttpLoggingInterceptor.Level logLevel,
                        long timeout,
                        boolean retryOnConnectionFailure,
                        boolean compressedRequest
     ) {
 
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+            @Override
+            public void log(String message) {
+                Timber.d(message);
+            }
+        });
         // set your desired log level
-        logging.setLevel(logLevel);
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         restRequestInterceptor = new RestRequestInterceptor();
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
