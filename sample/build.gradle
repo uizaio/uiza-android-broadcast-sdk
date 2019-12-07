@@ -57,7 +57,7 @@ android {
 dependencies {
     implementation project(':uiza-core')
     implementation project(':uiza-player')
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.15'
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -70,8 +70,6 @@ dependencies {
 
     //exo
     implementation "com.google.android.exoplayer:exoplayer:$exo_version"
-    implementation "com.google.android.exoplayer:extension-ima:$exo_version"
-    implementation "com.google.android.exoplayer:exoplayer-dash:$exo_version"
-    implementation "com.google.android.exoplayer:exoplayer-ui:$exo_version"
-    implementation "com.google.android.exoplayer:exoplayer-hls:$exo_version"
+    //Logger
+    implementation "com.jakewharton.timber:timber:$timber_version"
 }

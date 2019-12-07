@@ -42,13 +42,13 @@ import net.ossrs.rtmp.ConnectCheckerRtmp;
 import java.io.IOException;
 import java.util.List;
 
-import io.uiza.core.utils.UizaLog;
 import io.uiza.live.enums.FilterRender;
 import io.uiza.live.enums.ProfileEncode;
 import io.uiza.live.interfaces.CameraChangeListener;
 import io.uiza.live.interfaces.ICameraHelper;
 import io.uiza.live.interfaces.RecordListener;
 import io.uiza.live.interfaces.UizaLiveListener;
+import timber.log.Timber;
 
 /**
  * @required: <uses-permission android:name="android.permission.CAMERA"/> and
@@ -196,7 +196,7 @@ public class UizaLiveView extends RelativeLayout {
      * Note: you must call inflate in this method
      */
     private void onCreateView() {
-        UizaLog.e("UizaLiveView", "viewType: " + viewType);
+        Timber.d("viewType: %d", viewType);
         switch (viewType) {
             case SURFACE:
                 inflate(getContext(), R.layout.layout_uiza_surfaceview, this);

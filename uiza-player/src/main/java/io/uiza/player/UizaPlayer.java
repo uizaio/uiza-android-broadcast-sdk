@@ -26,15 +26,13 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSource;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory;
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor;
 import com.google.android.exoplayer2.upstream.cache.SimpleCache;
-import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 
-import io.uiza.core.utils.UizaLog;
 import io.uiza.player.downloads.DownloadTracker;
+import timber.log.Timber;
 
 public class UizaPlayer {
 
@@ -44,8 +42,7 @@ public class UizaPlayer {
     private static final String DOWNLOAD_TRACKER_ACTION_FILE = "tracked_actions";
     private static final String DOWNLOAD_CONTENT_DIRECTORY = "downloads";
 
-    private WeakReference<Context> contextWeak;
-
+    private Context context;
     private String userAgent;
 
     private DatabaseProvider databaseProvider;
@@ -56,23 +53,24 @@ public class UizaPlayer {
 
     private Class<? extends DownloadService> serviceClazz;
 
-    private static UizaPlayer instance;
+    private UizaPlayer() {
+    }
 
-    public static void init(Context context, String appName) {
-        if (instance == null) {
-            instance = new UizaPlayer(context, appName);
-        }
+    private static class UizaPlayerHelper {
+        private static final UizaPlayer INSTANCE = new UizaPlayer();
     }
 
     public static UizaPlayer get() {
-        Assertions.checkState(instance != null);
-        return instance;
+        return UizaPlayerHelper.INSTANCE;
     }
 
-
-    private UizaPlayer(Context context, String appName) {
-        contextWeak = new WeakReference<>(context);
-        userAgent = Util.getUserAgent(contextWeak.get(), appName);
+    // Library init
+    public void init(Context context, String appName) {
+        this.context = context;
+        userAgent = Util.getUserAgent(context, appName);
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
     public void setServiceClazz(Class<? extends DownloadService> serviceClazz) {
@@ -84,7 +82,7 @@ public class UizaPlayer {
      */
     public DataSource.Factory buildDataSourceFactory() {
         DefaultDataSourceFactory upstreamFactory =
-                new DefaultDataSourceFactory(contextWeak.get(), buildHttpDataSourceFactory());
+                new DefaultDataSourceFactory(context, buildHttpDataSourceFactory());
         return buildReadOnlyCacheDataSource(upstreamFactory, getDownloadCache());
     }
 
@@ -110,7 +108,7 @@ public class UizaPlayer {
                         ? DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
                         : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
                         : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
-        return new DefaultRenderersFactory(/* context= */ contextWeak.get())
+        return new DefaultRenderersFactory(/* context= */ context)
                 .setExtensionRendererMode(extensionRendererMode);
     }
 
@@ -158,9 +156,9 @@ public class UizaPlayer {
                     new DownloaderConstructorHelper(getDownloadCache(), buildHttpDataSourceFactory());
             downloadManager =
                     new DownloadManager(
-                            contextWeak.get(), downloadIndex, new DefaultDownloaderFactory(downloaderConstructorHelper));
+                            context, downloadIndex, new DefaultDownloaderFactory(downloaderConstructorHelper));
             downloadTracker =
-                    new DownloadTracker(serviceClazz, contextWeak.get(), buildDataSourceFactory(), downloadManager);
+                    new DownloadTracker(serviceClazz, context, buildDataSourceFactory(), downloadManager);
         }
     }
 
@@ -174,22 +172,22 @@ public class UizaPlayer {
                     /* deleteOnFailure= */ true,
                     addNewDownloadsAsCompleted);
         } catch (IOException e) {
-            UizaLog.e(TAG, "Failed to upgrade action file: " + fileName, e);
+            Timber.e(e, "Failed to upgrade action file: %s", fileName);
         }
     }
 
     private DatabaseProvider getDatabaseProvider() {
         if (databaseProvider == null) {
-            databaseProvider = new ExoDatabaseProvider(contextWeak.get());
+            databaseProvider = new ExoDatabaseProvider(context);
         }
         return databaseProvider;
     }
 
     private File getDownloadDirectory() {
         if (downloadDirectory == null) {
-            downloadDirectory = contextWeak.get().getExternalFilesDir(null);
+            downloadDirectory = context.getExternalFilesDir(null);
             if (downloadDirectory == null) {
-                downloadDirectory = contextWeak.get().getFilesDir();
+                downloadDirectory = context.getFilesDir();
             }
         }
         return downloadDirectory;

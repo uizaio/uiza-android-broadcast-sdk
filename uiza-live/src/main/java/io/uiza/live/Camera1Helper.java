@@ -2,21 +2,26 @@ package io.uiza.live;
 
 import android.media.audiofx.AcousticEchoCanceler;
 import android.media.audiofx.NoiseSuppressor;
+
 import androidx.annotation.NonNull;
+
 import com.pedro.encoder.input.gl.render.filters.BaseFilterRender;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.encoder.input.video.CameraOpenException;
 import com.pedro.rtplibrary.rtmp.RtmpCamera1;
 import com.pedro.rtplibrary.util.RecordController;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
-import io.uiza.core.utils.UizaLog;
+
 import io.uiza.live.enums.ProfileEncode;
 import io.uiza.live.enums.RecordStatus;
 import io.uiza.live.interfaces.CameraChangeListener;
 import io.uiza.live.interfaces.ICameraHelper;
 import io.uiza.live.interfaces.RecordListener;
 import io.uiza.live.interfaces.UizaCameraOpenException;
+import timber.log.Timber;
 
 public class Camera1Helper implements ICameraHelper {
 
@@ -70,7 +75,7 @@ public class Camera1Helper implements ICameraHelper {
         if (supportGlInterface())
             rtmpCamera1.getGlInterface().setFilter(filterReader);
         else
-            UizaLog.e("Camera1Helper", "Filter is not support in this view");
+            Timber.e("Filter is not support in this view");
     }
 
     @Override
@@ -78,7 +83,7 @@ public class Camera1Helper implements ICameraHelper {
         if (supportGlInterface())
             rtmpCamera1.getGlInterface().setFilter(filterPosition, filterReader);
         else
-            UizaLog.e("Camera1Helper", "Filter is not support in this view");
+            Timber.e("Filter is not support in this view");
     }
 
     @Override
@@ -86,11 +91,11 @@ public class Camera1Helper implements ICameraHelper {
         if (supportGlInterface())
             rtmpCamera1.getGlInterface().enableAA(aAEnabled);
         else
-            UizaLog.e("Camera1Helper", "Filter is not support in this view");
+            Timber.e("Filter is not support in this view");
     }
 
     @Override
-    public boolean isAAEnabled(){
+    public boolean isAAEnabled() {
         if (supportGlInterface())
             return rtmpCamera1.getGlInterface().isAAEnabled();
         return false;

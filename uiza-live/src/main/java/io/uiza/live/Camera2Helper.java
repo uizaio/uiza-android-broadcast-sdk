@@ -3,22 +3,27 @@ package io.uiza.live;
 import android.media.audiofx.AcousticEchoCanceler;
 import android.media.audiofx.NoiseSuppressor;
 import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+
 import com.pedro.encoder.input.gl.render.filters.BaseFilterRender;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.encoder.input.video.CameraOpenException;
 import com.pedro.rtplibrary.rtmp.RtmpCamera2;
 import com.pedro.rtplibrary.util.RecordController;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
-import io.uiza.core.utils.UizaLog;
+
 import io.uiza.live.enums.ProfileEncode;
 import io.uiza.live.enums.RecordStatus;
 import io.uiza.live.interfaces.CameraChangeListener;
 import io.uiza.live.interfaces.ICameraHelper;
 import io.uiza.live.interfaces.RecordListener;
 import io.uiza.live.interfaces.UizaCameraOpenException;
+import timber.log.Timber;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class Camera2Helper implements ICameraHelper {
@@ -72,7 +77,7 @@ public class Camera2Helper implements ICameraHelper {
         if (supportGlInterface())
             rtmpCamera2.getGlInterface().setFilter(filterReader);
         else
-            UizaLog.e("Camera2Helper", "Filter is not support in this view");
+            Timber.e("Filter is not support in this view");
     }
 
     @Override
@@ -80,7 +85,7 @@ public class Camera2Helper implements ICameraHelper {
         if (supportGlInterface())
             rtmpCamera2.getGlInterface().setFilter(filterPosition, filterReader);
         else
-            UizaLog.e("Camera2Helper", "Filter is not support in this view");
+            Timber.e("Filter is not support in this view");
     }
 
     @Override
@@ -88,7 +93,7 @@ public class Camera2Helper implements ICameraHelper {
         if (supportGlInterface()) {
             rtmpCamera2.getGlInterface().enableAA(aAEnabled);
         } else {
-            UizaLog.e("Camera2Helper", "AA is not support in this view");
+            Timber.e("AA is not support in this view");
         }
     }
 
@@ -156,7 +161,7 @@ public class Camera2Helper implements ICameraHelper {
 
     @Override
     public boolean prepareVideo(@NotNull ProfileEncode profile, int fps, int iFrameInterval, int rotation) {
-        UizaLog.e("Camera2Helper", "rotation = " + rotation);
+        Timber.d("rotation = %d", rotation);
         if (supportGlInterface()) {
             return rtmpCamera2.prepareVideo(profile.getWidth(), profile.getHeight(), fps, profile.getBitrate(), false, iFrameInterval, rotation);
         } else {

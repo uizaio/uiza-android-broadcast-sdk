@@ -19,7 +19,7 @@ import android.provider.Settings.canDrawOverlays
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import androidx.annotation.RequiresPermission
-import io.uiza.core.utils.captureException
+import androidx.core.content.pm.PackageInfoCompat
 import java.util.*
 
 
@@ -76,12 +76,11 @@ fun deviceInfo(): String {
 //@JvmName("currentAndroidVersion")
 fun Activity.currentAndroidVersion(): Long {
     var thisVersion: Long
-    try {
+    thisVersion = try {
         val pi = packageManager.getPackageInfo(packageName, 0)
-        thisVersion = pi.longVersionCode
+        PackageInfoCompat.getLongVersionCode(pi)
     } catch (e: PackageManager.NameNotFoundException) {
-        thisVersion = 1
-        captureException(e) // Sentry
+        1
     }
     return thisVersion
 }
@@ -103,8 +102,10 @@ fun Context.vibrate(milliseconds: Long) {
                 VibrationEffect.DEFAULT_AMPLITUDE
             )
         )
-    else
+    else {
+        //deprecated in API 26
         v.vibrate(milliseconds)
+    }
 }
 
 @RequiresPermission(android.Manifest.permission.VIBRATE)

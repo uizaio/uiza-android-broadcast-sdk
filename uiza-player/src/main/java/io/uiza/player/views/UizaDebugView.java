@@ -18,7 +18,6 @@ import com.google.android.exoplayer2.source.MediaSourceEventListener;
 
 import java.util.Locale;
 
-import io.uiza.core.utils.StringKt;
 import io.uiza.player.BuildConfig;
 import io.uiza.player.R;
 import io.uiza.player.observers.AudioVolumeObserver;
@@ -37,8 +36,8 @@ public class UizaDebugView extends RelativeLayout implements AnalyticsListener, 
     private int surfaceWidth, surfaceHeight;
     private int optimalResWidth, optimalResHeight;
     private int currentResWidth, currentResHeight;
-    private String audioDecodesStr = StringKt.emptyString, videoDecoderStr = StringKt.emptyString;
-    private String audioInfo = StringKt.emptyString, videoInfo = StringKt.emptyString;
+    private String audioDecodesStr = "", videoDecoderStr = "";
+    private String audioInfo = "", videoInfo = "";
 
     public UizaDebugView(Context context) {
         super(context);
@@ -162,7 +161,7 @@ public class UizaDebugView extends RelativeLayout implements AnalyticsListener, 
 
     @Override
     public void onBandwidthEstimate(EventTime eventTime, int totalLoadTimeMs, long totalBytesLoaded, long bitrateEstimate) {
-//        UizaLog.e("UizaDebugView", "totalBufferedDurationMs" + eventTime.totalBufferedDurationMs);
+//        Timber.e( "totalBufferedDurationMs: %ld", eventTime.totalBufferedDurationMs);
         handler.post(() -> {
             textConnectionSpeed.setText(ConvertKt.bandwidthFormat(bitrateEstimate));
             textNetworkActivity.setText(ConvertKt.humanReadableByteCount(totalBytesLoaded, true, false));
@@ -202,7 +201,7 @@ public class UizaDebugView extends RelativeLayout implements AnalyticsListener, 
 
     private static String getDecoderCountersBufferCountString(DecoderCounters counters) {
         if (counters == null) {
-            return StringKt.emptyString;
+            return "";
         }
         counters.ensureUpdated();
         return " (sib:" + counters.skippedInputBufferCount +

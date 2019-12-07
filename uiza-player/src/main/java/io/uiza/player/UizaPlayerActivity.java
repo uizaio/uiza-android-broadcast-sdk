@@ -3,6 +3,7 @@ package io.uiza.player;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.KeyEvent;
@@ -52,19 +53,20 @@ import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.ErrorMessageProvider;
 import com.google.android.exoplayer2.util.Util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Constructor;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.UUID;
 
-import io.uiza.core.utils.CommonKt;
-import io.uiza.core.utils.UizaLog;
 import io.uiza.player.utils.ScreenKt;
 import io.uiza.player.views.TrackSelectionDialog;
 import io.uiza.player.views.UizaDebugView;
 import io.uiza.player.views.UizaPlayerView;
 import io.uiza.player.widgets.UizaImageButton;
+import timber.log.Timber;
 
 public class UizaPlayerActivity extends AppCompatActivity
         implements View.OnClickListener, PlaybackPreparer, UizaPlayerView.PlayerControlVisibilityListener {
@@ -134,12 +136,12 @@ public class UizaPlayerActivity extends AppCompatActivity
     // Activity lifecycle
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedState) {
         String sphericalStereoMode = getIntent().getStringExtra(SPHERICAL_STEREO_MODE_EXTRA);
         if (sphericalStereoMode != null) {
             setTheme(R.style.PlayerTheme_Spherical);
         }
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedState);
         dataSourceFactory = buildDataSourceFactory();
         if (CookieHandler.getDefault() != DEFAULT_COOKIE_MANAGER) {
             CookieHandler.setDefault(DEFAULT_COOKIE_MANAGER);
@@ -158,10 +160,7 @@ public class UizaPlayerActivity extends AppCompatActivity
         playerView.setErrorMessageProvider(new PlayerErrorMessageProvider());
         playerView.requestFocus();
         PlayerControlView controlView = playerView.getPlayerControlView();
-        controlView.findViewById(R.id.exo_fullscreen_toggle).setOnClickListener(v -> {
-            UizaLog.e("Player", "onClick fullscreen");
-            ScreenKt.toggleScreenOritation(UizaPlayerActivity.this);
-        });
+        controlView.findViewById(R.id.exo_fullscreen_toggle).setOnClickListener(v -> ScreenKt.toggleScreenOritation(UizaPlayerActivity.this));
 
         selectTracksButton = controlView.findViewById(R.id.exo_trackers);
         if (selectTracksButton != null) {
@@ -184,11 +183,11 @@ public class UizaPlayerActivity extends AppCompatActivity
             ((SphericalSurfaceView) playerView.getVideoSurfaceView()).setDefaultStereoMode(stereoMode);
         }
 
-        if (savedInstanceState != null) {
-            trackSelectorParameters = savedInstanceState.getParcelable(KEY_TRACK_SELECTOR_PARAMETERS);
-            startAutoPlay = savedInstanceState.getBoolean(KEY_AUTO_PLAY);
-            startWindow = savedInstanceState.getInt(KEY_WINDOW);
-            startPosition = savedInstanceState.getLong(KEY_POSITION);
+        if (savedState != null) {
+            trackSelectorParameters = savedState.getParcelable(KEY_TRACK_SELECTOR_PARAMETERS);
+            startAutoPlay = savedState.getBoolean(KEY_AUTO_PLAY);
+            startWindow = savedState.getInt(KEY_WINDOW);
+            startPosition = savedState.getLong(KEY_POSITION);
         } else {
             trackSelectorParameters = new DefaultTrackSelector.ParametersBuilder().build();
             clearStartPosition();
@@ -207,7 +206,7 @@ public class UizaPlayerActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        if (CommonKt.isNougatAndAbove()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             initializePlayer();
             if (playerView != null) {
                 playerView.onResume();
@@ -218,7 +217,7 @@ public class UizaPlayerActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        if (!CommonKt.isNougatAndAbove() || player == null) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N || player == null) {
             initializePlayer();
             if (playerView != null) {
                 playerView.onResume();
@@ -229,7 +228,7 @@ public class UizaPlayerActivity extends AppCompatActivity
     @Override
     public void onPause() {
         super.onPause();
-        if (!CommonKt.isNougatAndAbove()) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             if (playerView != null) {
                 playerView.onPause();
             }
@@ -240,7 +239,7 @@ public class UizaPlayerActivity extends AppCompatActivity
     @Override
     public void onStop() {
         super.onStop();
-        if (CommonKt.isNougatAndAbove()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             if (playerView != null) {
                 playerView.onPause();
             }
@@ -271,7 +270,7 @@ public class UizaPlayerActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         updateTrackSelectorParameters();
         updateStartPosition();
@@ -313,7 +312,7 @@ public class UizaPlayerActivity extends AppCompatActivity
 
     @Override
     public void onVisibilityChange(int visibility) {
-        UizaLog.e("Player", "visibility = " + visibility);
+        Timber.d("visibility = %d", visibility);
     }
 
     // Internal methods
@@ -328,6 +327,9 @@ public class UizaPlayerActivity extends AppCompatActivity
                 extensions = new String[]{intent.getStringExtra(EXTENSION_EXTRA)};
             } else if (ACTION_VIEW_LIST.equals(action)) {
                 String[] uriStrings = intent.getStringArrayExtra(URI_LIST_EXTRA);
+                if (uriStrings == null) {
+                    uriStrings = new String[]{};
+                }
                 uris = new Uri[uriStrings.length];
                 for (int i = 0; i < uriStrings.length; i++) {
                     uris[i] = Uri.parse(uriStrings[i]);
@@ -515,7 +517,8 @@ public class UizaPlayerActivity extends AppCompatActivity
             adsLoader.release();
             adsLoader = null;
             loadedAdTagUri = null;
-            playerView.getOverlayFrameLayout().removeAllViews();
+            if (playerView.getOverlayFrameLayout() != null)
+                playerView.getOverlayFrameLayout().removeAllViews();
         }
     }
 

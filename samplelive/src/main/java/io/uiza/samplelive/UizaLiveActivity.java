@@ -28,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import io.uiza.core.utils.UizaLog;
 import io.uiza.live.UizaLiveView;
 import io.uiza.live.enums.FilterRender;
 import io.uiza.live.enums.RecordStatus;
@@ -37,6 +36,7 @@ import io.uiza.live.interfaces.CameraChangeListener;
 import io.uiza.live.interfaces.RecordListener;
 import io.uiza.live.interfaces.UizaCameraOpenException;
 import io.uiza.live.interfaces.UizaLiveListener;
+import timber.log.Timber;
 
 public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListener,
         View.OnClickListener, RecordListener, CameraChangeListener {
@@ -379,7 +379,7 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public void onNewBitrate(long bitrate) {
-        UizaLog.e(TAG, "newBitrate: " + bitrate);
+        Timber.e("newBitrate: %ld", bitrate);
     }
 
     @Override
@@ -401,28 +401,28 @@ public class UizaLiveActivity extends AppCompatActivity implements UizaLiveListe
 
     @Override
     public void surfaceCreated() {
-        UizaLog.e(TAG, "surfaceCreated");
+        Timber.e("surfaceCreated");
     }
 
     @Override
     public void surfaceChanged(int format, int width, int height) {
-        UizaLog.e(TAG, "surfaceChanged: {" + format + ", " + width + ", " + height + "}");
+        Timber.e("surfaceChanged: {" + format + ", " + width + ", " + height + "}");
     }
 
     @Override
     public void surfaceDestroyed() {
-        UizaLog.e(TAG, "surfaceDestroyed");
+        Timber.e("surfaceDestroyed");
     }
 
     @Override
     public void onCameraChange(boolean isFrontCamera) {
-        UizaLog.e(TAG, "onCameraChange: " + isFrontCamera);
+        Timber.e("onCameraChange: %b", isFrontCamera);
     }
 
     @Override
     public void onStatusChange(RecordStatus status) {
         bRecord.setChecked(status == RecordStatus.RECORDING);
-        
+
         if (status == RecordStatus.RECORDING) {
             Toast.makeText(this, "Recording... ", Toast.LENGTH_SHORT).show();
         } else if (status == RecordStatus.STOPPED) {

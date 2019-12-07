@@ -11,6 +11,8 @@ buildscript {
         pedrosg94_version = '1.7.2'
         glide_version = '4.10.0'
         exo_version = '2.10.8'
+        timber_version = '4.7.1'
+        rxjava_version = '2.2.15'
     }
     repositories {
         google()

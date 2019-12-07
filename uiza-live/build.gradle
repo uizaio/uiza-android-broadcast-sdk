@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    implementation project(':uiza-core')
+//    implementation project(':uiza-core')
     //https://github.com/pedroSG94/rtmp-rtsp-stream-client-java
     implementation "com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:$pedrosg94_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -31,4 +31,6 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.1.0'
     //runtime permission https://github.com/Karumi/Dexter
     implementation 'com.karumi:dexter:6.0.1'
+    //Logger
+    implementation "com.jakewharton.timber:timber:$timber_version"
 }

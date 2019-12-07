@@ -1,6 +1,5 @@
 package io.uiza.player.views;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -12,8 +11,8 @@ import com.google.android.exoplayer2.ui.PlayerView;
 
 import java.util.List;
 
-import io.uiza.core.utils.SentryKt;
 import io.uiza.player.utils.ViewUtil;
+import timber.log.Timber;
 
 public class UizaPlayerView extends PlayerView implements PlayerControlView.VisibilityListener {
 
@@ -237,8 +236,7 @@ public class UizaPlayerView extends PlayerView implements PlayerControlView.Visi
                     }
                 }
             } catch (Exception exception) {
-                exception.printStackTrace();
-                SentryKt.captureException(exception);
+                Timber.e(exception);
             }
             return true;
         }

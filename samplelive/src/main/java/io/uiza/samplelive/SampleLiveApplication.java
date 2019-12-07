@@ -4,6 +4,8 @@ import androidx.multidex.MultiDexApplication;
 
 import io.uiza.core.UizaClient;
 import io.uiza.core.api.UizaLiveV5Service;
+import io.uiza.live.UizaLive;
+import timber.log.Timber;
 
 public class SampleLiveApplication extends MultiDexApplication {
 
@@ -28,6 +30,10 @@ public class SampleLiveApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
 //        UizaPlayer.get().setServiceClazz(DemoDownloadService.class);
+        if(BuildConfig.DEBUG){
+            Timber.plant(new Timber.DebugTree());
+        }
+        UizaLive.get().init();
         restClient = new UizaClient.Builder(DEV_HOST).withToken(APP_SECRET).builder();
     }
 

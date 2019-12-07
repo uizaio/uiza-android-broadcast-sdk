@@ -13,13 +13,13 @@ import io.reactivex.functions.Consumer
 import io.uiza.core.models.CreateLiveEntityBody
 import io.uiza.core.models.DeleteLiveEntityResponse
 import io.uiza.core.models.LiveEntity
-import io.uiza.core.utils.UizaLog
 import io.uiza.core.utils.execSubscribe
 import io.uiza.core.utils.getData
 import io.uiza.extensions.lauchActivity
 import io.uiza.extensions.setVertical
 import kotlinx.android.synthetic.main.activity_live_list.*
 import kotlinx.android.synthetic.main.dlg_create_live.view.*
+import timber.log.Timber
 
 class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
     PopupMenu.OnMenuItemClickListener {
@@ -52,7 +52,7 @@ class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
                     },
                     Consumer { throwable ->
                         progress_bar.visibility = View.GONE
-                        UizaLog.e("MainActivity", "error: " + throwable?.localizedMessage)
+                        Timber.e(throwable)
                     })
         )
     }
@@ -151,7 +151,7 @@ class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
                                 adapter.removeItem(entity)
                             }
                         }
-                        UizaLog.e("LiveList", res.toString())
+                        Timber.d(res.toString())
                     }
                 },
                 Consumer { throwable ->

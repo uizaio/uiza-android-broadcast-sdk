@@ -1,6 +1,7 @@
 package io.uiza.player.widgets.previewseekbar;
 
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -11,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
-import io.uiza.core.utils.CommonKt;
 import io.uiza.player.R;
 
 
@@ -59,7 +59,7 @@ public class PreviewDelegate implements PreviewView.OnPreviewChangeListener {
         morphView.setVisibility(View.INVISIBLE);
         frameLayout.setVisibility(View.INVISIBLE);
         previewFrameView.setVisibility(View.INVISIBLE);
-        if (CommonKt.isLlAndAbove()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             animator = new PreviewAnimatorLollipopImpl(previewParent, previewView, morphView,
                     frameLayout, previewFrameView);
         } else {

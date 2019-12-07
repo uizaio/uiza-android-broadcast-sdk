@@ -28,11 +28,13 @@ android {
 }
 
 dependencies {
-    implementation project(':uiza-core')
+//    implementation project(':uiza-core')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.1.0'
-
+    //Logger
+    implementation "com.jakewharton.timber:timber:$timber_version"
+    //ExoPlayer
     implementation "com.google.android.exoplayer:exoplayer:$exo_version"
     implementation "com.google.android.exoplayer:extension-ima:$exo_version"
     implementation "com.google.android.exoplayer:exoplayer-dash:$exo_version"

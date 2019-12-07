@@ -7,6 +7,7 @@ import com.google.android.exoplayer2.offline.DownloadManager;
 import io.uiza.core.UizaClient;
 import io.uiza.core.api.UizaLiveV5Service;
 import io.uiza.player.UizaPlayer;
+import timber.log.Timber;
 
 public class SampleApplication extends MultiDexApplication {
 
@@ -30,7 +31,10 @@ public class SampleApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        UizaPlayer.init(getApplicationContext(), "UizaSampleV5");
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
+        UizaPlayer.get().init(getApplicationContext(), "UizaSampleV5");
 //        UizaPlayer.get().setServiceClazz(DemoDownloadService.class);
         restClient = new UizaClient.Builder(DEV_HOST).withToken(APP_SECRET).builder();
     }

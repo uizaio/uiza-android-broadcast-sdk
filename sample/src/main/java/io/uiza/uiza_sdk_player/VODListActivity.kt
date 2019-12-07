@@ -6,11 +6,11 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.uiza.core.utils.UizaLog
 import io.uiza.core.utils.execSubscribe
 import io.uiza.core.utils.getData
 import io.uiza.extensions.setVertical
 import kotlinx.android.synthetic.main.activity_vod_list.*
+import timber.log.Timber
 
 
 class VODListActivity : AppCompatActivity() {
@@ -41,7 +41,7 @@ class VODListActivity : AppCompatActivity() {
                 },
                 Consumer { throwable ->
                     progress_bar.visibility = View.GONE
-                    UizaLog.e("MainActivity", "error: " + throwable?.localizedMessage)
+                    Timber.e(throwable)
                 })
         )
     }

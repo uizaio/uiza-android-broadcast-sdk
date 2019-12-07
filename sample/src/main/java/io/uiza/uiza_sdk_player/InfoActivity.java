@@ -13,9 +13,9 @@ import com.google.android.exoplayer2.util.Assertions;
 
 import io.uiza.core.models.LiveEntity;
 import io.uiza.core.utils.StringKt;
-import io.uiza.core.utils.UizaLog;
 import io.uiza.extensions.MediaExtension;
 import io.uiza.player.UizaPlayerActivity;
+import timber.log.Timber;
 
 public class InfoActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -41,10 +41,10 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v.getId() == R.id.playBtn) {
             if (entity.playback != null) {
-                UizaLog.e("InfoActivity", "uri = " + entity.playback.hls);
+                Timber.d("uri = %s", entity.playback.hls);
                 startActivity(buildIntent(false,
                         UizaPlayerActivity.ABR_ALGORITHM_RANDOM, entity.playback.hls));
-            } else  {
+            } else {
                 Toast.makeText(this, "No play url", Toast.LENGTH_SHORT).show();
             }
         }

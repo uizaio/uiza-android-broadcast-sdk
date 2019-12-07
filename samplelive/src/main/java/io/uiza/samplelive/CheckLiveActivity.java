@@ -18,7 +18,7 @@ import io.uiza.core.models.CreateLiveEntityBody;
 import io.uiza.core.models.LiveEntity;
 import io.uiza.core.utils.ObservableKt;
 import io.uiza.core.utils.StringKt;
-import io.uiza.core.utils.UizaLog;
+import timber.log.Timber;
 
 public class CheckLiveActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -128,7 +128,7 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
             entity = ent;
             content.setText(StringKt.toPrettyFormat(ent.toString()));
             if (!entity.hasLive() && currentRetry < MAX_RETRY) {
-                UizaLog.e("CheckLive", "currentRetry:" + currentRetry);
+                Timber.e("currentRetry: %d", currentRetry);
                 currentRetry += 1;
                 handler.postDelayed(() -> getEntity(entityId), 3000);
             } else {
