@@ -11,8 +11,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 
 import com.google.android.exoplayer2.util.Assertions;
 
-import io.uiza.core.models.LiveEntity;
-import io.uiza.core.utils.StringKt;
+import io.uiza.core.models.v5.LiveEntity;
 import io.uiza.extensions.MediaExtension;
 import io.uiza.player.UizaPlayerActivity;
 import timber.log.Timber;
@@ -32,7 +31,7 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
         content = findViewById(R.id.content);
         entity = getIntent().getParcelableExtra(EXTRA_ENTITY);
         assert (entity != null);
-        content.setText(StringKt.toPrettyFormat(entity.toString()));
+        content.setText(entity.toString());
         findViewById(R.id.playBtn).setOnClickListener(this);
     }
 
@@ -40,10 +39,10 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.playBtn) {
-            if (entity.playback != null) {
-                Timber.d("uri = %s", entity.playback.hls);
+            if (entity.getPlayback() != null) {
+                Timber.d("uri = %s", entity.getPlayback().getHls());
                 startActivity(buildIntent(false,
-                        UizaPlayerActivity.ABR_ALGORITHM_RANDOM, entity.playback.hls));
+                        UizaPlayerActivity.ABR_ALGORITHM_RANDOM, entity.getPlayback().getHls()));
             } else {
                 Toast.makeText(this, "No play url", Toast.LENGTH_SHORT).show();
             }

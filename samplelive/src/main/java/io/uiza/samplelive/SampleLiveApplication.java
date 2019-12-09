@@ -3,7 +3,7 @@ package io.uiza.samplelive;
 import androidx.multidex.MultiDexApplication;
 
 import io.uiza.core.UizaClient;
-import io.uiza.core.api.UizaLiveV5Service;
+import io.uiza.core.api.UizaV5Service;
 import io.uiza.live.UizaLive;
 import timber.log.Timber;
 
@@ -37,7 +37,7 @@ public class SampleLiveApplication extends MultiDexApplication {
         restClient = new UizaClient.Builder(DEV_HOST).withToken(APP_SECRET).builder();
     }
 
-    public UizaLiveV5Service getLiveService() {
+    public UizaV5Service getLiveService() {
         return restClient.createLiveV5Service();
     }
 

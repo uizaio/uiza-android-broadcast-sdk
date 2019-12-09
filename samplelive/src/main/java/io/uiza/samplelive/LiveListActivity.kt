@@ -10,9 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.uiza.core.models.CreateLiveEntityBody
-import io.uiza.core.models.DeleteLiveEntityResponse
-import io.uiza.core.models.LiveEntity
+import io.uiza.core.models.v5.CreateLiveEntityBody
+import io.uiza.core.models.v5.DeleteLiveEntityResponse
+import io.uiza.core.models.v5.LiveEntity
 import io.uiza.core.utils.execSubscribe
 import io.uiza.core.utils.getData
 import io.uiza.extensions.lauchActivity

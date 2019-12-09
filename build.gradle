@@ -13,6 +13,7 @@ buildscript {
         exo_version = '2.10.8'
         timber_version = '4.7.1'
         rxjava_version = '2.2.15'
+        moshi_version= '1.9.2'
     }
     repositories {
         google()

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import io.uiza.extensions.MediaExtension;
 import io.uiza.player.UizaPlayerActivity;
+import io.uiza.uiza_sdk_player.v3.UizaTestAPIV3Activity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         findViewById(R.id.vod_btn).setOnClickListener(this);
         findViewById(R.id.force_vod_btn).setOnClickListener(this);
+        findViewById(R.id.test_apiv3_btn).setOnClickListener(this);
 
     }
 
@@ -31,7 +33,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.force_vod_btn:
                 startActivity(buildIntent(false,
                         UizaPlayerActivity.ABR_ALGORITHM_RANDOM, "http://14.161.15.87/live/sk.m3u8"));
-
+                break;
+            case R.id.test_apiv3_btn:
+                startActivity(new Intent(MainActivity.this, UizaTestAPIV3Activity.class));
+                break;
             default:
                 break;
         }

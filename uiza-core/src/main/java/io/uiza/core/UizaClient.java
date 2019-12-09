@@ -2,23 +2,22 @@ package io.uiza.core;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.squareup.moshi.Moshi;
 
 import java.security.InvalidParameterException;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.annotations.NonNull;
-import io.uiza.core.api.UizaLiveV5Service;
-import io.uiza.core.deserializers.DateTypeDeserializer;
+import io.uiza.core.api.UizaV3Service;
+import io.uiza.core.api.UizaV5Service;
+import io.uiza.core.deserializers.DateTimeAdapter;
 import io.uiza.core.interceptors.GzipRequestInterceptor;
 import io.uiza.core.interceptors.RestRequestInterceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 import timber.log.Timber;
 
 public class UizaClient {
@@ -116,14 +115,15 @@ public class UizaClient {
 
         final OkHttpClient okHttpClient = builder.build();
 
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Date.class, new DateTypeDeserializer())
-                .create();
+//        Gson gson = new GsonBuilder()
+//                .registerTypeAdapter(Date.class, new DateTypeDeserializer())
+//                .create();
+        Moshi moshi = new Moshi.Builder().add(new DateTimeAdapter()).build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseApiUrl)
                 .client(okHttpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build();
 
         if (!TextUtils.isEmpty(token)) {
@@ -139,8 +139,12 @@ public class UizaClient {
         return retrofit.create(serviceClass);
     }
 
-    public UizaLiveV5Service createLiveV5Service() {
-        return createService(UizaLiveV5Service.class);
+    public UizaV5Service createLiveV5Service() {
+        return createService(UizaV5Service.class);
+    }
+
+    public UizaV3Service createLiveV3Service() {
+        return createService(UizaV3Service.class);
     }
 
     public void addHeader(String name, String value) {

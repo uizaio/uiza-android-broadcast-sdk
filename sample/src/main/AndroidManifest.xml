@@ -26,6 +26,12 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".v3.UizaTestAPIV3Activity"
+            android:label="@string/api_v3_name"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".VODListActivity"
             android:label="@string/app_player_name"
             android:parentActivityName=".MainActivity"
@@ -35,6 +41,7 @@
             android:label="@string/app_player_name"
             android:parentActivityName=".VODListActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name="io.uiza.player.UizaPlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"

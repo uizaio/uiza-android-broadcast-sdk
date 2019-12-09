@@ -14,8 +14,8 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.widget.NestedScrollView;
 
 import io.reactivex.Observable;
-import io.uiza.core.models.CreateLiveEntityBody;
-import io.uiza.core.models.LiveEntity;
+import io.uiza.core.models.v5.CreateLiveEntityBody;
+import io.uiza.core.models.v5.LiveEntity;
 import io.uiza.core.utils.ObservableKt;
 import io.uiza.core.utils.StringKt;
 import timber.log.Timber;

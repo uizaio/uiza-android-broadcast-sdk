@@ -1,7 +1,7 @@
 package io.uiza.samplelive
 
 import android.view.View
-import io.uiza.core.models.LiveEntity
+import io.uiza.core.models.v5.LiveEntity
 import io.uiza.extensions.BaseAdapter
 import io.uiza.extensions.lauchActivity
 import kotlinx.android.synthetic.main.row_entity.view.*

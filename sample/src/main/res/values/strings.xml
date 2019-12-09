@@ -3,4 +3,5 @@
     <string name="app_name">Uiza Sample V5</string>
     <string name="app_live_name">Uiza Live Sample</string>
     <string name="app_player_name">Uiza Player Sample</string>
+    <string name="api_v3_name">Uiza API v3</string>
 </resources>

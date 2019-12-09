@@ -1,13 +1,13 @@
 package io.uiza.core.api
 
 import io.reactivex.Observable
-import io.uiza.core.models.*
+import io.uiza.core.models.v5.*
 import retrofit2.http.*
 
 /**
  * Connect to Live API
  */
-interface UizaLiveV5Service {
+interface UizaV5Service {
 
     /**
      * Get an entity

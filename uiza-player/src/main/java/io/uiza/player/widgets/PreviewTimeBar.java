@@ -97,7 +97,8 @@ public class PreviewTimeBar extends DefaultTimeBar implements PreviewView,
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        delegate.setEnabled(enabled);
+        if (delegate != null)
+            delegate.setEnabled(enabled);
     }
 
     @Override

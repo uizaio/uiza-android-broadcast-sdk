@@ -42,4 +42,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/test_apiv3_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_padding"
+        android:drawableStart="@drawable/ic_v3_white_24"
+        android:drawablePadding="@dimen/activity_padding"
+        android:drawableTint="@android:color/background_dark"
+        android:text="Test API V3"
+        app:layout_constraintBaseline_creator="@integer/exo_media_button_opacity_percentage_disabled"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
