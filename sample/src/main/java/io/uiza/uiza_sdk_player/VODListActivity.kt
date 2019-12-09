@@ -6,8 +6,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.uiza.core.utils.execSubscribe
 import io.uiza.core.utils.getData
+import io.uiza.core.utils.ioSubscribe
 import io.uiza.extensions.setVertical
 import kotlinx.android.synthetic.main.activity_vod_list.*
 import timber.log.Timber
@@ -31,7 +31,7 @@ class VODListActivity : AppCompatActivity() {
             .getData { entity ->
                 !TextUtils.isEmpty(entity.playback?.hls)
             }
-            .execSubscribe(
+            .ioSubscribe(
                 Consumer { entities ->
                     entities?.let {
                         contentList.adapter =

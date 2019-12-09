@@ -16,6 +16,7 @@ import io.uiza.core.models.v3.CreateMetadataBody;
 import io.uiza.core.models.v3.DeleteUserBody;
 import io.uiza.core.models.v3.IdResponse;
 import io.uiza.core.models.v3.ListV3Wrapper;
+import io.uiza.core.models.v3.LiveV3Entity;
 import io.uiza.core.models.v3.MetadataDetail;
 import io.uiza.core.models.v3.ObjectV3Wrapper;
 import io.uiza.core.models.v3.RequestUserBody;
@@ -40,7 +41,7 @@ public class UizaTestAPIV3Activity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         activity = this;
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_api_v3_test);
+        setContentView(R.layout.activity_api_test);
         tv = findViewById(R.id.tv);
         v3Service = ((SampleApplication) getApplication()).getV3Service();
         compositeDisposable = new CompositeDisposable();
@@ -114,30 +115,30 @@ public class UizaTestAPIV3Activity extends AppCompatActivity implements View.OnC
             case R.id.bt_get_detail_of_metadata:
                 getDetailOfMetadata();
                 break;
+            case R.id.bt_update_metadata:
+                updateMetadata();
+                break;
+            case R.id.bt_delete_an_metadata:
+                deleteAnMetadata();
+                break;
+            case R.id.bt_list_all_entity:
+                listAllEntities();
+                break;
+            case R.id.bt_list_all_entity_metadata:
+                listAllEntityMetadata();
+                break;
+            case R.id.bt_retrieve_an_entity:
+                retrieveAnEntity();
+                break;
+            case R.id.bt_search_entity:
+                searchAnEntity();
+                break;
             default:
                 break;
         }
 //        switch (v.getId()) {
 
 
-//            case R.id.bt_update_metadata:
-//                updateMetadata();
-//                break;
-//            case R.id.bt_delete_an_metadata:
-//                deleteAnMetadata();
-//                break;
-//            case R.id.bt_list_all_entity:
-//                listAllEntity();
-//                break;
-//            case R.id.bt_list_all_entity_metadata:
-//                listAllEntityMetadata();
-//                break;
-//            case R.id.bt_retrieve_an_entity:
-//                retrieveAnEntity();
-//                break;
-//            case R.id.bt_search_entity:
-//                searchAnEntity();
-//                break;
 //            case R.id.bt_get_token_streaming:
 //                getTokenStreaming();
 //                break;
@@ -176,24 +177,24 @@ public class UizaTestAPIV3Activity extends AppCompatActivity implements View.OnC
                 "username " + System.currentTimeMillis(),
                 "email " + System.currentTimeMillis(),
                 "123456789", "path", "fullname", "11/11/1111", 1, 0);
-        Observable<IdResponse> obs = v3Service.createAnUser(createUser).map(ObjectV3Wrapper::getData);
-        compositeDisposable.add(ObservableKt.execSubscribe(obs, o -> tv.setText(o.getId()), throwable -> {
+        Observable<IdResponse> obs = v3Service.createUser(createUser).map(ObjectV3Wrapper::getData);
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs, o -> tv.setText(o.getId()), throwable -> {
             Timber.e(throwable, "createAnUser onFail");
             tv.setText(throwable.getLocalizedMessage());
         }));
     }
 
     private void retrieveAnUser() {
-        Observable<User> obs = v3Service.retrieveAnUser("6d812978-4253-4bb6-995d-2e6fa82b28e7").map(ObjectV3Wrapper::getData);
-        compositeDisposable.add(ObservableKt.execSubscribe(obs, user -> tv.setText(user.toString()), throwable -> {
+        Observable<User> obs = v3Service.getUser("6d812978-4253-4bb6-995d-2e6fa82b28e7").map(ObjectV3Wrapper::getData);
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs, user -> tv.setText(user.toString()), throwable -> {
             tv.setText(throwable.getLocalizedMessage());
             Timber.e("createAnUser onFail: %s", throwable.toString());
         }));
     }
 
     private void listAllUsers() {
-        Observable<List<User>> obs = v3Service.listAllUsers().map(ListV3Wrapper::getData);
-        compositeDisposable.add(ObservableKt.execSubscribe(obs, users -> tv.setText(User.toJson(users)), throwable -> {
+        Observable<List<User>> obs = v3Service.getUsers().map(ListV3Wrapper::getData);
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs, users -> tv.setText(User.toJson(users)), throwable -> {
             tv.setText(throwable.getLocalizedMessage());
             Timber.e("createAnUser onFail: %s", throwable.toString());
         }));
@@ -208,16 +209,16 @@ public class UizaTestAPIV3Activity extends AppCompatActivity implements View.OnC
                 "fullname",
                 "11/11/1111",
                 1, 0);
-        Observable<User> obs = v3Service.updateAnUser(userBody).map(ObjectV3Wrapper::getData);
-        compositeDisposable.add(ObservableKt.execSubscribe(obs, o -> tv.setText(o.toString()), throwable -> {
+        Observable<User> obs = v3Service.updateUser(userBody).map(ObjectV3Wrapper::getData);
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs, o -> tv.setText(o.toString()), throwable -> {
             Timber.e(throwable, "updateAnUser onFail ");
             tv.setText(throwable.getLocalizedMessage());
         }));
     }
 
     private void deleteAnUser() {
-        Observable<IdResponse> obs = v3Service.deleteAnUser(new DeleteUserBody("6d812978-4253-4bb6-995d-2e6fa82b28e7")).map(ObjectV3Wrapper::getData);
-        compositeDisposable.add(ObservableKt.execSubscribe(obs, o -> tv.setText(o.toString()), throwable -> {
+        Observable<IdResponse> obs = v3Service.deleteUser(new DeleteUserBody("6d812978-4253-4bb6-995d-2e6fa82b28e7")).map(ObjectV3Wrapper::getData);
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs, o -> tv.setText(o.toString()), throwable -> {
             tv.setText(throwable.getLocalizedMessage());
             Timber.e(throwable, "deleteAnUser onFail");
         }));
@@ -229,15 +230,15 @@ public class UizaTestAPIV3Activity extends AppCompatActivity implements View.OnC
                 "oldpassword",
                 "newpassword");
         Observable<IdResponse> obs = v3Service.updatePassword(updatePassword).map(ObjectV3Wrapper::getData);
-        compositeDisposable.add(ObservableKt.execSubscribe(obs, o -> tv.setText(o.toString()), throwable -> {
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs, o -> tv.setText(o.toString()), throwable -> {
             tv.setText(throwable.getLocalizedMessage());
             Timber.e(throwable, "updatePassword onFail");
         }));
     }
 
     private void getListMetadata() {
-        Observable<List<MetadataDetail>> obs = v3Service.getListMetadata(10, 0).map(ListV3Wrapper::getData);
-        compositeDisposable.add(ObservableKt.execSubscribe(obs, o -> tv.setText(MetadataDetail.toJson(o)), throwable -> {
+        Observable<List<MetadataDetail>> obs = v3Service.getMetadatas(10, 0).map(ListV3Wrapper::getData);
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs, o -> tv.setText(MetadataDetail.toJson(o)), throwable -> {
             Timber.e(throwable, "getListMetadata onFail ");
             tv.setText(throwable.getLocalizedMessage());
         }));
@@ -250,7 +251,7 @@ public class UizaTestAPIV3Activity extends AppCompatActivity implements View.OnC
                 "This is a description sentences",
                 1, "/exemple.com/icon.png");
         Observable<IdResponse> obs = v3Service.createMetadata(createMetadata).map(ObjectV3Wrapper::getData);
-        compositeDisposable.add(ObservableKt.execSubscribe(obs, o -> tv.setText(o.toString()), throwable -> {
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs, o -> tv.setText(o.toString()), throwable -> {
             Timber.e(throwable, "createMetadata onFail");
             tv.setText(throwable.getLocalizedMessage());
         }));
@@ -258,99 +259,92 @@ public class UizaTestAPIV3Activity extends AppCompatActivity implements View.OnC
 
     private void getDetailOfMetadata() {
         Observable<MetadataDetail> obs = v3Service.getDetailOfMetadata("66a4f1d0-ac62-4441-a217-1fa8653bca0a").map(ObjectV3Wrapper::getData);
-        compositeDisposable.add(ObservableKt.execSubscribe(obs, o -> tv.setText(o.toString()), throwable -> {
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs, o -> tv.setText(o.toString()), throwable -> {
             tv.setText(throwable.getLocalizedMessage());
             Timber.e(throwable, "getDetailOfMetadata onFail");
         }));
     }
 
-//    private void updateMetadata() {
-//        UZService service = UZRestClient.createService(UZService.class);
-//        CreateMetadata createMetadata = new CreateMetadata();
-//        createMetadata.setId("ce1a4735-99f4-4968-bf2a-3ba8063441f4");
-//        createMetadata.setName("@@@Loitp Suzuki GSX S1000");
-//        createMetadata.setType(CreateMetadata.TYPE_PLAYLIST);
-//        createMetadata.setDescription("Update description");
-//        createMetadata.setOrderNumber(69);
-//        createMetadata.setIcon("/exemple.com/icon_002.png");
-//        UZAPIMaster.getInstance().subscribe(service.updateMetadata(createMetadata), o -> {
-//            LLog.d(TAG, "updateMetadata onSuccess: " + LSApplication.getInstance().getGson().toJson(o));
-//            showTv(o);
-//        }, throwable -> {
-//            LLog.e(TAG, "createAnUser onFail " + throwable.toString());
-//            showTv(throwable.getMessage());
-//        });
-//    }
-//
-//    private void deleteAnMetadata() {
-//        UZService service = UZRestClient.createService(UZService.class);
-//        String deleteMetadataId = "37b865b3-cf75-4faa-8507-180a9436d95d";
-//        UZAPIMaster.getInstance().subscribe(service.deleteAnMetadata(deleteMetadataId), o -> {
-//            LLog.d(TAG, "deleteAnMetadata onSuccess: " + LSApplication.getInstance().getGson().toJson(o));
-//            showTv(o);
-//        }, throwable -> {
-//            LLog.e(TAG, "createAnUser onFail " + throwable.toString());
-//            showTv(throwable.getMessage());
-//        });
-//    }
-//
-//
-//    private void listAllEntity() {
-//        UZService service = UZRestClient.createService(UZService.class);
-//        String metadataId = "";
-//        int limit = 50;
-//        int page = 0;
-//        String orderBy = "createdAt";
-//        String orderType = "DESC";
-//        UZAPIMaster.getInstance().subscribe(service.getListAllEntity(metadataId, limit, page, orderBy, orderType, "success"), o -> {
-//            LLog.d(TAG, "getListAllEntity onSuccess: " + LSApplication.getInstance().getGson().toJson(o));
-//            showTv(o);
-//        }, throwable -> {
-//            LLog.e(TAG, "createAnUser onFail " + throwable.toString());
-//            showTv(throwable.getMessage());
-//        });
-//    }
-//
-//    private void listAllEntityMetadata() {
-//        UZService service = UZRestClient.createService(UZService.class);
-//        String metadataId = "74cac724-968c-4e6d-a6e1-6c2365e41d9d";
-//        int limit = 50;
-//        int page = 0;
-//        String orderBy = "createdAt";
-//        String orderType = "DESC";
-//        UZAPIMaster.getInstance().subscribe(service.getListAllEntity(metadataId, limit, page, orderBy, orderType, "success"), o -> {
-//            LLog.d(TAG, "getListAllEntity onSuccess: " + LSApplication.getInstance().getGson().toJson(o));
-//            showTv(o);
-//        }, throwable -> {
-//            LLog.e(TAG, "createAnUser onFail " + throwable.toString());
-//            showTv(throwable.getMessage());
-//        });
-//    }
-//
-//    private void retrieveAnEntity() {
-//        UZService service = UZRestClient.createService(UZService.class);
-//        String id = "7789b7cc-9fd8-499b-bd35-745d133b6089";
-//        UZAPIMaster.getInstance().subscribe(service.retrieveAnEntity(id), o -> {
-//            LLog.d(TAG, "getListAllEntity onSuccess: " + LSApplication.getInstance().getGson().toJson(o));
-//            showTv(o);
-//        }, throwable -> {
-//            LLog.e(TAG, "createAnUser onFail " + throwable.toString());
-//            showTv(throwable.getMessage());
-//        });
-//    }
-//
-//    private void searchAnEntity() {
-//        UZService service = UZRestClient.createService(UZService.class);
-//        String keyword = "a";
-//        UZAPIMaster.getInstance().subscribe(service.searchEntity(keyword), o -> {
-//            LLog.d(TAG, "getListAllEntity onSuccess: " + LSApplication.getInstance().getGson().toJson(o));
-//            showTv(o);
-//        }, throwable -> {
-//            LLog.e(TAG, "createAnUser onFail " + throwable.toString());
-//            showTv(throwable.getMessage());
-//        });
-//    }
-//
+    private void updateMetadata() {
+        CreateMetadataBody createMetadata = new CreateMetadataBody(
+                "ce1a4735-99f4-4968-bf2a-3ba8063441f4",
+                "@@@Loitp Suzuki GSX S1000",
+                CreateMetadataBody.TYPE_PLAYLIST,
+                "Update description",
+                69,
+                "/exemple.com/icon_002.png");
+        Observable<MetadataDetail> obs = v3Service.updateMetadata(createMetadata).map(ObjectV3Wrapper::getData);
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs, o -> tv.setText(o.toString()), throwable -> {
+            tv.setText(throwable.getLocalizedMessage());
+            Timber.e(throwable, "updateMetadata onFail");
+        }));
+    }
+
+    private void deleteAnMetadata() {
+        String deleteMetadataId = "37b865b3-cf75-4faa-8507-180a9436d95d";
+        compositeDisposable.add(ObservableKt.ioSubscribe(
+                v3Service.deleteMetadata(deleteMetadataId)
+                        .map(ObjectV3Wrapper::getData),
+                o -> tv.setText(o.toString()), throwable -> {
+                    tv.setText(throwable.getLocalizedMessage());
+                    Timber.e(throwable, "deleteAnMetadata onFail");
+                }));
+    }
+
+
+    private void listAllEntities() {
+        String metadataId = "";
+        int limit = 50;
+        int page = 0;
+        String orderBy = "createdAt";
+        String orderType = "DESC";
+        compositeDisposable.add(ObservableKt.ioSubscribe(
+                v3Service.getEntities(metadataId, limit, page, orderBy, orderType, "success")
+                        .map(ListV3Wrapper::getData), o -> tv.setText(LiveV3Entity.toJson(o))
+                , throwable -> {
+                    Timber.e(throwable, "listAllEntity onFail ");
+                    tv.setText(throwable.getMessage());
+                }));
+    }
+
+    private void listAllEntityMetadata() {
+        String metadataId = "74cac724-968c-4e6d-a6e1-6c2365e41d9d";
+        int limit = 50;
+        int page = 0;
+        String orderBy = "createdAt";
+        String orderType = "DESC";
+        compositeDisposable.add(ObservableKt.ioSubscribe(
+                v3Service.getEntities(metadataId, limit, page, orderBy, orderType, "success")
+                        .map(ListV3Wrapper::getData), o -> tv.setText(LiveV3Entity.toJson(o)), throwable -> {
+                    tv.setText(throwable.getLocalizedMessage());
+                    Timber.e(throwable, "listAllEntityMetadata onFail");
+                }));
+    }
+
+    private void retrieveAnEntity() {
+        String id = "7789b7cc-9fd8-499b-bd35-745d133b6089";
+        compositeDisposable.add(ObservableKt.ioSubscribe(
+                v3Service.getEntity(id).map(ObjectV3Wrapper::getData), o -> {
+                    if (o != null) {
+                        tv.setText(o.toString());
+                    }
+                }, throwable -> {
+                    tv.setText(throwable.getLocalizedMessage());
+                    Timber.e(throwable, "retrieveAnEntity onFail");
+                }));
+    }
+
+    private void searchAnEntity() {
+        String keyword = "a";
+        compositeDisposable.add(ObservableKt.ioSubscribe(
+                v3Service.searchEntities(keyword).map(ListV3Wrapper::getData),
+                o -> tv.setText(LiveV3Entity.toJson(o)),
+                throwable -> {
+                    tv.setText(throwable.getLocalizedMessage());
+                    Timber.e(throwable, "searchAnEntity onFail");
+                }));
+    }
+
 //    private void getTokenStreaming() {
 //        UZService service = UZRestClient.createService(UZService.class);
 //        SendGetTokenStreaming sendGetTokenStreaming = new SendGetTokenStreaming();

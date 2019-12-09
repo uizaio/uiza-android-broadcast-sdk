@@ -43,6 +43,34 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/test_apiv5_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_padding"
+        android:drawableStart="@drawable/ic_v5_white_24"
+        android:drawablePadding="@dimen/activity_padding"
+        android:drawableTint="@android:color/background_dark"
+        android:text="Test API V5"
+        app:layout_constraintBaseline_creator="@integer/exo_media_button_opacity_percentage_disabled"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/test_apiv4_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_padding"
+        android:drawableStart="@drawable/ic_v4_white_24"
+        android:drawablePadding="@dimen/activity_padding"
+        android:drawableTint="@android:color/background_dark"
+        android:text="Test API V4"
+        app:layout_constraintBaseline_creator="@integer/exo_media_button_opacity_percentage_disabled"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/test_apiv5_btn" />
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/test_apiv3_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,6 +82,6 @@
         app:layout_constraintBaseline_creator="@integer/exo_media_button_opacity_percentage_disabled"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline" />
+        app:layout_constraintTop_toBottomOf="@+id/test_apiv4_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,8 +13,8 @@ import io.reactivex.functions.Consumer
 import io.uiza.core.models.v5.CreateLiveEntityBody
 import io.uiza.core.models.v5.DeleteLiveEntityResponse
 import io.uiza.core.models.v5.LiveEntity
-import io.uiza.core.utils.execSubscribe
 import io.uiza.core.utils.getData
+import io.uiza.core.utils.ioSubscribe
 import io.uiza.extensions.lauchActivity
 import io.uiza.extensions.setVertical
 import kotlinx.android.synthetic.main.activity_live_list.*
@@ -43,7 +43,7 @@ class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
         progress_bar.visibility = View.VISIBLE
         compositeDisposable.add(
             (application as SampleLiveApplication).liveService.getEntities()
-                .getData().execSubscribe(
+                .getData().ioSubscribe(
                     Consumer { entities: List<LiveEntity>? ->
                         entities?.let {
                             adapter.setData(it)
@@ -131,7 +131,7 @@ class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
         )
         val obs =
             (application as SampleLiveApplication).liveService.createEntity(body)
-        obs.execSubscribe(Consumer { res: LiveEntity ->
+        obs.ioSubscribe(Consumer { res: LiveEntity ->
             lauchActivity<CheckLiveActivity> {
                 putExtra(CheckLiveActivity.EXTRA_ENTITY, res)
             }
@@ -143,7 +143,7 @@ class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
     private fun removeEntity() {
         currentEntityId?.let {
             val obs = (application as SampleLiveApplication).liveService.deleteEntity(it)
-            obs.execSubscribe(
+            obs.ioSubscribe(
                 Consumer { res: DeleteLiveEntityResponse ->
                     res.id?.let { entityId ->
                         if (res.deleted == true) {

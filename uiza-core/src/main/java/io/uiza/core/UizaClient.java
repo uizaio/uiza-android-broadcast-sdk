@@ -115,9 +115,6 @@ public class UizaClient {
 
         final OkHttpClient okHttpClient = builder.build();
 
-//        Gson gson = new GsonBuilder()
-//                .registerTypeAdapter(Date.class, new DateTypeDeserializer())
-//                .create();
         Moshi moshi = new Moshi.Builder().add(new DateTimeAdapter()).build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseApiUrl)

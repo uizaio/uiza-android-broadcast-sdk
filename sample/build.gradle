@@ -36,7 +36,7 @@ android {
 
     flavorDimensions "uiza"
 
-    productFlavors{
+    productFlavors {
         dev {
             dimension "uiza"
             versionNameSuffix "-dev"

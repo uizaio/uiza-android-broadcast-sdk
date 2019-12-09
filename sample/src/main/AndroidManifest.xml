@@ -22,15 +22,26 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".v5.UizaTestAPIV5Activity"
+            android:label="@string/api_v5_name"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".v4.UizaTestAPIV4Activity"
+            android:label="@string/api_v4_name"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".v3.UizaTestAPIV3Activity"
             android:label="@string/api_v3_name"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".VODListActivity"
             android:label="@string/app_player_name"
@@ -41,7 +52,6 @@
             android:label="@string/app_player_name"
             android:parentActivityName=".VODListActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="io.uiza.player.UizaPlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
@@ -50,7 +60,9 @@
             android:theme="@style/PlayerTheme">
             <intent-filter>
                 <action android:name="io.uiza.player.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:scheme="content" />
@@ -59,6 +71,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="io.uiza.player.action.VIEW_LIST" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

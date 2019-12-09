@@ -18,8 +18,14 @@ import io.uiza.core.models.v5.ListWrapper
  */
 //@JvmName("newThread")
 fun <T> Observable<T>.newThread(): Observable<T> {
-    return this.observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.newThread())
+    return this.observeOn(AndroidSchedulers.mainThread()) // notify to main thread
+        .subscribeOn(Schedulers.newThread()) // run in background
+}
+
+//@JvmName("ioThread")
+fun <T> Observable<T>.io(): Observable<T> {
+    return this.observeOn(AndroidSchedulers.mainThread()) // notify to main thread
+        .subscribeOn(Schedulers.io()) // run in background
 }
 
 /**
@@ -33,15 +39,15 @@ fun <T> Observable<T>.customThread(): Observable<T> {
 }
 
 /**
- * Use {@link newThread} before subscribe
+ * Use {@link Schedulers.io()} before subscribe
  */
-//@JvmName("execSubscribe")
-@SchedulerSupport(SchedulerSupport.NEW_THREAD)
-fun <T> Observable<T>.execSubscribe(
+//@JvmName("ioSubscribe")
+@SchedulerSupport(SchedulerSupport.IO)
+fun <T> Observable<T>.ioSubscribe(
     onNext: Consumer<in T>,
     onError: Consumer<in Throwable>? = null
 ): Disposable {
-    return newThread().subscribe(onNext, onError)
+    return io().subscribe(onNext, onError)
 }
 
 fun <T> Observable<ListWrapper<T>>.getData(filter: (T) -> Boolean): Observable<List<T>> {
