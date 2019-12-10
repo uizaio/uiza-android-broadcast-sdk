@@ -1,10 +1,13 @@
 package io.uiza.core.models.v3
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.uiza.core.utils.toJson
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class LiveV3Entity constructor(
     @Json(name = "id") var id: String? = null,
@@ -21,7 +24,7 @@ data class LiveV3Entity constructor(
     @Json(name = "extendMetadata") var extendMetadata: String? = null,
     @Json(name = "createdAt") var createdAt: Date? = null,
     @Json(name = "updatedAt") var updatedAt: Date? = null
-) {
+) : Parcelable {
 
     override fun toString(): String {
         return this.toJson()
@@ -35,14 +38,26 @@ data class LiveV3Entity constructor(
     }
 }
 
+@Parcelize
 @JsonClass(generateAdapter = true)
-class LastPullInfo constructor(
-    @Json(name = "primaryInputUri") var primaryInputUri: String? = null,
-    @Json(name = "secondaryInputUri") var secondaryInputUri: Any? = null
-)
+class DataToken constructor(
+    @Json(name = "token") var token: String? = null
+) : Parcelable {
+    override fun toString(): String {
+        return this.toJson()
+    }
+}
 
 @JsonClass(generateAdapter = true)
-class LastPushInfo constructor(
-    @Json(name = "streamUrl") var streamUrl: String? = null,
-    @Json(name = "streamKey") var streamKey: String? = null
-)
+class TokenStreamBody constructor(
+    @Json(name = "entity_id") var entityId: String? = null,
+    @Json(name = "app_id") var appId: String? = null,
+    @Json(name = "content_type") var contentType: String? = null
+) {
+    companion object {
+        const val STREAM = "stream"
+        const val STATIC = "static"
+        const val CATCHUP = "catchup"
+        const val LIVE = "live"
+    }
+}

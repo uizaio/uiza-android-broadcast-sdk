@@ -33,7 +33,7 @@ class VODListActivity : AppCompatActivity() {
             }
             .ioSubscribe(
                 Consumer { entities ->
-                    entities?.let {
+                    entities.value?.let {
                         contentList.adapter =
                             EntityAdapter(it)
                     }

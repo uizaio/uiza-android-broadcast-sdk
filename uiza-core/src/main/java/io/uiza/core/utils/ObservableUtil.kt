@@ -11,7 +11,15 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import io.uiza.core.helpers.ThreadHelper
+import io.uiza.core.models.v3.ListV3Wrapper
+import io.uiza.core.models.v3.ObjectV3Wrapper
 import io.uiza.core.models.v5.ListWrapper
+
+// process null data
+
+data class Optional<T>(val value: T?)
+
+fun <T> T?.asOptional() = Optional(this)
 
 /**
  * Use {@link AndroidSchedulers.mainThread} and {@link Schedulers.newThread}
@@ -50,11 +58,19 @@ fun <T> Observable<T>.ioSubscribe(
     return io().subscribe(onNext, onError)
 }
 
-fun <T> Observable<ListWrapper<T>>.getData(filter: (T) -> Boolean): Observable<List<T>> {
-    return this.map { m -> m.data?.filter(filter) }
+fun <T> Observable<ListWrapper<T>>.getData(filter: (T) -> Boolean): Observable<Optional<List<T>>> {
+    return this.map { m -> m.data?.filter(filter)?.asOptional() }
 }
 
-fun <T> Observable<ListWrapper<T>>.getData(): Observable<List<T>> {
-    return this.map { m -> m.data }
+fun <T> Observable<ListWrapper<T>>.getData(): Observable<Optional<List<T>>> {
+    return this.map { m -> m.data?.asOptional() }
 }
 
+// V3 API
+fun <T> Observable<ListV3Wrapper<T>>.listV3Data(): Observable<Optional<List<T>>> {
+    return this.map { m -> m.data?.asOptional() }
+}
+
+fun <T> Observable<ObjectV3Wrapper<T>>.getV3Data(): Observable<Optional<T>> {
+    return this.map { m -> m.data?.asOptional() }
+}

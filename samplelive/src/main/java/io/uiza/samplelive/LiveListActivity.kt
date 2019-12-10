@@ -44,8 +44,8 @@ class LiveListActivity : AppCompatActivity(), EntityAdapter.MoreActionListener,
         compositeDisposable.add(
             (application as SampleLiveApplication).liveService.getEntities()
                 .getData().ioSubscribe(
-                    Consumer { entities: List<LiveEntity>? ->
-                        entities?.let {
+                    Consumer { entities ->
+                        entities.value?.let {
                             adapter.setData(it)
                         }
                         progress_bar.visibility = View.GONE

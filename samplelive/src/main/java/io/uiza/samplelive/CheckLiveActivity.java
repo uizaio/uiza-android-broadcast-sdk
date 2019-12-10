@@ -17,7 +17,6 @@ import io.reactivex.Observable;
 import io.uiza.core.models.v5.CreateLiveEntityBody;
 import io.uiza.core.models.v5.LiveEntity;
 import io.uiza.core.utils.ObservableKt;
-import io.uiza.core.utils.StringKt;
 import timber.log.Timber;
 
 public class CheckLiveActivity extends AppCompatActivity implements View.OnClickListener {
@@ -47,7 +46,7 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
         liveBtn.setOnClickListener(this);
         entity = getIntent().getParcelableExtra(EXTRA_ENTITY);
         if (entity != null) {
-            content.setText(StringKt.toPrettyFormat(entity.toString()));
+            content.setText(entity.toString());
         }
         updateLiveStats();
     }
@@ -66,9 +65,9 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
             } else {
                 if (entity != null) {
                     if (entity.hasLive()) {
-                        if (entity.ingest != null) {
+                        if (entity.getIngest() != null) {
                             Intent liveIntent = new Intent(CheckLiveActivity.this, UizaLiveActivity.class);
-                            liveIntent.putExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT, entity.ingest.getLiveUrl());
+                            liveIntent.putExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT, entity.getIngest().getLiveUrl());
                             startActivity(liveIntent);
                             finish();
                         } else {
@@ -78,7 +77,7 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
                     } else if (entity.needGetInfo()) {
                         currentRetry = 0;
                         liveBtn.setEnabled(false);
-                        getEntity(entity.id);
+                        getEntity(entity.getId());
                     }
 
                 } else {
@@ -109,9 +108,9 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
         progressBar.setVisibility(View.VISIBLE);
         CreateLiveEntityBody body = new CreateLiveEntityBody(streamName, "Uiza Demo Live Stream", SampleLiveApplication.REGION, SampleLiveApplication.APP_ID, SampleLiveApplication.USER_ID);
         Observable<LiveEntity> obs = ((SampleLiveApplication) getApplication()).getLiveService().createEntity(body);
-        ObservableKt.execSubscribe(obs, res -> {
+        ObservableKt.ioSubscribe(obs, res -> {
             entity = res;
-            content.setText(StringKt.toPrettyFormat(res.toString()));
+            content.setText(res.toString());
             updateLiveStats();
             progressBar.setVisibility(View.GONE);
         }, throwable -> {
@@ -124,9 +123,9 @@ public class CheckLiveActivity extends AppCompatActivity implements View.OnClick
     private void getEntity(String entityId) {
         progressBar.setVisibility(View.VISIBLE);
         Observable<LiveEntity> obs = ((SampleLiveApplication) getApplication()).getLiveService().getEntity(entityId);
-        ObservableKt.execSubscribe(obs, ent -> {
+        ObservableKt.ioSubscribe(obs, ent -> {
             entity = ent;
-            content.setText(StringKt.toPrettyFormat(ent.toString()));
+            content.setText(ent.toString());
             if (!entity.hasLive() && currentRetry < MAX_RETRY) {
                 Timber.e("currentRetry: %d", currentRetry);
                 currentRetry += 1;

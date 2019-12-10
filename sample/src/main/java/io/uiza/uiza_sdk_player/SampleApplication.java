@@ -39,7 +39,7 @@ public class SampleApplication extends MultiDexApplication {
         }
         UizaPlayer.get().init(getApplicationContext(), "UizaSampleV5");
 //        UizaPlayer.get().setServiceClazz(DemoDownloadService.class);
-        restClient = new UizaClient.Builder(DEV_HOST_V3).withToken(DF_TOKEN_V3).builder();
+        restClient = new UizaClient.Builder(getApplicationContext(), DEV_HOST_V3).withToken(DF_TOKEN_V3).builder();
     }
 
     public UizaV5Service getLiveService() {

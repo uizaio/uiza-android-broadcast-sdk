@@ -13,6 +13,7 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.uiza.core.api.UizaV3Service;
 import io.uiza.core.models.v3.CreateMetadataBody;
+import io.uiza.core.models.v3.DataToken;
 import io.uiza.core.models.v3.DeleteUserBody;
 import io.uiza.core.models.v3.IdResponse;
 import io.uiza.core.models.v3.ListV3Wrapper;
@@ -20,9 +21,11 @@ import io.uiza.core.models.v3.LiveV3Entity;
 import io.uiza.core.models.v3.MetadataDetail;
 import io.uiza.core.models.v3.ObjectV3Wrapper;
 import io.uiza.core.models.v3.RequestUserBody;
+import io.uiza.core.models.v3.TokenStreamBody;
 import io.uiza.core.models.v3.UpdatePasswordBody;
 import io.uiza.core.models.v3.User;
 import io.uiza.core.utils.ObservableKt;
+import io.uiza.core.utils.Optional;
 import io.uiza.uiza_sdk_player.R;
 import io.uiza.uiza_sdk_player.SampleApplication;
 import timber.log.Timber;
@@ -133,15 +136,15 @@ public class UizaTestAPIV3Activity extends AppCompatActivity implements View.OnC
             case R.id.bt_search_entity:
                 searchAnEntity();
                 break;
+            case R.id.bt_get_token_streaming:
+                getTokenStreaming();
+                break;
             default:
                 break;
         }
 //        switch (v.getId()) {
 
 
-//            case R.id.bt_get_token_streaming:
-//                getTokenStreaming();
-//                break;
 //            case R.id.bt_get_link_play:
 //                getLinkPlay();
 //                break;
@@ -323,15 +326,17 @@ public class UizaTestAPIV3Activity extends AppCompatActivity implements View.OnC
 
     private void retrieveAnEntity() {
         String id = "7789b7cc-9fd8-499b-bd35-745d133b6089";
-        compositeDisposable.add(ObservableKt.ioSubscribe(
-                v3Service.getEntity(id).map(ObjectV3Wrapper::getData), o -> {
-                    if (o != null) {
-                        tv.setText(o.toString());
-                    }
-                }, throwable -> {
-                    tv.setText(throwable.getLocalizedMessage());
-                    Timber.e(throwable, "retrieveAnEntity onFail");
-                }));
+        Observable<Optional<LiveV3Entity>> obs = ObservableKt.getV3Data(v3Service.getEntity(id));
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs, o -> {
+            if (o.getValue() != null) {
+                tv.setText(o.getValue().toString());
+            } else {
+                tv.setText("data null");
+            }
+        }, throwable -> {
+            tv.setText(throwable.getLocalizedMessage());
+            Timber.e(throwable, "retrieveAnEntity onFail");
+        }));
     }
 
     private void searchAnEntity() {
@@ -345,21 +350,24 @@ public class UizaTestAPIV3Activity extends AppCompatActivity implements View.OnC
                 }));
     }
 
-//    private void getTokenStreaming() {
-//        UZService service = UZRestClient.createService(UZService.class);
-//        SendGetTokenStreaming sendGetTokenStreaming = new SendGetTokenStreaming();
-//        sendGetTokenStreaming.setAppId(UZData.getInstance().getAppId());
-//        sendGetTokenStreaming.setEntityId(entityIdDefaultVOD);
-//        sendGetTokenStreaming.setContentType(SendGetTokenStreaming.STREAM);
-//        UZAPIMaster.getInstance().subscribe(service.getTokenStreaming(sendGetTokenStreaming), o -> {
-//            LLog.d(TAG, "getListAllEntity onSuccess: " + LSApplication.getInstance().getGson().toJson(o));
-//            showTv(o);
-//        }, throwable -> {
-//            LLog.e(TAG, "createAnUser onFail " + throwable.toString());
-//            showTv(throwable.getMessage());
-//        });
-//    }
-//
+    private void getTokenStreaming() {
+        TokenStreamBody tokenStreamBody = new TokenStreamBody(entityIdDefaultVOD, SampleApplication.DF_APP_ID, TokenStreamBody.STREAM);
+        Observable<Optional<DataToken>>
+                obs = ObservableKt.getV3Data(v3Service.getTokenStreaming(tokenStreamBody));
+        compositeDisposable.add(ObservableKt.ioSubscribe(obs,
+                o -> {
+                    if (o.getValue() != null) {
+                        tv.setText(o.getValue().toString());
+                    } else {
+                        tv.setText("token null");
+                    }
+                },
+                throwable -> {
+                    Timber.e(throwable, "getTokenStreaming onFail");
+                    tv.setText(throwable.getLocalizedMessage());
+                }));
+    }
+
 //    private String tokenStreaming;//value received from api getTokenStreaming
 //
 //    private void getLinkPlay() {

@@ -1,5 +1,6 @@
 package io.uiza.core;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.squareup.moshi.Moshi;
@@ -13,6 +14,7 @@ import io.uiza.core.api.UizaV5Service;
 import io.uiza.core.deserializers.DateTimeAdapter;
 import io.uiza.core.interceptors.GzipRequestInterceptor;
 import io.uiza.core.interceptors.RestRequestInterceptor;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -26,15 +28,19 @@ public class UizaClient {
     private static final String CONTENT_TYPE = "Content-Type";
     private static Retrofit retrofit;
     private static RestRequestInterceptor restRequestInterceptor;
+    private static final int CACHE_SIZE = 10; // 10M
 
     public static class Builder {
+        Context context;
         String baseApiUrl;
         String token;
         long timeout = CONNECT_TIMEOUT_TIME;
+        int cacheSize = CACHE_SIZE;
         boolean retryOnConnectionFailure = true;
         boolean compressedRequest = false;
 
-        public Builder(@NonNull String baseApiUrl) {
+        public Builder(@NonNull Context context, @NonNull String baseApiUrl) {
+            this.context = context;
             this.baseApiUrl = baseApiUrl;
         }
 
@@ -49,8 +55,20 @@ public class UizaClient {
          *
          * @param timeout (seconds)
          */
-        public void withTimeout(long timeout) {
+        public Builder withTimeout(long timeout) {
             this.timeout = timeout;
+            return this;
+        }
+
+        /**
+         * connect and read timeout
+         * Default 10 MB
+         *
+         * @param cacheSize (MB)
+         */
+        public Builder withCacheSize(int cacheSize) {
+            this.cacheSize = cacheSize;
+            return this;
         }
 
         /**
@@ -77,18 +95,19 @@ public class UizaClient {
             if (TextUtils.isEmpty(baseApiUrl)) {
                 throw new InvalidParameterException("baseApiUrl cannot null or empty");
             }
-            return new UizaClient(baseApiUrl, token, timeout,
+            return new UizaClient(context, baseApiUrl, token, timeout, cacheSize,
                     retryOnConnectionFailure, compressedRequest);
         }
     }
 
-    private UizaClient(String baseApiUrl,
+    private UizaClient(Context context, String baseApiUrl,
                        String token,
                        long timeout,
+                       int cacheSize,
                        boolean retryOnConnectionFailure,
                        boolean compressedRequest
     ) {
-
+        // config Logger
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
@@ -100,7 +119,9 @@ public class UizaClient {
             }
         });
         // set your desired log level
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        if (BuildConfig.DEBUG) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        }
 
         restRequestInterceptor = new RestRequestInterceptor();
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
@@ -108,13 +129,13 @@ public class UizaClient {
                 .connectTimeout(timeout, TimeUnit.SECONDS)
                 .addInterceptor(restRequestInterceptor)
                 .retryOnConnectionFailure(retryOnConnectionFailure)
+                .cache(new Cache(context.getCacheDir(), cacheSize * 1024 * 1024)) // <-- cacheSize MB
                 .addInterceptor(logging);  // <-- this is the important line!
 
         if (compressedRequest)
             builder.addInterceptor(new GzipRequestInterceptor());
 
         final OkHttpClient okHttpClient = builder.build();
-
         Moshi moshi = new Moshi.Builder().add(new DateTimeAdapter()).build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseApiUrl)
@@ -129,7 +150,7 @@ public class UizaClient {
         addHeader(CONTENT_TYPE, "application/json");
     }
 
-    public <S> S createService(Class<S> serviceClass) {
+    private <S> S createService(Class<S> serviceClass) {
         if (retrofit == null) {
             throw new IllegalStateException("Must call init() before using");
         }

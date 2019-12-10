@@ -30,11 +30,11 @@ public class SampleLiveApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
 //        UizaPlayer.get().setServiceClazz(DemoDownloadService.class);
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
         UizaLive.get().init();
-        restClient = new UizaClient.Builder(DEV_HOST).withToken(APP_SECRET).builder();
+        restClient = new UizaClient.Builder(getApplicationContext(), DEV_HOST).withToken(APP_SECRET).builder();
     }
 
     public UizaV5Service getLiveService() {

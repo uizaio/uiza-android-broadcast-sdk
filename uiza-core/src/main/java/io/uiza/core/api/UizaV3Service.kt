@@ -88,4 +88,7 @@ interface UizaV3Service {
     //http://dev-docs.uizadev.io/#search-entity
     @GET("/api/public/v3/media/entity/search")
     fun searchEntities(@Query("keyword") keyword: String): Observable<ListV3Wrapper<LiveV3Entity>>
+
+    @POST("/api/public/v3/media/entity/playback/token")
+    fun getTokenStreaming(@Body tokenStreamBody: TokenStreamBody): Observable<ObjectV3Wrapper<DataToken>>
 }
