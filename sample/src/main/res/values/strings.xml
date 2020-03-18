@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">Uiza Sample V5</string>
-    <string name="app_live_name">Uiza Live Sample</string>
-    <string name="app_player_name">Uiza Player Sample</string>
-    <string name="api_v3_name">Uiza API v3</string>
-    <string name="api_v4_name">Uiza API v4</string>
-    <string name="api_v5_name">Uiza API v5</string>
-</resources>
