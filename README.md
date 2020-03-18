@@ -1,4 +1,6 @@
 
+[![](https://jitpack.io/v/uizaio/uiza-android-broadcast-sdk.svg)](https://jitpack.io/#uizaio/uiza-android-broadcast-sdk)
+
 ## Welcome to UIZA Android BroadCast SDK
 
 Simple Streaming at scale.
