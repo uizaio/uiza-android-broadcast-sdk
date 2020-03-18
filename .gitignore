@@ -7,7 +7,7 @@
 .idea/
 # Files for the ART/Dalvik VM
 *.dex
-gradle/
+#gradle/
 # Java class files
 *.class
 
