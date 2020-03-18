@@ -6,7 +6,7 @@ android {
         applicationId "com.com.uiza.samplebroadcast"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 20031718
+        versionCode 20031812
         versionName "1.0.0"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
