@@ -121,12 +121,14 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
         broadCastView.setVideoAttributes(videoAttributes);
         broadCastView.setAudioAttributes(audioAttributes);
         broadCastView.setBackgroundAllowedDuration(10000);
+
     }
 
     @Override
     protected void onResume() {
         if (broadCastView != null) {
             broadCastView.onResume();
+            startButton.setChecked(broadCastView.isBroadCasting());
         }
         super.onResume();
     }

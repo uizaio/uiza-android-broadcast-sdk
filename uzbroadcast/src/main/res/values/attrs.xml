@@ -2,9 +2,10 @@
 <resources>
     <declare-styleable name="UZBroadCastView">
         <attr name="useCamera2" format="boolean" />
+        <attr name="supportRunBackground" format="boolean" />
         <attr name="startCamera" format="enum">
-            <enum name="BACK" value="0"/>
-            <enum name="FRONT" value="1"/>
+            <enum name="BACK" value="0" />
+            <enum name="FRONT" value="1" />
         </attr>
         <attr name="AAEnabled" format="boolean" />
         <attr name="numFilters" format="integer" />

@@ -33,8 +33,6 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.pedro.encoder.input.gl.render.ManagerRender;
 import com.pedro.encoder.input.video.CameraHelper;
-import com.pedro.rtplibrary.rtmp.RtmpCamera1;
-import com.pedro.rtplibrary.rtmp.RtmpCamera2;
 import com.pedro.rtplibrary.util.BitrateAdapter;
 import com.pedro.rtplibrary.view.OpenGlView;
 import com.uiza.sdk.R;
@@ -48,6 +46,8 @@ import com.uiza.sdk.interfaces.UZCameraChangeListener;
 import com.uiza.sdk.interfaces.UZRecordListener;
 import com.uiza.sdk.profile.AudioAttributes;
 import com.uiza.sdk.profile.VideoAttributes;
+import com.uiza.sdk.services.UZRTMPService;
+import com.uiza.sdk.util.ValidValues;
 import com.uiza.sdk.util.ViewUtil;
 
 import net.ossrs.rtmp.ConnectCheckerRtmp;
@@ -81,6 +81,7 @@ public class UZBroadCastView extends RelativeLayout {
     private ProgressBar progressBar;
     private TextView tvLiveStatus;
     private boolean useCamera2;
+    private boolean supportRunBackground = false;
     private CameraHelper.Facing startCamera = CameraHelper.Facing.FRONT;
     private UZBroadCastListener uzBroadCastListener;
     private long backgroundAllowedDuration = 2 * MINUTE; // default is 2 minutes
@@ -103,8 +104,11 @@ public class UZBroadCastView extends RelativeLayout {
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             int mHeight = Math.min((int) (width * aspectRatio.getAspectRatio()), height);
-            cameraHelper.startPreview(startCamera, width, mHeight);
             Timber.e("w=%d, h=%d", width, mHeight);
+            cameraHelper.startPreview(startCamera, width, mHeight);
+            if (supportRunBackground) {
+                cameraHelper.replaceView(openGlView);
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && useCamera2)
                 postDelayed(UZBroadCastView.this::switchCamera, 100); // fix Note10 with camera2
             if (uzBroadCastListener != null)
@@ -113,13 +117,19 @@ public class UZBroadCastView extends RelativeLayout {
 
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
-            if (cameraHelper.isRecording())
-                cameraHelper.stopRecord();
-            if (cameraHelper.isBroadCasting())
-                cameraHelper.stopBroadCast();
-            if (cameraHelper.isOnPreview())
-                cameraHelper.stopPreview();
-            startBackgroundTimer();
+            if (supportRunBackground) {
+                cameraHelper.replaceView(getContext().getApplicationContext());
+                if (cameraHelper.isOnPreview())
+                    cameraHelper.stopPreview();
+            } else {
+                if (cameraHelper.isRecording())
+                    cameraHelper.stopRecord();
+                if (cameraHelper.isBroadCasting())
+                    cameraHelper.stopBroadCast();
+                if (cameraHelper.isOnPreview())
+                    cameraHelper.stopPreview();
+                startBackgroundTimer();
+            }
             if (uzBroadCastListener != null)
                 uzBroadCastListener.surfaceDestroyed();
 
@@ -138,7 +148,10 @@ public class UZBroadCastView extends RelativeLayout {
                 if (uzBroadCastListener != null)
                     uzBroadCastListener.onConnectionSuccess();
             });
-            isBroadcastingBeforeGoingBackground = true;
+            if (supportRunBackground)
+                UZRTMPService.showNotification("Stream started");
+            else
+                isBroadcastingBeforeGoingBackground = true;
         }
 
         @Override
@@ -158,6 +171,8 @@ public class UZBroadCastView extends RelativeLayout {
                         uzBroadCastListener.onConnectionFailed(reason);
                 }
             });
+            if (supportRunBackground)
+                UZRTMPService.showNotification("Stream connection failed");
         }
 
         @Override
@@ -175,7 +190,8 @@ public class UZBroadCastView extends RelativeLayout {
                 if (uzBroadCastListener != null)
                     uzBroadCastListener.onDisconnect();
             });
-
+            if (supportRunBackground)
+                UZRTMPService.showNotification("Stream stopped");
         }
 
         @Override
@@ -187,6 +203,8 @@ public class UZBroadCastView extends RelativeLayout {
                 if (uzBroadCastListener != null)
                     uzBroadCastListener.onAuthError();
             });
+            if (supportRunBackground)
+                UZRTMPService.showNotification("Stream auth error");
         }
 
         @Override
@@ -198,6 +216,8 @@ public class UZBroadCastView extends RelativeLayout {
                 if (uzBroadCastListener != null)
                     uzBroadCastListener.onAuthSuccess();
             });
+            if (supportRunBackground)
+                UZRTMPService.showNotification("Stream auth success");
         }
     };
 
@@ -231,6 +251,10 @@ public class UZBroadCastView extends RelativeLayout {
             try {
                 boolean hasLollipop = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
                 useCamera2 = a.getBoolean(R.styleable.UZBroadCastView_useCamera2, hasLollipop);
+                supportRunBackground = a.getBoolean(R.styleable.UZBroadCastView_supportRunBackground, false);
+                if (!useCamera2 && supportRunBackground) {
+                    throw new IllegalArgumentException("the supportRunBackground support camera2 only");
+                }
                 startCamera = CameraHelper.Facing.values()[a.getInt(R.styleable.UZBroadCastView_startCamera, 1)];
                 // for openGL
                 keepAspectRatio = a.getBoolean(R.styleable.UZBroadCastView_keepAspectRatio, true);
@@ -243,6 +267,7 @@ public class UZBroadCastView extends RelativeLayout {
             }
         } else {
             useCamera2 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+            supportRunBackground = false;
             startCamera = CameraHelper.Facing.FRONT;
             // for OpenGL
             keepAspectRatio = true;
@@ -261,13 +286,18 @@ public class UZBroadCastView extends RelativeLayout {
         inflate(getContext(), R.layout.layout_uiza_glview, this);
         openGlView = findViewById(R.id.camera_view);
         if (useCamera2)
-            cameraHelper = new Camera2Helper(new RtmpCamera2(openGlView, connectCheckerRtmp));
+            cameraHelper = new Camera2Helper(openGlView, connectCheckerRtmp);
         else
-            cameraHelper = new Camera1Helper(new RtmpCamera1(openGlView, connectCheckerRtmp));
+            cameraHelper = new Camera1Helper(openGlView, connectCheckerRtmp);
+
+        if (supportRunBackground) {
+            UZRTMPService.init(getContext(), cameraHelper);
+        }
+        openGlView.init();
+        openGlView.getHolder().addCallback(surfaceCallback);
         openGlView.setCameraFlip(isFlipHorizontal, isFlipVertical);
         openGlView.setKeepAspectRatio(keepAspectRatio);
         openGlView.enableAA(AAEnabled);
-        openGlView.getHolder().addCallback(surfaceCallback);
         tvLiveStatus = findViewById(R.id.live_status);
         progressBar = findViewById(R.id.pb);
         progressBar.getIndeterminateDrawable().setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY));
@@ -372,11 +402,15 @@ public class UZBroadCastView extends RelativeLayout {
      * Must be called when the app go to resume state
      */
     public void onResume() {
-        checkAndResumeLiveStreamIfNeeded();
-        if (isFromBackgroundTooLong) {
-            if (uzBroadCastListener != null)
-                uzBroadCastListener.onBackgroundTooLong();
-            isFromBackgroundTooLong = false;
+        if (supportRunBackground && useCamera2) {
+            // nothing
+        } else {
+            checkAndResumeLiveStreamIfNeeded();
+            if (isFromBackgroundTooLong) {
+                if (uzBroadCastListener != null)
+                    uzBroadCastListener.onBackgroundTooLong();
+                isFromBackgroundTooLong = false;
+            }
         }
     }
 
@@ -498,15 +532,29 @@ public class UZBroadCastView extends RelativeLayout {
     public void startBroadCast(String broadCastUrl) {
         mainBroadCastUrl = broadCastUrl;
         progressBar.setVisibility(View.VISIBLE);
-        cameraHelper.startBroadCast(broadCastUrl);
+        if (supportRunBackground && useCamera2) {
+            Intent intent = new Intent(getContext().getApplicationContext(), UZRTMPService.class);
+            intent.putExtra(UZRTMPService.EXTRA_BROAD_CAST_URL, broadCastUrl);
+            intent.putExtra(UZRTMPService.EXTRA_AUDIO_ATTRIBUTES, audioAttributes);
+            intent.putExtra(UZRTMPService.EXTRA_VIDEO_ATTRIBUTES, videoAttributes);
+            getContext().startService(intent);
+        } else {
+            cameraHelper.startBroadCast(broadCastUrl);
+        }
     }
 
     public boolean isBroadCasting() {
-        return cameraHelper.isBroadCasting();
+        if (supportRunBackground)
+            return ValidValues.isMyServiceRunning(getContext(), UZRTMPService.class);
+        else
+            return cameraHelper != null && cameraHelper.isBroadCasting();
     }
 
     public void stopBroadCast() {
-        cameraHelper.stopBroadCast();
+        if (supportRunBackground)
+            getContext().stopService(new Intent(getContext().getApplicationContext(), UZRTMPService.class));
+        else
+            cameraHelper.stopBroadCast();
     }
 
     public void switchCamera() {
@@ -555,10 +603,6 @@ public class UZBroadCastView extends RelativeLayout {
      * * doesn't support any configuration seated or your device hasn't a AAC encoder).
      */
     public boolean prepareBroadCast(boolean isLandscape) {
-        if (audioAttributes == null) {
-            Timber.e("Please set audioAttributes");
-            return false;
-        }
         if (videoAttributes == null) {
             Timber.e("Please set videoAttributes");
             return false;
@@ -567,14 +611,15 @@ public class UZBroadCastView extends RelativeLayout {
     }
 
     /**
-     * @param audioAttributes {@link AudioAttributes}
+     * @param audioAttributes {@link AudioAttributes} null with out audio
      * @param videoAttributes {@link VideoAttributes}
      * @param isLandscape:    true if broadcast landing
      * @return true if success, false if you get a error (Normally because the encoder selected
      * doesn't support any configuration seated or your device hasn't a AAC encoder).
      */
-    public boolean prepareBroadCast(@NonNull AudioAttributes audioAttributes, @NonNull VideoAttributes videoAttributes, boolean isLandscape) {
-        return prepareAudio(audioAttributes) && prepareVideo(videoAttributes, isLandscape);
+    public boolean prepareBroadCast(AudioAttributes audioAttributes, @NonNull VideoAttributes videoAttributes, boolean isLandscape) {
+        return (audioAttributes == null) ? prepareVideo(videoAttributes, isLandscape) :
+                prepareAudio(audioAttributes) && prepareVideo(videoAttributes, isLandscape);
     }
 
     /**

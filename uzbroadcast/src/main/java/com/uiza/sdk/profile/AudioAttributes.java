@@ -11,6 +11,8 @@ import com.uiza.sdk.util.ValidValues;
 
 import java.util.Locale;
 
+import timber.log.Timber;
+
 public class AudioAttributes implements Parcelable {
     public static final Creator<AudioAttributes> CREATOR = new Creator<AudioAttributes>() {
         @Override
@@ -54,9 +56,9 @@ public class AudioAttributes implements Parcelable {
     private AudioAttributes(Parcel in) {
         bitRate = in.readInt();
         sampleRate = in.readInt();
-        stereo = in.readBoolean();
-        echoCanceler = in.readBoolean();
-        noiseSuppressor = in.readBoolean();
+        stereo = in.readInt() == 1;
+        echoCanceler = in.readInt() == 1;
+        noiseSuppressor = in.readInt() == 1;
     }
 
     private AudioAttributes(int bitRate, int sampleRate, boolean stereo, boolean echoCanceler, boolean noiseSuppressor) {
@@ -70,6 +72,7 @@ public class AudioAttributes implements Parcelable {
     }
 
     public static AudioAttributes create(int bitRate, int sampleRate, boolean stereo) {
+        Timber.e("echo = %b", AcousticEchoCanceler.isAvailable());
         return new AudioAttributes(bitRate, sampleRate, stereo, AcousticEchoCanceler.isAvailable(), NoiseSuppressor.isAvailable());
     }
 
@@ -77,9 +80,9 @@ public class AudioAttributes implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(bitRate);
         dest.writeInt(sampleRate);
-        dest.writeBoolean(stereo);
-        dest.writeBoolean(echoCanceler);
-        dest.writeBoolean(noiseSuppressor);
+        dest.writeInt(stereo ? 1 : 0);
+        dest.writeInt(echoCanceler ? 1 : 0);
+        dest.writeInt(noiseSuppressor ? 1 : 0);
     }
 
     @Override

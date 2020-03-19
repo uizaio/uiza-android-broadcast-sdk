@@ -1,5 +1,6 @@
 package com.uiza.sdk.helpers;
 
+import android.content.Context;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
@@ -7,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.pedro.encoder.input.gl.render.filters.BaseFilterRender;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.rtplibrary.base.Camera2Base;
+import com.pedro.rtplibrary.view.OpenGlView;
 import com.uiza.sdk.interfaces.UZCameraChangeListener;
 import com.uiza.sdk.interfaces.UZCameraOpenException;
 import com.uiza.sdk.interfaces.UZRecordListener;
@@ -18,6 +20,9 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ICameraHelper {
+
+    OpenGlView getOpenGlView();
+
     /**
      * @param reTries retry connect reTries times
      */
@@ -32,6 +37,10 @@ public interface ICameraHelper {
      * @param uzRecordListener
      */
     void setUZRecordListener(UZRecordListener uzRecordListener);
+
+    void replaceView(OpenGlView openGlView);
+
+    void replaceView(Context context);
 
     /**
      * Set filter in position 0.

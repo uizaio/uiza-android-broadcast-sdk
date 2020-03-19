@@ -1,5 +1,6 @@
 package com.uiza.sdk.helpers;
 
+import android.content.Context;
 import android.os.Build;
 import android.util.Size;
 import android.view.MotionEvent;
@@ -11,6 +12,7 @@ import com.pedro.encoder.input.gl.render.filters.BaseFilterRender;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.encoder.input.video.CameraOpenException;
 import com.pedro.rtplibrary.rtmp.RtmpCamera2;
+import com.pedro.rtplibrary.view.OpenGlView;
 import com.uiza.sdk.enums.RecordStatus;
 import com.uiza.sdk.interfaces.UZCameraChangeListener;
 import com.uiza.sdk.interfaces.UZCameraOpenException;
@@ -19,6 +21,8 @@ import com.uiza.sdk.profile.AudioAttributes;
 import com.uiza.sdk.profile.VideoAttributes;
 import com.uiza.sdk.profile.VideoSize;
 import com.uiza.sdk.util.ListUtils;
+
+import net.ossrs.rtmp.ConnectCheckerRtmp;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,9 +40,29 @@ public class Camera2Helper implements ICameraHelper {
 
     private UZRecordListener uzRecordListener;
 
+    private OpenGlView openGlView;
 
-    public Camera2Helper(@NonNull RtmpCamera2 camera) {
-        this.rtmpCamera2 = camera;
+
+    public Camera2Helper(@NonNull OpenGlView openGlView, ConnectCheckerRtmp connectCheckerRtmp) {
+        this.rtmpCamera2 = new RtmpCamera2(openGlView, connectCheckerRtmp);
+        this.openGlView = openGlView;
+    }
+
+    @Override
+    public OpenGlView getOpenGlView() {
+        return openGlView;
+    }
+
+    @Override
+    public void replaceView(Context context) {
+        this.openGlView = null;
+        rtmpCamera2.replaceView(context);
+    }
+
+    @Override
+    public void replaceView(OpenGlView openGlView) {
+        if (this.openGlView == null)
+            rtmpCamera2.replaceView(openGlView);
     }
 
     @Override

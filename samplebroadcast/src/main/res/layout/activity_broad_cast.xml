@@ -15,8 +15,9 @@
         app:isFlipVertical="false"
         app:startCamera="FRONT"
         app:keepAspectRatio="true"
+        app:supportRunBackground="true"
         app:numFilters="1"
-        app:useCamera2="false" />
+        app:useCamera2="true" />
 
     <RelativeLayout
         android:id="@+id/ll_top"
