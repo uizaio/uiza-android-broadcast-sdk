@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mServerEdt = findViewById(R.id.edt_server);
         mStreamKeyEdt = findViewById(R.id.edt_stream_key);
-        mServerEdt.setText("rtmp://asia-southeast1-u-01-gw.uiza.io:1935/push2transcode");
-        mStreamKeyEdt.setText("2978a34b-5bdb-4feb-bd95-75e086328726?token=dbe532ac6a62d7d1ae260cc8eeea5446&ulasId=d16196ce-e451-403f-ba4b-866fbe290398");
+        mServerEdt.setText("rtmp://e8c6034c5d-in.streamwiz.io/live");
+        mStreamKeyEdt.setText("live_s13wRzksUu");
         findViewById(R.id.btn_start).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, UZBroadCastActivity.class);
             intent.putExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT, String.format("%s/%s", mServerEdt.getText().toString(), mStreamKeyEdt.getText().toString()));

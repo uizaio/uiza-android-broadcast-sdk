@@ -81,6 +81,7 @@ public class UZBroadCastView extends RelativeLayout {
     private ProgressBar progressBar;
     private TextView tvLiveStatus;
     private boolean useCamera2;
+    private CameraHelper.Facing startCamera = CameraHelper.Facing.FRONT;
     private UZBroadCastListener uzBroadCastListener;
     private long backgroundAllowedDuration = 2 * MINUTE; // default is 2 minutes
     private CountDownTimer backgroundTimer;
@@ -102,8 +103,10 @@ public class UZBroadCastView extends RelativeLayout {
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             int mHeight = Math.min((int) (width * aspectRatio.getAspectRatio()), height);
-            cameraHelper.startPreview(CameraHelper.Facing.FRONT, width, mHeight);
+            cameraHelper.startPreview(startCamera, width, mHeight);
             Timber.e("w=%d, h=%d", width, mHeight);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && useCamera2)
+                postDelayed(UZBroadCastView.this::switchCamera, 100); // fix Note10 with camera2
             if (uzBroadCastListener != null)
                 uzBroadCastListener.surfaceChanged(format, width, mHeight);
         }
@@ -228,6 +231,7 @@ public class UZBroadCastView extends RelativeLayout {
             try {
                 boolean hasLollipop = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
                 useCamera2 = a.getBoolean(R.styleable.UZBroadCastView_useCamera2, hasLollipop);
+                startCamera = CameraHelper.Facing.values()[a.getInt(R.styleable.UZBroadCastView_startCamera, 1)];
                 // for openGL
                 keepAspectRatio = a.getBoolean(R.styleable.UZBroadCastView_keepAspectRatio, true);
                 AAEnabled = a.getBoolean(R.styleable.UZBroadCastView_AAEnabled, false);
@@ -239,6 +243,7 @@ public class UZBroadCastView extends RelativeLayout {
             }
         } else {
             useCamera2 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+            startCamera = CameraHelper.Facing.FRONT;
             // for OpenGL
             keepAspectRatio = true;
             AAEnabled = false;
