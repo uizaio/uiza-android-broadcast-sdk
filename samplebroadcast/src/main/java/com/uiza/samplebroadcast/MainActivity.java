@@ -40,9 +40,6 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT, String.format("%s/%s", mServerEdt.getText().toString(), mStreamKeyEdt.getText().toString()));
             startActivity(intent);
         });
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        Timber.e("Screen Density = %d", Resources.getSystem().getDisplayMetrics().densityDpi);
     }
 
     @Override

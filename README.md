@@ -42,12 +42,18 @@ compileOptions {
 
 ## Init SDK
 
-1. If you want show log, install any `Tree` instances you want in the `onCreate` of your application class
+1. If you want to run a broadcast in background or screen your device. In the  `onCreate` of your application class
 
 ```java
-	if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
+UZBroadCast.init();
+```
+
+2. If you want show log, install any `Tree` instances you want in the `onCreate` of your application class
+
+```java
+if (BuildConfig.DEBUG) {
+        Timber.plant(new Timber.DebugTree());
+    }
 ```
 
 ## How to broadcast with UZBroadCast?:
@@ -56,13 +62,16 @@ It's very easy, plz follow these steps below to implement:
 XML:
 
 ```xml
-    <com.uiza.sdk.view.UZBroadCastView
-      android:id="@+id/uz_broadcast"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
+<com.uiza.sdk.view.UZBroadCastView
+    android:id="@+id/uz_broadcast"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:runInBackground="true" # support camera2 only
+    app:startCamera="FRONT"
+    app:useCamera2="true" />
 ```
 
-In class [`LivePortraitActivity`](https://github.com/uizaio/uiza-android-broadcast-sdk/blob/master/samplebroadcast/src/main/java/com/uiza/samplebroadcast/UZBroadCastActivity.java):
+In class [`UZBroadCastActivity`](https://github.com/uizaio/uiza-android-broadcast-sdk/blob/master/samplebroadcast/src/main/java/com/uiza/samplebroadcast/UZBroadCastActivity.java):
 ```java
     public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCastListener {
         // ...
@@ -115,13 +124,18 @@ Switch camera:
 ```java
     uzBroadCast.switchCamera();
 ```
-Allows streaming again after back from background:
+In case `runInBackground = false` But you want to allows streaming again after back from background:
 
 ```java
     uzBroadCast.setBackgroundAllowedDuration(YOUR_ALLOW_TIME); // default time is 2 minutes
 ```
 
 This sample help you know how to use all Uiza SDK for livestream, please refer to  [THIS](https://github.com/uizaio/uiza-android-broadcast-sdk/tree/master/samplebroadcast)
+
+## How to make a broadcast your screen?
+
+See example in class [`UZDisplayActivity`](https://github.com/uizaio/uiza-android-broadcast-sdk/blob/master/samplebroadcast/src/main/java/com/uiza/samplebroadcast/UZDisplayActivity.java):
+
 
 ## For contributors
 
