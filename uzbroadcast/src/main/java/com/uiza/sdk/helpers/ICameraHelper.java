@@ -42,6 +42,12 @@ public interface ICameraHelper {
 
     void replaceView(Context context);
 
+    void setVideoAttributes(VideoAttributes attributes);
+
+    void setAudioAttributes(AudioAttributes attributes);
+
+    void setLandscape(boolean landscape);
+
     /**
      * Set filter in position 0.
      *
@@ -100,13 +106,32 @@ public interface ICameraHelper {
     boolean isAudioMuted();
 
     /**
-     * Call this method before use {@link #startBroadCast(String)}. If not you will do a broadcast without audio.
+     * You will do a portrait broadcast
      *
-     * @param attrs {@link AudioAttributes}
+     * @return true if success, false if you get a error (Normally because the encoder selected
+     * doesn't support any configuration seated or your device hasn't a H264 encoder).
+     */
+    boolean prepareBroadCast();
+
+
+    /**
+     * @param isLandscape boolean
+     * @return true if success, false if you get a error (Normally because the encoder selected
+     * doesn't support any configuration seated or your device hasn't a H264 encoder).
+     */
+    boolean prepareBroadCast(boolean isLandscape);
+
+    /**
+     * Call this method before use {@link #startBroadCast(String)}.
+     *
+     * @param audioAttributes {@link AudioAttributes} If null you will do a broadcast without audio.
+     * @param videoAttributes {@link VideoAttributes}
+     * @param isLandscape     boolean you will broadcast is landscape
      * @return true if success, false if you get a error (Normally because the encoder selected
      * doesn't support any configuration seated or your device hasn't a AAC encoder).
      */
-    boolean prepareAudio(@NonNull AudioAttributes attrs);
+    boolean prepareBroadCast(AudioAttributes audioAttributes, @NonNull VideoAttributes videoAttributes, boolean isLandscape);
+
 
     /**
      * Get video camera state
@@ -116,30 +141,15 @@ public interface ICameraHelper {
     boolean isVideoEnabled();
 
     /**
-     * @param attrs    {@link VideoAttributes}
-     * @param rotation could be 90, 180, 270 or 0 (Normally 0 if you are streaming in landscape or 90
-     *                 if you are streaming in Portrait). This only affect to stream result. NOTE: Rotation with
-     *                 encoder is silence ignored in some devices.
-     * @return true if success, false if you get a error (Normally because the encoder selected
-     * doesn't support any configuration seated or your device hasn't a H264 encoder).
-     */
-    boolean prepareVideo(@NonNull VideoAttributes attrs,
-                         int rotation
-    );
-
-    /**
-     * @return list of {@link VideoSize}
-     */
-    List<VideoSize> getSupportedResolutions();
-
-    /**
-     * Need be called after {@link #prepareVideo(VideoAttributes, int)} or/and {@link #prepareAudio(AudioAttributes)}.
+     * Need be called after {@link #prepareBroadCast(AudioAttributes, VideoAttributes, boolean)} or/and {@link #prepareBroadCast(boolean)}.
      *
      * @param broadCastUrl of the broadcast like: rtmp://ip:port/application/stream_name
      *                     <p>
      *                     RTMP: rtmp://192.168.1.1:1935/fmp4/live_stream_name
-     *                     {@link #startPreview(CameraHelper.Facing)} to resolution seated in {@link #prepareVideo(VideoAttributes, int)}.
-     *                     If you never startPreview this method {@link #startPreview(CameraHelper.Facing)} for you to resolution seated in {@link #prepareVideo(VideoAttributes, int)}.
+     *                     {@link #startPreview(CameraHelper.Facing)} to resolution seated in
+     *                     {@link #prepareBroadCast(AudioAttributes, VideoAttributes, boolean)}.
+     *                     If you never startPreview this method {@link #startPreview(CameraHelper.Facing)} for you to resolution seated in
+     *                     {@link #prepareBroadCast(AudioAttributes, VideoAttributes, boolean)}.
      */
     void startBroadCast(String broadCastUrl);
 
@@ -154,6 +164,12 @@ public interface ICameraHelper {
      * @return true if broadcasting, false if not broadcasting.
      */
     boolean isBroadCasting();
+
+    /**
+     * @return list of {@link VideoSize}
+     */
+    List<VideoSize> getSupportedResolutions();
+
 
     /**
      * Switch camera used. Can be called on preview or while stream, ignored with preview off.

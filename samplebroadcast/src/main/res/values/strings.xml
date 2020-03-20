@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UZBroadCast</string>
+    <string name="app_name">Sample BroadCast</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
     <string name="menu_del">Remove</string>

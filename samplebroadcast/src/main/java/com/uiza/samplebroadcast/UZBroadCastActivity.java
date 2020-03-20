@@ -45,21 +45,8 @@ import java.util.Locale;
 import timber.log.Timber;
 
 public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCastListener,
-        View.OnClickListener, UZRecordListener, UZCameraChangeListener {
-    private static final String PREF_CAMERA_PROFILE = "camera_profile_key";
-    private static final String PREF_VIDEO_BITRATE = "video_bitrate_key";
-    private static final String PREF_FPS = "fps_key";
-    private static final String PREF_FRAME_INTERVAL = "frame_interval_key";
-    private static final String PREF_AUDIO_BITRATE = "audio_bitrate_key";
-    private static final String PREF_SAMPLE_RATE = "sample_rate_key";
-    private static final String PREF_AUDIO_STEREO = "audio_stereo_key";
-    private static final String DEFAULT_CAMERA_PROFILE = "720";
-    private static final String DEFAULT_MAX_BITRATE = "4000000";
-    private static final String DEFAULT_FPS = "30";
-    private static final String DEFAULT_FRAME_INTERVAL = "2";
-    private static final String DEFAULT_AUDIO_BITRATE = "128";
-    private static final String DEFAULT_SAMPLE_RATE = "44100";
-    private static final boolean DEFAULT_AUDIO_STEREO = true;
+        View.OnClickListener, UZRecordListener, UZCameraChangeListener, Constant {
+
 
     private static final String RECORD_FOLDER = "uzbroadcast";
     int beforeRotation;
@@ -98,7 +85,7 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
                     + RECORD_FOLDER);
         broadCastUrl = getIntent().getStringExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT);
         if (TextUtils.isEmpty(broadCastUrl)) {
-            broadCastUrl = SampleLiveApplication.getLiveEndpoint();
+            finish();
         }
         int profile = Integer.parseInt(preferences.getString(PREF_CAMERA_PROFILE, DEFAULT_CAMERA_PROFILE));
         int maxBitrate = Integer.parseInt(preferences.getString(PREF_VIDEO_BITRATE, DEFAULT_MAX_BITRATE));
@@ -135,15 +122,20 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
 
     @Override
     public void onBackPressed() {
-        showExitDialog();
+        if (broadCastView != null && broadCastView.isBroadCasting()) {
+            showExitDialog();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void showExitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Exit");
-        builder.setMessage("Do you want exit?");
+        builder.setTitle("Stop");
+        builder.setMessage("Do you want stop?");
         builder.setPositiveButton("OK", (dialog, which) -> {
             super.onBackPressed();
+            broadCastView.stopBroadCast();
             dialog.dismiss();
             finish();
         });
@@ -385,6 +377,7 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
                 if (broadCastView.isRecording()
                         || broadCastView.prepareBroadCast()) {
                     broadCastView.startBroadCast(broadCastUrl);
+                    startButton.setChecked(true);
                 } else {
                     Toast.makeText(this, "Error preparing stream, This device cant do it",
                             Toast.LENGTH_SHORT).show();
@@ -429,8 +422,10 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
     public void onInit(boolean success) {
         startButton.setEnabled(success);
         audioButton.setVisibility(View.GONE);
-        broadCastView.setUZCameraChangeListener(this);
-        broadCastView.setUZRecordListener(this);
+        if (success) {
+            broadCastView.setUZCameraChangeListener(this);
+            broadCastView.setUZRecordListener(this);
+        }
     }
 
     @Override
@@ -449,13 +444,9 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
 
     @Override
     public void onConnectionFailed(@Nullable final String reason) {
+        startButton.setChecked(false);
         Toast.makeText(UZBroadCastActivity.this, "Connection failed. " + reason, Toast.LENGTH_SHORT)
                 .show();
-    }
-
-    @Override
-    public void onNewBitrate(long bitrate) {
-        Timber.e("newBitrate: %d", bitrate);
     }
 
     @Override

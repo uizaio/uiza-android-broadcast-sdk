@@ -2,6 +2,7 @@ package com.uiza.sdk.profile;
 
 //
 
+import android.content.res.Resources;
 import android.media.MediaCodecInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -54,6 +55,9 @@ public class VideoAttributes implements Parcelable {
      */
     private int frameInterval = 2; // sec
 
+    // dpi of your screen device.
+    private int dpi;
+
     private VideoAttributes() {
     }
 
@@ -62,6 +66,7 @@ public class VideoAttributes implements Parcelable {
         bitRate = in.readInt();
         frameRate = in.readInt();
         frameInterval = in.readInt();
+        dpi = in.readInt();
     }
 
     private VideoAttributes(VideoSize size, int frameRate, int bitRate, int frameInterval) {
@@ -75,6 +80,7 @@ public class VideoAttributes implements Parcelable {
         this.bitRate = bitRate;
         this.frameRate = frameRate;
         this.frameInterval = frameInterval;
+        this.dpi = Resources.getSystem().getDisplayMetrics().densityDpi;
     }
 
     public static VideoAttributes FHD_1080p(int frameRate, int bitRate) {
@@ -115,6 +121,7 @@ public class VideoAttributes implements Parcelable {
         dest.writeInt(bitRate);
         dest.writeInt(frameRate);
         dest.writeInt(frameInterval);
+        dest.writeInt(dpi);
     }
 
     @Override
@@ -205,9 +212,29 @@ public class VideoAttributes implements Parcelable {
         return size.isHighResolution() ? MediaCodecInfo.CodecProfileLevel.AVCLevel4 : MediaCodecInfo.CodecProfileLevel.AVCLevel31;
     }
 
+    /**
+     * @return dpi of your screen device.
+     */
+    public int getDpi() {
+        return dpi;
+    }
+
+    /**
+     * Sets dpi of your screen device.
+     *
+     * @param dpi dpi of your screen device.
+     * @return this instance
+     */
+    public VideoAttributes setDpi(int dpi) {
+        this.dpi = dpi;
+        return this;
+    }
+
     @NonNull
     @Override
     public String toString() {
-        return String.format(Locale.getDefault(), "VideoAttributes (res: %s, fps: %d, bitrate: %d, iFrameInterval: %d)", size.toString(), frameRate, bitRate, frameInterval);
+        return String.format(Locale.getDefault(),
+                "VideoAttributes (res: %s, fps: %d, bitrate: %d, iFrameInterval: %d, dpi: %d)",
+                size.toString(), frameRate, bitRate, frameInterval, dpi);
     }
 }

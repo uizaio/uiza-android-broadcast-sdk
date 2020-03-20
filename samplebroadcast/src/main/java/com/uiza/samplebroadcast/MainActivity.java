@@ -2,7 +2,9 @@ package com.uiza.samplebroadcast;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
+
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +35,14 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT, String.format("%s/%s", mServerEdt.getText().toString(), mStreamKeyEdt.getText().toString()));
             startActivity(intent);
         });
+        findViewById(R.id.btn_start_display).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, UZDisplayActivity.class);
+            intent.putExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT, String.format("%s/%s", mServerEdt.getText().toString(), mStreamKeyEdt.getText().toString()));
+            startActivity(intent);
+        });
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        Timber.e("Screen Density = %d", Resources.getSystem().getDisplayMetrics().densityDpi);
     }
 
     @Override

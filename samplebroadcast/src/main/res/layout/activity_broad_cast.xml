@@ -13,10 +13,10 @@
         app:AAEnabled="false"
         app:isFlipHorizontal="false"
         app:isFlipVertical="false"
-        app:startCamera="FRONT"
         app:keepAspectRatio="true"
-        app:supportRunBackground="true"
         app:numFilters="1"
+        app:runInBackground="true"
+        app:startCamera="FRONT"
         app:useCamera2="true" />
 
     <RelativeLayout

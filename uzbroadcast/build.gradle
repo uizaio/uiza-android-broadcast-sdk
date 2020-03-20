@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 20031915
-        versionName "1.0.2"
+        versionCode 20032018
+        versionName "1.0.3"
     }
     dexOptions {
         jumboMode true
@@ -26,31 +26,8 @@ dependencies {
     //https://github.com/pedroSG94/rtmp-rtsp-stream-client-java
     implementation 'com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:1.7.8'
     api 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'org.greenrobot:eventbus:3.1.1'
     //runtime permission https://github.com/Karumi/Dexter
     implementation 'com.karumi:dexter:6.0.1'
     //Logger
-}
-task sourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
-    from android.sourceSets.main.java.sourceFiles
-}
-
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier.set('javadoc')
-    from javadoc.destinationDir
-}
-
-task classesJar(type: Jar) {
-    from "$buildDir/intermediates/classes/release"
-}
-
-artifacts {
-    archives classesJar
-    archives javadocJar
-    archives sourcesJar
 }

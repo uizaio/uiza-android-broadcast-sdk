@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- RUN Service -->
+    <!--needed by background Rtp service to keep service alive-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!--some devices need it-->
     <uses-feature
@@ -38,4 +39,13 @@
     <uses-feature
         android:name="android.hardware.screen.portrait"
         android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:usesCleartextTraffic="true">
+        <service android:name="com.uiza.sdk.services.UZRTMPService" />
+        <service
+            android:name="com.uiza.sdk.services.UZDisplayService"
+            android:foregroundServiceType="mediaProjection" />
+    </application>
 </manifest>

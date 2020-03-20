@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <com.uiza.widget.UZMediaButton
+        android:id="@+id/btn_start"
+        style="@style/UizaMediaLiveButton.Start"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="5dp"
+        android:tintMode="src_in"
+        app:srcActive="@drawable/ic_stop_live"
+        app:srcInactive="@drawable/ic_start_live" />
+</RelativeLayout>

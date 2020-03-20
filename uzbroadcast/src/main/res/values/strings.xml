@@ -1,5 +1,5 @@
 <resources>
-    <string name="lib_name">com.uiza-live</string>
+    <string name="app_name">UZBroadCast</string>
     <string name="live">• LIVE</string>
     <string name="start_record">Start record</string>
     <string name="stop_record">Stop record</string>

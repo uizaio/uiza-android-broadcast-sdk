@@ -10,7 +10,6 @@ import com.pedro.encoder.input.gl.render.filters.BaseFilterRender;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.encoder.input.video.CameraOpenException;
 import com.pedro.rtplibrary.rtmp.RtmpCamera1;
-import com.pedro.rtplibrary.rtmp.RtmpCamera2;
 import com.pedro.rtplibrary.view.OpenGlView;
 import com.uiza.sdk.enums.RecordStatus;
 import com.uiza.sdk.interfaces.UZCameraChangeListener;
@@ -28,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * use camera1 library
  */
@@ -39,6 +40,17 @@ public class Camera1Helper implements ICameraHelper {
 
     private UZRecordListener uzRecordListener;
     private OpenGlView openGlView;
+
+    /**
+     * VideoAttributes
+     */
+    private VideoAttributes videoAttributes;
+    /**
+     * AudioAttributes
+     */
+    private AudioAttributes audioAttributes;
+
+    private boolean isLandscape = false;
 
     public Camera1Helper(@NonNull OpenGlView openGlView, ConnectCheckerRtmp connectCheckerRtmp) {
         this.rtmpCamera1 = new RtmpCamera1(openGlView, connectCheckerRtmp);
@@ -60,6 +72,21 @@ public class Camera1Helper implements ICameraHelper {
     public void replaceView(Context context) {
         this.openGlView = null;
         rtmpCamera1.replaceView(context);
+    }
+
+    @Override
+    public void setVideoAttributes(VideoAttributes videoAttributes) {
+        this.videoAttributes = videoAttributes;
+    }
+
+    @Override
+    public void setAudioAttributes(AudioAttributes audioAttributes) {
+        this.audioAttributes = audioAttributes;
+    }
+
+    @Override
+    public void setLandscape(boolean landscape) {
+        this.isLandscape = landscape;
     }
 
     @Override
@@ -129,7 +156,29 @@ public class Camera1Helper implements ICameraHelper {
     }
 
     @Override
-    public boolean prepareAudio(@NonNull AudioAttributes attrs) {
+    public boolean prepareBroadCast() {
+        return prepareBroadCast(isLandscape);
+    }
+
+    @Override
+    public boolean prepareBroadCast(boolean isLandscape) {
+        if (videoAttributes == null) {
+            Timber.e("Please set videoAttributes");
+            return false;
+        }
+        return prepareBroadCast(audioAttributes, videoAttributes, isLandscape);
+    }
+
+    @Override
+    public boolean prepareBroadCast(AudioAttributes audioAttributes, @NonNull VideoAttributes videoAttributes, boolean isLandscape) {
+        this.audioAttributes = audioAttributes;
+        this.videoAttributes = videoAttributes;
+        this.isLandscape = isLandscape;
+        return (audioAttributes == null) ? prepareVideo(videoAttributes, isLandscape ? 0 : 90) :
+                prepareAudio(audioAttributes) && prepareVideo(videoAttributes, isLandscape ? 0 : 90);
+    }
+
+    private boolean prepareAudio(@NonNull AudioAttributes attrs) {
         return rtmpCamera1.prepareAudio(
                 attrs.getBitRate(),
                 attrs.getSampleRate(),
@@ -144,8 +193,7 @@ public class Camera1Helper implements ICameraHelper {
         return rtmpCamera1.isVideoEnabled();
     }
 
-    @Override
-    public boolean prepareVideo(@NotNull VideoAttributes attrs, int rotation) {
+    private boolean prepareVideo(@NotNull VideoAttributes attrs, int rotation) {
         return rtmpCamera1.prepareVideo(attrs.getSize().getWidth(),
                 attrs.getSize().getHeight(),
                 attrs.getFrameRate(),

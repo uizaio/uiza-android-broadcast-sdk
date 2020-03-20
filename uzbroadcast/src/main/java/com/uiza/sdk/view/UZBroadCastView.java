@@ -38,6 +38,8 @@ import com.pedro.rtplibrary.view.OpenGlView;
 import com.uiza.sdk.R;
 import com.uiza.sdk.enums.AspectRatio;
 import com.uiza.sdk.enums.FilterRender;
+import com.uiza.sdk.events.EventSignal;
+import com.uiza.sdk.events.UZEvent;
 import com.uiza.sdk.helpers.Camera1Helper;
 import com.uiza.sdk.helpers.Camera2Helper;
 import com.uiza.sdk.helpers.ICameraHelper;
@@ -51,6 +53,8 @@ import com.uiza.sdk.util.ValidValues;
 import com.uiza.sdk.util.ViewUtil;
 
 import net.ossrs.rtmp.ConnectCheckerRtmp;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.List;
@@ -69,30 +73,25 @@ public class UZBroadCastView extends RelativeLayout {
     AspectRatio aspectRatio = AspectRatio.RATIO_16_9;
     private String mainBroadCastUrl;
     private ICameraHelper cameraHelper;
-    /**
-     * VideoAttributes
-     */
-    private VideoAttributes videoAttributes;
-    /**
-     * AudioAttributes
-     */
-    private AudioAttributes audioAttributes;
 
     private ProgressBar progressBar;
     private TextView tvLiveStatus;
     private boolean useCamera2;
-    private boolean supportRunBackground = false;
+    private boolean runInBackground = false;
     private CameraHelper.Facing startCamera = CameraHelper.Facing.FRONT;
     private UZBroadCastListener uzBroadCastListener;
     private long backgroundAllowedDuration = 2 * MINUTE; // default is 2 minutes
     private CountDownTimer backgroundTimer;
     private boolean isBroadcastingBeforeGoingBackground;
     private boolean isFromBackgroundTooLong;
-    private boolean isLandscape = false;
     private boolean AAEnabled = false;
     private boolean keepAspectRatio = false;
     private boolean isFlipHorizontal = false, isFlipVertical = false;
+    private boolean adaptiveBitrate = true;
     private BitrateAdapter bitrateAdapter;
+    private VideoAttributes videoAttributes;
+    private AudioAttributes audioAttributes;
+
     private SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
 
         @Override
@@ -106,7 +105,7 @@ public class UZBroadCastView extends RelativeLayout {
             int mHeight = Math.min((int) (width * aspectRatio.getAspectRatio()), height);
             Timber.e("w=%d, h=%d", width, mHeight);
             cameraHelper.startPreview(startCamera, width, mHeight);
-            if (supportRunBackground) {
+            if (runInBackground) {
                 cameraHelper.replaceView(openGlView);
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && useCamera2)
@@ -117,8 +116,9 @@ public class UZBroadCastView extends RelativeLayout {
 
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
-            if (supportRunBackground) {
-                cameraHelper.replaceView(getContext().getApplicationContext());
+            if (runInBackground) {
+                if (cameraHelper.isBroadCasting())
+                    cameraHelper.replaceView(getContext().getApplicationContext());
                 if (cameraHelper.isOnPreview())
                     cameraHelper.stopPreview();
             } else {
@@ -138,8 +138,10 @@ public class UZBroadCastView extends RelativeLayout {
     private ConnectCheckerRtmp connectCheckerRtmp = new ConnectCheckerRtmp() {
         @Override
         public void onConnectionSuccessRtmp() {
-            bitrateAdapter = new BitrateAdapter(bitrate -> cameraHelper.setVideoBitrateOnFly(bitrate));
-            bitrateAdapter.setMaxBitrate(cameraHelper.getBitrate());
+            if (adaptiveBitrate) {
+                bitrateAdapter = new BitrateAdapter(bitrate -> cameraHelper.setVideoBitrateOnFly(bitrate));
+                bitrateAdapter.setMaxBitrate(cameraHelper.getBitrate());
+            }
             ((Activity) getContext()).runOnUiThread(() -> {
                 showLiveStatus();
                 progressBar.setVisibility(View.GONE);
@@ -148,36 +150,38 @@ public class UZBroadCastView extends RelativeLayout {
                 if (uzBroadCastListener != null)
                     uzBroadCastListener.onConnectionSuccess();
             });
-            if (supportRunBackground)
-                UZRTMPService.showNotification("Stream started");
+            if (runInBackground)
+                EventBus.getDefault().postSticky(new UZEvent("Stream started"));
             else
                 isBroadcastingBeforeGoingBackground = true;
         }
 
         @Override
         public void onConnectionFailedRtmp(@NonNull String reason) {
-            ((Activity) getContext()).runOnUiThread(() -> {
-                //Wait 5s and retry connect stream
-                if (cameraHelper.reTry(5000, reason)) {
-                    if (uzBroadCastListener != null)
+            if (cameraHelper.reTry(5000, reason)) {
+                if (runInBackground)
+                    EventBus.getDefault().postSticky(new UZEvent("Retry connecting..."));
+                if (uzBroadCastListener != null) {
+                    ((Activity) getContext()).runOnUiThread(() -> {
                         uzBroadCastListener.onRetryConnection(5000);
-                } else {
-                    cameraHelper.stopBroadCast();
-                    progressBar.setVisibility(View.GONE);
+                    });
+                }
+            } else {
+                cameraHelper.stopBroadCast();
+                ((Activity) getContext()).runOnUiThread(() -> {
                     hideLiveStatus();
                     invalidate();
                     requestLayout();
+                    progressBar.setVisibility(View.GONE);
                     if (uzBroadCastListener != null)
                         uzBroadCastListener.onConnectionFailed(reason);
-                }
-            });
-            if (supportRunBackground)
-                UZRTMPService.showNotification("Stream connection failed");
+                });
+            }
         }
 
         @Override
         public void onNewBitrateRtmp(long bitrate) {
-            if (bitrateAdapter != null) bitrateAdapter.adaptBitrate(bitrate);
+            if (bitrateAdapter != null && adaptiveBitrate) bitrateAdapter.adaptBitrate(bitrate);
         }
 
         @Override
@@ -190,8 +194,9 @@ public class UZBroadCastView extends RelativeLayout {
                 if (uzBroadCastListener != null)
                     uzBroadCastListener.onDisconnect();
             });
-            if (supportRunBackground)
-                UZRTMPService.showNotification("Stream stopped");
+            // with runInBackground does not post event because service has stopped
+            if (runInBackground)
+                EventBus.getDefault().postSticky(new UZEvent(EventSignal.STOP, ""));
         }
 
         @Override
@@ -203,8 +208,8 @@ public class UZBroadCastView extends RelativeLayout {
                 if (uzBroadCastListener != null)
                     uzBroadCastListener.onAuthError();
             });
-            if (supportRunBackground)
-                UZRTMPService.showNotification("Stream auth error");
+            if (runInBackground)
+                EventBus.getDefault().postSticky(new UZEvent("Stream auth error"));
         }
 
         @Override
@@ -216,8 +221,8 @@ public class UZBroadCastView extends RelativeLayout {
                 if (uzBroadCastListener != null)
                     uzBroadCastListener.onAuthSuccess();
             });
-            if (supportRunBackground)
-                UZRTMPService.showNotification("Stream auth success");
+            if (runInBackground)
+                EventBus.getDefault().postSticky(new UZEvent("Stream auth success"));
         }
     };
 
@@ -251,8 +256,8 @@ public class UZBroadCastView extends RelativeLayout {
             try {
                 boolean hasLollipop = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
                 useCamera2 = a.getBoolean(R.styleable.UZBroadCastView_useCamera2, hasLollipop);
-                supportRunBackground = a.getBoolean(R.styleable.UZBroadCastView_supportRunBackground, false);
-                if (!useCamera2 && supportRunBackground) {
+                runInBackground = a.getBoolean(R.styleable.UZBroadCastView_runInBackground, false);
+                if (!useCamera2 && runInBackground) {
                     throw new IllegalArgumentException("the supportRunBackground support camera2 only");
                 }
                 startCamera = CameraHelper.Facing.values()[a.getInt(R.styleable.UZBroadCastView_startCamera, 1)];
@@ -267,7 +272,7 @@ public class UZBroadCastView extends RelativeLayout {
             }
         } else {
             useCamera2 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-            supportRunBackground = false;
+            runInBackground = false;
             startCamera = CameraHelper.Facing.FRONT;
             // for OpenGL
             keepAspectRatio = true;
@@ -290,8 +295,8 @@ public class UZBroadCastView extends RelativeLayout {
         else
             cameraHelper = new Camera1Helper(openGlView, connectCheckerRtmp);
 
-        if (supportRunBackground) {
-            UZRTMPService.init(getContext(), cameraHelper);
+        if (runInBackground) {
+            UZRTMPService.init(cameraHelper);
         }
         openGlView.init();
         openGlView.getHolder().addCallback(surfaceCallback);
@@ -301,7 +306,7 @@ public class UZBroadCastView extends RelativeLayout {
         tvLiveStatus = findViewById(R.id.live_status);
         progressBar = findViewById(R.id.pb);
         progressBar.getIndeterminateDrawable().setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY));
-        cameraHelper.setConnectReTries(10);
+        cameraHelper.setConnectReTries(8);
     }
 
     /**
@@ -386,6 +391,13 @@ public class UZBroadCastView extends RelativeLayout {
         dialog.show();
     }
 
+    /**
+     * @param adaptiveBitrate boolean
+     *                        Default true
+     */
+    public void setAdaptiveBitrate(boolean adaptiveBitrate) {
+        this.adaptiveBitrate = adaptiveBitrate;
+    }
 
     /**
      * @param uzBroadCastListener {@link UZBroadCastListener}
@@ -395,14 +407,14 @@ public class UZBroadCastView extends RelativeLayout {
     }
 
     public void setLandscape(boolean landscape) {
-        isLandscape = landscape;
+        if (cameraHelper != null) cameraHelper.setLandscape(landscape);
     }
 
     /**
      * Must be called when the app go to resume state
      */
     public void onResume() {
-        if (supportRunBackground && useCamera2) {
+        if (runInBackground && useCamera2) {
             // nothing
         } else {
             checkAndResumeLiveStreamIfNeeded();
@@ -433,7 +445,7 @@ public class UZBroadCastView extends RelativeLayout {
         (new Handler()).postDelayed(() -> {
             try {
                 stopBroadCast(); // make sure stop stream and start it again
-                if (prepareBroadCast(isLandscape) && !TextUtils.isEmpty(mainBroadCastUrl))
+                if (prepareBroadCast() && !TextUtils.isEmpty(mainBroadCastUrl))
                     startBroadCast(mainBroadCastUrl);
             } catch (Exception ignored) {
                 Timber.e("Can not resume broadcasting right now !");
@@ -497,10 +509,6 @@ public class UZBroadCastView extends RelativeLayout {
         ViewUtil.blinking(tvLiveStatus);
     }
 
-    public VideoAttributes getVideoAttributes() {
-        return videoAttributes;
-    }
-
     /**
      * Each video encoder configuration corresponds to a set of video parameters, including the resolution, frame rate, bitrate, and video orientation.
      * The parameters specified in this method are the maximum values under ideal network conditions.
@@ -514,14 +522,12 @@ public class UZBroadCastView extends RelativeLayout {
      */
     public void setVideoAttributes(VideoAttributes attributes) {
         this.videoAttributes = attributes;
-    }
-
-    public AudioAttributes getAudioAttributes() {
-        return audioAttributes;
+        if (cameraHelper != null) cameraHelper.setVideoAttributes(attributes);
     }
 
     public void setAudioAttributes(AudioAttributes audioAttributes) {
         this.audioAttributes = audioAttributes;
+        if (cameraHelper != null) cameraHelper.setAudioAttributes(audioAttributes);
     }
 
     /**
@@ -532,11 +538,9 @@ public class UZBroadCastView extends RelativeLayout {
     public void startBroadCast(String broadCastUrl) {
         mainBroadCastUrl = broadCastUrl;
         progressBar.setVisibility(View.VISIBLE);
-        if (supportRunBackground && useCamera2) {
+        if (runInBackground && useCamera2) {
             Intent intent = new Intent(getContext().getApplicationContext(), UZRTMPService.class);
             intent.putExtra(UZRTMPService.EXTRA_BROAD_CAST_URL, broadCastUrl);
-            intent.putExtra(UZRTMPService.EXTRA_AUDIO_ATTRIBUTES, audioAttributes);
-            intent.putExtra(UZRTMPService.EXTRA_VIDEO_ATTRIBUTES, videoAttributes);
             getContext().startService(intent);
         } else {
             cameraHelper.startBroadCast(broadCastUrl);
@@ -544,17 +548,14 @@ public class UZBroadCastView extends RelativeLayout {
     }
 
     public boolean isBroadCasting() {
-        if (supportRunBackground)
+        if (runInBackground)
             return ValidValues.isMyServiceRunning(getContext(), UZRTMPService.class);
         else
             return cameraHelper != null && cameraHelper.isBroadCasting();
     }
 
     public void stopBroadCast() {
-        if (supportRunBackground)
-            getContext().stopService(new Intent(getContext().getApplicationContext(), UZRTMPService.class));
-        else
-            cameraHelper.stopBroadCast();
+        cameraHelper.stopBroadCast();
     }
 
     public void switchCamera() {
@@ -591,8 +592,12 @@ public class UZBroadCastView extends RelativeLayout {
      * * doesn't support any configuration seated or your device hasn't a AAC encoder).
      */
     public boolean prepareBroadCast() {
-        int rotation = CameraHelper.getCameraOrientation(getContext());
-        return prepareBroadCast(rotation == 0 || rotation == 180);
+        if (cameraHelper != null) {
+            cameraHelper.setAudioAttributes(audioAttributes);
+            cameraHelper.setVideoAttributes(videoAttributes);
+            return cameraHelper.prepareBroadCast();
+        }
+        return false;
     }
 
     /**
@@ -603,11 +608,12 @@ public class UZBroadCastView extends RelativeLayout {
      * * doesn't support any configuration seated or your device hasn't a AAC encoder).
      */
     public boolean prepareBroadCast(boolean isLandscape) {
-        if (videoAttributes == null) {
-            Timber.e("Please set videoAttributes");
-            return false;
+        if (cameraHelper != null) {
+            cameraHelper.setAudioAttributes(audioAttributes);
+            cameraHelper.setVideoAttributes(videoAttributes);
+            return cameraHelper.prepareBroadCast(isLandscape);
         }
-        return prepareBroadCast(audioAttributes, videoAttributes, isLandscape);
+        return false;
     }
 
     /**
@@ -618,38 +624,17 @@ public class UZBroadCastView extends RelativeLayout {
      * doesn't support any configuration seated or your device hasn't a AAC encoder).
      */
     public boolean prepareBroadCast(AudioAttributes audioAttributes, @NonNull VideoAttributes videoAttributes, boolean isLandscape) {
-        return (audioAttributes == null) ? prepareVideo(videoAttributes, isLandscape) :
-                prepareAudio(audioAttributes) && prepareVideo(videoAttributes, isLandscape);
-    }
-
-    /**
-     * Call this method before use {@link #startBroadCast(String)}.
-     * If not you will do a stream without audio.
-     *
-     * @param attrs {@link AudioAttributes}
-     * @return true if success, false if you get a error (Normally because the encoder selected
-     * doesn't support any configuration seated or your device hasn't a AAC encoder).
-     */
-    public boolean prepareAudio(@NonNull AudioAttributes attrs) {
-        this.audioAttributes = attrs;
-        return cameraHelper.prepareAudio(audioAttributes);
-    }
-
-    /**
-     * Call this method before use {@link #startBroadCast(String)}.
-     *
-     * @param attrs {@link AudioAttributes}
-     * @return true if success, false if you get a error (Normally because the encoder selected
-     * doesn't support any configuration seated or your device hasn't a AAC encoder).
-     */
-    public boolean prepareVideo(@NonNull VideoAttributes attrs, boolean isLandscape) {
-        this.videoAttributes = attrs;
-        this.isLandscape = isLandscape;
-        return cameraHelper.prepareVideo(videoAttributes, isLandscape ? 0 : 90);
+        this.videoAttributes = videoAttributes;
+        this.audioAttributes = audioAttributes;
+        return cameraHelper.prepareBroadCast(audioAttributes, videoAttributes, isLandscape);
     }
 
     public void enableAA(boolean enable) {
         cameraHelper.enableAA(enable);
+    }
+
+    public boolean isRunInBackground() {
+        return runInBackground;
     }
 
     public boolean isAAEnabled() {

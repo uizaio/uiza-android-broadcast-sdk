@@ -27,6 +27,8 @@ import net.ossrs.rtmp.ConnectCheckerRtmp;
 import java.io.IOException;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * use camera2 library
  */
@@ -42,6 +44,16 @@ public class Camera2Helper implements ICameraHelper {
 
     private OpenGlView openGlView;
 
+    /**
+     * VideoAttributes
+     */
+    private VideoAttributes videoAttributes;
+    /**
+     * AudioAttributes
+     */
+    private AudioAttributes audioAttributes;
+
+    private boolean isLandscape = false;
 
     public Camera2Helper(@NonNull OpenGlView openGlView, ConnectCheckerRtmp connectCheckerRtmp) {
         this.rtmpCamera2 = new RtmpCamera2(openGlView, connectCheckerRtmp);
@@ -73,6 +85,21 @@ public class Camera2Helper implements ICameraHelper {
     @Override
     public boolean reTry(long delay, @NonNull String reason) {
         return rtmpCamera2.reTry(delay, reason);
+    }
+
+    @Override
+    public void setVideoAttributes(VideoAttributes videoAttributes) {
+        this.videoAttributes = videoAttributes;
+    }
+
+    @Override
+    public void setAudioAttributes(AudioAttributes audioAttributes) {
+        this.audioAttributes = audioAttributes;
+    }
+
+    @Override
+    public void setLandscape(boolean landscape) {
+        this.isLandscape = landscape;
     }
 
     @Override
@@ -141,7 +168,29 @@ public class Camera2Helper implements ICameraHelper {
     }
 
     @Override
-    public boolean prepareAudio(@NonNull AudioAttributes attrs) {
+    public boolean prepareBroadCast() {
+        return prepareBroadCast(isLandscape);
+    }
+
+    @Override
+    public boolean prepareBroadCast(boolean isLandscape) {
+        if (videoAttributes == null) {
+            Timber.e("Please set videoAttributes");
+            return false;
+        }
+        return prepareBroadCast(audioAttributes, videoAttributes, isLandscape);
+    }
+
+    @Override
+    public boolean prepareBroadCast(AudioAttributes audioAttributes, @NonNull VideoAttributes videoAttributes, boolean isLandscape) {
+        this.audioAttributes = audioAttributes;
+        this.videoAttributes = videoAttributes;
+        this.isLandscape = isLandscape;
+        return (audioAttributes == null) ? prepareVideo(videoAttributes, isLandscape ? 0 : 90) :
+                prepareAudio(audioAttributes) && prepareVideo(videoAttributes, isLandscape ? 0 : 90);
+    }
+
+    private boolean prepareAudio(@NonNull AudioAttributes attrs) {
         return rtmpCamera2.prepareAudio(
                 attrs.getBitRate(),
                 attrs.getSampleRate(),
@@ -156,8 +205,7 @@ public class Camera2Helper implements ICameraHelper {
         return rtmpCamera2.isVideoEnabled();
     }
 
-    @Override
-    public boolean prepareVideo(@NonNull VideoAttributes attrs, int rotation) {
+    private boolean prepareVideo(@NonNull VideoAttributes attrs, int rotation) {
         return rtmpCamera2.prepareVideo(
                 attrs.getSize().getWidth(),
                 attrs.getSize().getHeight(),

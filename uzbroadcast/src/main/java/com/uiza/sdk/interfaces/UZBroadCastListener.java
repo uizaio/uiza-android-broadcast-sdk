@@ -10,8 +10,6 @@ public interface UZBroadCastListener {
 
     void onRetryConnection(long delay);
 
-    void onNewBitrate(long bitrate);
-
     void onDisconnect();
 
     void onAuthError();
