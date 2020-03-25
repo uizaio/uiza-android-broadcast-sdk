@@ -42,13 +42,7 @@ compileOptions {
 
 ## Init SDK
 
-1. If you want to run a broadcast in background or screen your device. In the  `onCreate` of your application class
-
-```java
-UZBroadCast.init();
-```
-
-2. If you want show log, install any `Tree` instances you want in the `onCreate` of your application class
+. If you want show log, install any `Tree` instances you want in the `onCreate` of your application class
 
 ```java
 if (BuildConfig.DEBUG) {
@@ -132,7 +126,7 @@ In case `runInBackground = false` But you want to allows streaming again after b
 
 This sample help you know how to use all Uiza SDK for livestream, please refer to  [THIS](https://github.com/uizaio/uiza-android-broadcast-sdk/tree/master/samplebroadcast)
 
-## How to make a broadcast your screen?
+## How to broadcast your screen?
 
 See example in class [`UZDisplayActivity`](https://github.com/uizaio/uiza-android-broadcast-sdk/blob/master/samplebroadcast/src/main/java/com/uiza/samplebroadcast/UZDisplayActivity.java):
 
