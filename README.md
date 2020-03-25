@@ -158,8 +158,8 @@ See example in class [`UZDisplayActivity`](https://github.com/uizaio/uiza-androi
  2. Select **Analyze** > **Inspect Code**
 
 
-## Docs
-[Docs](https://uizaio.github.io/uiza-android-broadcast-sdk/)
+## Reference
+[API Reference](https://uizaio.github.io/uiza-android-broadcast-sdk/)
 
 ## Supported devices
 
