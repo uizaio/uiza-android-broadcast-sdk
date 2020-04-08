@@ -162,9 +162,7 @@ public class UZBroadCastView extends RelativeLayout {
                 if (runInBackground)
                     EventBus.getDefault().postSticky(new UZEvent("Retry connecting..."));
                 if (uzBroadCastListener != null) {
-                    ((Activity) getContext()).runOnUiThread(() -> {
-                        uzBroadCastListener.onRetryConnection(5000);
-                    });
+                    ((Activity) getContext()).runOnUiThread(() -> uzBroadCastListener.onRetryConnection(5000));
                 }
             } else {
                 cameraHelper.stopBroadCast();

@@ -211,7 +211,8 @@ public class UZDisplayBroadCast {
                 isLandscape ? 0 : 90,
                 attrs.getDpi(),
                 attrs.getAVCProfile(),
-                attrs.getAVCProfileLevel()
+                attrs.getAVCProfileLevel(),
+                attrs.getFrameInterval()
         );
     }
 

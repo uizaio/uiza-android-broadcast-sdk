@@ -12,7 +12,10 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
+
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT, String.format("%s/%s", mServerEdt.getText().toString(), mStreamKeyEdt.getText().toString()));
             startActivity(intent);
         });
+        ((AppCompatTextView)findViewById(R.id.txt_info)).setText(String.format(Locale.getDefault(), "%s - %s", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE) );
     }
 
     @Override
