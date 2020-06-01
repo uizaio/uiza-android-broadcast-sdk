@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -87,28 +88,31 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
         if (TextUtils.isEmpty(broadCastUrl)) {
             finish();
         }
-        int profile = Integer.parseInt(preferences.getString(PREF_CAMERA_PROFILE, DEFAULT_CAMERA_PROFILE));
-        int maxBitrate = Integer.parseInt(preferences.getString(PREF_VIDEO_BITRATE, DEFAULT_MAX_BITRATE));
-        int fps = Integer.parseInt(preferences.getString(PREF_FPS, DEFAULT_FPS));
-        int frameInterval = Integer.parseInt(preferences.getString(PREF_FRAME_INTERVAL, DEFAULT_FRAME_INTERVAL));
-        int audioBitrate = Integer.parseInt(preferences.getString(PREF_AUDIO_BITRATE, DEFAULT_AUDIO_BITRATE));
-        int audioSampleRate = Integer.parseInt(preferences.getString(PREF_SAMPLE_RATE, DEFAULT_SAMPLE_RATE));
-        boolean stereo = preferences.getBoolean(PREF_AUDIO_STEREO, DEFAULT_AUDIO_STEREO);
-        VideoAttributes videoAttributes;
-        if (profile == 1080)
-            videoAttributes = VideoAttributes.FHD_1080p(fps, maxBitrate, frameInterval);
-        else if (profile == 480)
-            videoAttributes = VideoAttributes.SD_480p(fps, maxBitrate, frameInterval);
-        else if (profile == 360)
-            videoAttributes = VideoAttributes.SD_360p(fps, maxBitrate, frameInterval);
-        else
-            videoAttributes = VideoAttributes.HD_720p(fps, maxBitrate, frameInterval);
-        AudioAttributes audioAttributes = AudioAttributes.create(audioBitrate, audioSampleRate, stereo);
-        // set audio and video profile
-        broadCastView.setVideoAttributes(videoAttributes);
-        broadCastView.setAudioAttributes(audioAttributes);
-        broadCastView.setBackgroundAllowedDuration(10000);
-
+        try {
+            int profile = Integer.parseInt(Objects.requireNonNull(preferences.getString(PREF_CAMERA_PROFILE, DEFAULT_CAMERA_PROFILE)));
+            int maxBitrate = Integer.parseInt(Objects.requireNonNull(preferences.getString(PREF_VIDEO_BITRATE, DEFAULT_MAX_BITRATE)));
+            int fps = Integer.parseInt(Objects.requireNonNull(preferences.getString(PREF_FPS, DEFAULT_FPS)));
+            int frameInterval = Integer.parseInt(Objects.requireNonNull(preferences.getString(PREF_FRAME_INTERVAL, DEFAULT_FRAME_INTERVAL)));
+            int audioBitrate = Integer.parseInt(Objects.requireNonNull(preferences.getString(PREF_AUDIO_BITRATE, DEFAULT_AUDIO_BITRATE)));
+            int audioSampleRate = Integer.parseInt(Objects.requireNonNull(preferences.getString(PREF_SAMPLE_RATE, DEFAULT_SAMPLE_RATE)));
+            boolean stereo = preferences.getBoolean(PREF_AUDIO_STEREO, DEFAULT_AUDIO_STEREO);
+            VideoAttributes videoAttributes;
+            if (profile == 1080)
+                videoAttributes = VideoAttributes.FHD_1080p(fps, maxBitrate, frameInterval);
+            else if (profile == 480)
+                videoAttributes = VideoAttributes.SD_480p(fps, maxBitrate, frameInterval);
+            else if (profile == 360)
+                videoAttributes = VideoAttributes.SD_360p(fps, maxBitrate, frameInterval);
+            else
+                videoAttributes = VideoAttributes.HD_720p(fps, maxBitrate, frameInterval);
+            AudioAttributes audioAttributes = AudioAttributes.create(audioBitrate, audioSampleRate, stereo);
+            // set audio and video profile
+            broadCastView.setVideoAttributes(videoAttributes);
+            broadCastView.setAudioAttributes(audioAttributes);
+            broadCastView.setBackgroundAllowedDuration(10000);
+        } catch (NullPointerException e) {
+            Timber.e(e);
+        }
     }
 
     @Override
@@ -132,7 +136,7 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
     private void showExitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Stop");
-        builder.setMessage("Do you want stop?");
+        builder.setMessage("Do you want to stop?");
         builder.setPositiveButton("OK", (dialog, which) -> {
             super.onBackPressed();
             broadCastView.stopBroadCast();
@@ -155,9 +159,6 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
             return true;
         } else if (itemId == R.id.no_filter) {
             broadCastView.setFilter(FilterRender.None);
-            return true;
-        } else if (itemId == R.id.android_view) {
-            broadCastView.setFilter(FilterRender.AndroidView);
             return true;
         } else if (itemId == R.id.basic_deformation) {
             broadCastView.setFilter(FilterRender.BasicDeformation);

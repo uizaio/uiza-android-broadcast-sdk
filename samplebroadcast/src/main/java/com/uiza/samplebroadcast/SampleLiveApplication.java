@@ -16,6 +16,6 @@ public class SampleLiveApplication extends MultiDexApplication {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
-        UZBroadCast.init();
+        UZBroadCast.init(R.mipmap.ic_launcher);
     }
 }

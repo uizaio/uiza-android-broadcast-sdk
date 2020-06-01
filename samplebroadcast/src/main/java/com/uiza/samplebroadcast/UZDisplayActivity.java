@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +34,8 @@ public class UZDisplayActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
         startBtn = findViewById(R.id.btn_start);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         broadCast = new UZDisplayBroadCast(this);
         broadCast.setUZBroadCastListener(this);
@@ -60,6 +64,14 @@ public class UZDisplayActivity extends AppCompatActivity implements View.OnClick
         broadCast.setVideoAttributes(videoAttributes);
         broadCast.setAudioAttributes(audioAttributes);
         startBtn.setOnClickListener(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
