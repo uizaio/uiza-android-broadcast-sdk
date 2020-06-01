@@ -57,7 +57,6 @@ public enum FilterRender {
 
     None(new NoFilterRender()),
     AnalogTV(new AnalogTVFilterRender()),
-    AndroidView(new AndroidViewFilterRender()),
     BasicDeformation(new BasicDeformationFilterRender()),
     Beauty(new BeautyFilterRender()),
     Black(new BlackFilterRender()),
