@@ -37,4 +37,8 @@
     <string name="login_failed">"Login failed"</string>
     <string name="general_title">General</string>
     <string name="version_title">Build Number</string>
+    <string name="broadcast_display">BroadCast Display</string>
+    <string name="broadcast">BroadCast</string>
+    <string name="stream_key">Stream Key</string>
+    <string name="rtmp">rtmp://</string>
 </resources>

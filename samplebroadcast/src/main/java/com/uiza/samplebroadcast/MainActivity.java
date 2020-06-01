@@ -1,5 +1,6 @@
 package com.uiza.samplebroadcast;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -23,12 +24,11 @@ public class MainActivity extends AppCompatActivity {
 
     AppCompatEditText mServerEdt, mStreamKeyEdt;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedState) {
         super.onCreate(savedState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         mServerEdt = findViewById(R.id.edt_server);
         mStreamKeyEdt = findViewById(R.id.edt_stream_key);
         mServerEdt.setText("rtmp://e8c6034c5d-in.streamwiz.io/live");

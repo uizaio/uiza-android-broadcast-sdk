@@ -1,45 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-    </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
         android:id="@+id/content"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout">
+        android:paddingEnd="16dp">
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edt_server"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="rtmp://" />
+            android:hint="@string/rtmp" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edt_stream_key"
@@ -48,7 +29,7 @@
             android:layout_below="@+id/edt_server"
             android:layout_marginTop="16dp"
             android:ellipsize="middle"
-            android:hint="Stream Key"
+            android:hint="@string/stream_key"
             android:maxLines="5" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -60,7 +41,7 @@
             android:layout_marginTop="16dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="BroadCast" />
+            android:text="@string/broadcast" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_start_display"
@@ -71,15 +52,13 @@
             android:layout_marginTop="16dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="BroadCast Display" />
+            android:text="@string/broadcast_display" />
     </RelativeLayout>
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_info"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="8dp"
-        />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="8dp" />
+</LinearLayout>

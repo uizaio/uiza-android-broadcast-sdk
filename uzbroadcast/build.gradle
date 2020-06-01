@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 20040815
-        versionName "1.0.4"
+        versionCode 20051412
+        versionName "1.0.5"
     }
     dexOptions {
         jumboMode true
@@ -24,10 +24,10 @@ android {
 
 dependencies {
     //https://github.com/pedroSG94/rtmp-rtsp-stream-client-java
-    implementation 'com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:1.7.9'
+    implementation 'com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:1.8.3'
     api 'com.jakewharton.timber:timber:4.7.1'
     implementation 'org.greenrobot:eventbus:3.1.1'
     //runtime permission https://github.com/Karumi/Dexter
-    implementation 'com.karumi:dexter:6.0.1'
+    implementation 'com.karumi:dexter:6.1.2'
     //Logger
 }
