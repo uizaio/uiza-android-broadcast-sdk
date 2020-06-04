@@ -158,7 +158,7 @@ __With Video__
 ```java
 uzBroadCast.setVideoWatermarkByResource(R.raw.big_bunny_240p, Translate.CENTER);
 // or
-// uzBroadCast.setVideoWatermarkByResource(uri, Translate.CENTER);
+// uzBroadCast.setVideoWatermarkByUri(uri, Translate.CENTER);
 ```
 
 
