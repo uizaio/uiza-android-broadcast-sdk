@@ -15,19 +15,19 @@ Read [CHANGELOG here](https://github.com/uizaio/uiza-android-broadcast-sdk/blob/
 **Step 1. Add the `JitPack` repository to your `build.gradle` file**
 
 ```xml
-    allprojects {
-          repositories {
-             maven { url 'https://jitpack.io' }
-          }
-    }
+allprojects {
+  repositories {
+     maven { url 'https://jitpack.io' }
+  }
+}
 ```
 
 **Step 2. Add the dependency**
 
 ```xml
-    dependencies {
-        implementation 'com.github.uizaio:uiza-android-broadcast-sdk:1.x.x'
-    }
+dependencies {
+     implementation 'com.github.uizaio:uiza-android-broadcast-sdk:1.x.x'
+}
 ```
 
 Get latest release number [HERE](https://github.com/uizaio/uiza-android-broadcast-sdk/releases).
@@ -48,8 +48,8 @@ compileOptions {
 
 ```java
 if (BuildConfig.DEBUG) {
-        Timber.plant(new Timber.DebugTree());
-    }
+    Timber.plant(new Timber.DebugTree());
+}
 ```
 
 ## How to broadcast with UZBroadCast?:
@@ -69,61 +69,61 @@ XML:
 
 In class [`UZBroadCastActivity`](https://github.com/uizaio/uiza-android-broadcast-sdk/blob/master/samplebroadcast/src/main/java/com/uiza/samplebroadcast/UZBroadCastActivity.java):
 ```java
-    public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCastListener {
-        // ...
-    }
+public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCastListener {
+    // ...
+}
 ```
 In `onCreate()`:
 
 ```java
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
-    uzBroadCast = (UZBroadCastView) findViewById(R.id.uz_broadcast);
-    uzBroadCast.setUZBroadcastListener(this);
+getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+uzBroadCast = (UZBroadCastView) findViewById(R.id.uz_broadcast);
+uzBroadCast.setUZBroadcastListener(this);
 ```
 
 In `onResume()`:
 
 ```java
-    @Override
-    protected void onResume() {
-        uzBroadCast.onResume();
-        super.onResume();
-    }
+@Override
+protected void onResume() {
+    uzBroadCast.onResume();
+    super.onResume();
+}
 ```
 Start a Stream: see [`VideoAttributes`](https://github.com/uizaio/uiza-android-broadcast-sdk/blob/master/uzbroadcast/src/main/java/com/uiza/sdk/profile/VideoAttributes.java) and [`AudioAttributes`](https://github.com/uizaio/uiza-android-broadcast-sdk/blob/master/uzbroadcast/src/main/java/com/uiza/sdk/profile/AudioAttributes.java)
 
 ```java
-    uzBroadCast.setVideoAttributes(VideoAttributes videoAttrs);
-    uzBroadCast.setAudioAttributes(AudioAttributes audioAttrs);
-    if (uzBroadCast.prepareBroadCast()) {
-        uzBroadCast.startBroadCast("broadCastUrl");
-    }
+uzBroadCast.setVideoAttributes(VideoAttributes videoAttrs);
+uzBroadCast.setAudioAttributes(AudioAttributes audioAttrs);
+if (uzBroadCast.prepareBroadCast()) {
+    uzBroadCast.startBroadCast("broadCastUrl");
+}
 ```
 
 or
 
 ```java
-    if (uzBroadCast.prepareBroadCast(AudioAttributes audioAttrs, VideoAttributes videoAttrs, boolean isLandscape)) {
-        uzBroadCast.startBroadCast("broadCastUrl");
-    }
+if (uzBroadCast.prepareBroadCast(AudioAttributes audioAttrs, VideoAttributes videoAttrs, boolean isLandscape)) {
+    uzBroadCast.startBroadCast("broadCastUrl");
+}
 ```
 
 Stop streaming (It auto saves mp4 file in your gallery if you start a broadcast with option save local file)
 
 ```java
-    uzBroadCast.stopBroadCast();
+uzBroadCast.stopBroadCast();
 ```
 
 Switch camera:
 
 ```java
-    uzBroadCast.switchCamera();
+uzBroadCast.switchCamera();
 ```
 In case `runInBackground = false` But you want to allows streaming again after back from background:
 
 ```java
-    uzBroadCast.setBackgroundAllowedDuration(YOUR_ALLOW_TIME); // default time is 2 minutes
+uzBroadCast.setBackgroundAllowedDuration(YOUR_ALLOW_TIME); // default time is 2 minutes
 ```
 
 This sample help you know how to use all Uiza SDK for livestream, please refer to  [THIS](https://github.com/uizaio/uiza-android-broadcast-sdk/tree/master/samplebroadcast)
@@ -134,31 +134,31 @@ UZBroadcast is supported watermarks.
 __with text__
 
 ```java
-    uzBroadCast.setTextWatermark("UIZA", 22, Color.RED, Translate.CENTER);
+uzBroadCast.setTextWatermark("UIZA", 22, Color.RED, Translate.CENTER);
 ```
 
 __With image__
 
 ```java
-    uzBroadCast.setImageWatermark(R.drawable.logo, new PointF(20f, 15f), Translate.CENTER);
-    or
-    uzBroadCast.setImageWatermark(bitmap, new PointF(20f, 15f), Translate.CENTER);
+uzBroadCast.setImageWatermark(R.drawable.logo, new PointF(20f, 15f), Translate.CENTER);
+// or
+// uzBroadCast.setImageWatermark(bitmap, new PointF(20f, 15f), Translate.CENTER);
 ```
 
 __With Gif__
 
 ```java
-    uzBroadCast.setGifWatermark(R.raw.banana, new PointF(20f, 15f), Translate.CENTER);
-    or
-    uzBroadCast.setGifWatermark(inputstream, new PointF(20f, 15f), Translate.CENTER);
+uzBroadCast.setGifWatermark(R.raw.banana, new PointF(20f, 15f), Translate.CENTER);
+// or
+// uzBroadCast.setGifWatermark(inputstream, new PointF(20f, 15f), Translate.CENTER);
 ```
 
 __With Video__
 
 ```java
-    uzBroadCast.setVideoWatermarkByResource(R.raw.big_bunny_240p, Translate.CENTER);
-    or
-    uzBroadCast.setVideoWatermarkByResource(uri, Translate.CENTER);
+uzBroadCast.setVideoWatermarkByResource(R.raw.big_bunny_240p, Translate.CENTER);
+// or
+// uzBroadCast.setVideoWatermarkByResource(uri, Translate.CENTER);
 ```
 
 
