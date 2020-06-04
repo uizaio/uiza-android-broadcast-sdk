@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 20060116
-        versionName "1.0.6"
+        versionCode 20060415
+        versionName "1.0.7"
     }
     dexOptions {
         jumboMode true
