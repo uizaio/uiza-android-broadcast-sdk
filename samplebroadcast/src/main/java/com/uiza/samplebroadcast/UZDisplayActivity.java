@@ -85,7 +85,7 @@ public class UZDisplayActivity extends AppCompatActivity implements View.OnClick
     private void showExitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Stop");
-        builder.setMessage("Do you want stop?");
+        builder.setMessage("Do you want to stop?");
         builder.setPositiveButton("OK", (dialog, which) -> {
             super.onBackPressed();
             broadCast.stopBroadCast();

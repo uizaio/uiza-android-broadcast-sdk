@@ -1,6 +1,7 @@
 package com.uiza.sdk.view;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,9 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
@@ -18,26 +23,37 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.RawRes;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.pedro.encoder.input.gl.SpriteGestureController;
 import com.pedro.encoder.input.gl.render.ManagerRender;
+import com.pedro.encoder.input.gl.render.filters.object.GifObjectFilterRender;
+import com.pedro.encoder.input.gl.render.filters.object.ImageObjectFilterRender;
+import com.pedro.encoder.input.gl.render.filters.object.SurfaceFilterRender;
+import com.pedro.encoder.input.gl.render.filters.object.TextObjectFilterRender;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.rtplibrary.util.BitrateAdapter;
 import com.pedro.rtplibrary.view.OpenGlView;
 import com.uiza.sdk.R;
 import com.uiza.sdk.enums.AspectRatio;
 import com.uiza.sdk.enums.FilterRender;
+import com.uiza.sdk.enums.Translate;
 import com.uiza.sdk.events.EventSignal;
 import com.uiza.sdk.events.UZEvent;
 import com.uiza.sdk.helpers.Camera1Helper;
@@ -57,6 +73,7 @@ import net.ossrs.rtmp.ConnectCheckerRtmp;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import timber.log.Timber;
@@ -65,7 +82,7 @@ import timber.log.Timber;
  * @required: <uses-permission android:name="android.permission.CAMERA"/> and
  * <uses-permission android:name="android.permission.RECORD_AUDIO"/>
  */
-public class UZBroadCastView extends RelativeLayout {
+public class UZBroadCastView extends RelativeLayout implements View.OnTouchListener {
 
     private static final long SECOND = 1000;
     private static final long MINUTE = 60 * SECOND;
@@ -91,6 +108,7 @@ public class UZBroadCastView extends RelativeLayout {
     private BitrateAdapter bitrateAdapter;
     private VideoAttributes videoAttributes;
     private AudioAttributes audioAttributes;
+    private SpriteGestureController spriteGestureController = new SpriteGestureController();
 
     private SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
 
@@ -285,6 +303,7 @@ public class UZBroadCastView extends RelativeLayout {
      * Call one time
      * Note: you must call inflate in this method
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void onCreateView() {
         inflate(getContext(), R.layout.layout_uiza_glview, this);
         openGlView = findViewById(R.id.camera_view);
@@ -301,6 +320,7 @@ public class UZBroadCastView extends RelativeLayout {
         openGlView.setCameraFlip(isFlipHorizontal, isFlipVertical);
         openGlView.setKeepAspectRatio(keepAspectRatio);
         openGlView.enableAA(AAEnabled);
+        openGlView.setOnTouchListener(this);
         tvLiveStatus = findViewById(R.id.live_status);
         progressBar = findViewById(R.id.pb);
         progressBar.getIndeterminateDrawable().setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY));
@@ -457,7 +477,6 @@ public class UZBroadCastView extends RelativeLayout {
                 public void onTick(long millisUntilFinished) {
                     // Nothing
                 }
-
                 public void onFinish() {
                     isBroadcastingBeforeGoingBackground = false;
                     isFromBackgroundTooLong = true;
@@ -628,6 +647,7 @@ public class UZBroadCastView extends RelativeLayout {
     }
 
     public void enableAA(boolean enable) {
+        spriteGestureController.setBaseObjectFilterRender(null);
         cameraHelper.enableAA(enable);
     }
 
@@ -640,11 +660,24 @@ public class UZBroadCastView extends RelativeLayout {
     }
 
     public void setFilter(FilterRender filterRender) {
+        spriteGestureController.setBaseObjectFilterRender(null);
         cameraHelper.setFilter(filterRender.getFilterRender());
     }
 
     public void setFilter(int position, FilterRender filterRender) {
+        spriteGestureController.setBaseObjectFilterRender(null);
         cameraHelper.setFilter(position, filterRender.getFilterRender());
+    }
+
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (spriteGestureController.spriteTouched(view, motionEvent)) {
+            spriteGestureController.moveSprite(view, motionEvent);
+            spriteGestureController.scaleSprite(motionEvent);
+            return true;
+        }
+        return false;
     }
 
     public int getStreamWidth() {
@@ -703,5 +736,158 @@ public class UZBroadCastView extends RelativeLayout {
 
     public boolean isLanternEnabled() {
         return cameraHelper.isLanternEnabled();
+    }
+
+
+    /**
+     * @param text     content of watermark
+     * @param textSize size of text
+     * @param color    color of text
+     * @param position of text
+     */
+    public void setTextWatermark(String text, float textSize, @ColorInt int color, Translate position) {
+        if (cameraHelper == null) return;
+        spriteGestureController.setBaseObjectFilterRender(null);
+        TextObjectFilterRender textRender = new TextObjectFilterRender();
+        cameraHelper.setFilter(textRender);
+        textRender.setText(text, textSize, color);
+        textRender.setDefaultScale(cameraHelper.getStreamWidth(), cameraHelper.getStreamHeight());
+        textRender.setPosition(position.getTranslateTo());
+        spriteGestureController.setBaseObjectFilterRender(textRender);
+    }
+
+    /**
+     * Watermark with image
+     *
+     * @param imageRes The resource id of the image data
+     * @param scale Scale in percent
+     * @param position of image
+     */
+    public void setImageWatermark(@DrawableRes int imageRes, PointF scale, Translate position) {
+        setImageWatermark(BitmapFactory.decodeResource(getResources(), imageRes), scale, position);
+    }
+
+    /**
+     * Watermark with image
+     *
+     * @param bitmap   the decoded bitmap
+     * @param scale Scale in percent
+     * @param position of image
+     */
+    public void setImageWatermark(Bitmap bitmap, PointF scale, Translate position) {
+        if (cameraHelper == null) return;
+        spriteGestureController.setBaseObjectFilterRender(null);
+        ImageObjectFilterRender imageRender = new ImageObjectFilterRender();
+        cameraHelper.setFilter(imageRender);
+        imageRender.setImage(bitmap);
+        imageRender.setScale(scale.x, scale.y);
+        imageRender.setPosition(position.getTranslateTo());
+        spriteGestureController.setBaseObjectFilterRender(imageRender); //Optional
+        spriteGestureController.setPreventMoveOutside(false); //Optional
+    }
+
+    /**
+     * Watermark with gif
+     *
+     * @param gifRaw   The resource identifier to open, as generated by the aapt tool.
+     * @param scale Scale in percent
+     * @param position of gif
+     */
+    public void setGifWatermark(@RawRes int gifRaw, PointF scale, Translate position) {
+        setGifWatermark(getResources().openRawResource(gifRaw), scale, position);
+    }
+
+    /**
+     * Watermark with gif
+     *
+     * @param inputStream Access to the resource data.
+     * @param scale Scale in percent
+     * @param position    of gif
+     */
+    public void setGifWatermark(InputStream inputStream, PointF scale, Translate position) {
+        if (cameraHelper == null) return;
+        spriteGestureController.setBaseObjectFilterRender(null);
+        try {
+            GifObjectFilterRender gifRender = new GifObjectFilterRender();
+            gifRender.setGif(inputStream);
+            cameraHelper.setFilter(gifRender);
+            gifRender.setScale(scale.x, scale.y);
+            gifRender.setPosition(position.getTranslateTo());
+            spriteGestureController.setBaseObjectFilterRender(gifRender);
+        } catch (IOException e) {
+            Timber.e(e);
+        }
+    }
+
+    public void setVideoWatermarkByResource(@RawRes int videoRes, Translate position){
+        //Video is 360x240 so select a percent to keep aspect ratio (50% x 33.3% screen)
+        setVideoWatermarkByResource(videoRes, new PointF(50f, 33.3f), position);
+    }
+
+    /**
+     * Watermark with video
+     *
+     * @param videoRes the raw resource id (<var>R.raw.&lt;something></var>) for
+     *                 the resource to use as the datasource
+     * @param scale Scale in percent
+     * @param  position of video
+     */
+    public void setVideoWatermarkByResource(@RawRes int videoRes, PointF scale, Translate position) {
+        if (cameraHelper == null) return;
+        spriteGestureController.setBaseObjectFilterRender(null);
+        SurfaceFilterRender.SurfaceReadyCallback surfaceReadyCallback = surfaceTexture -> {
+            //You can render this filter with other api that draw in a surface. for example you can use VLC
+            MediaPlayer mediaPlayer =
+                    MediaPlayer.create(UZBroadCastView.this.getContext(), videoRes);
+            mediaPlayer.setSurface(new Surface(surfaceTexture));
+            mediaPlayer.start();
+        };
+        setVideoWatermarkCallback(surfaceReadyCallback, scale, position);
+    }
+
+    /**
+     * Watermark with video
+     *
+     * @param videoUri the Uri from which to get the datasource
+     * @param  position of video
+     */
+    public void setVideoWatermarkByUri(@NonNull Uri videoUri, Translate position){
+        //Video is 360x240 so select a percent to keep aspect ratio (50% x 33.3% screen)
+        setVideoWatermarkByUri(videoUri, new PointF(50f, 33.3f), position);
+    }
+
+
+    /**
+     * Watermark with video
+     *
+     * @param videoUri the Uri from which to get the datasource
+     * @param scale Scale in percent
+     * @param position of video
+     */
+    public void setVideoWatermarkByUri(@NonNull Uri videoUri, PointF scale, Translate position) {
+        if (cameraHelper == null) return;
+        spriteGestureController.setBaseObjectFilterRender(null);
+        SurfaceFilterRender.SurfaceReadyCallback surfaceReadyCallback = surfaceTexture -> {
+            MediaPlayer mediaPlayer = MediaPlayer.create(UZBroadCastView.this.getContext(), videoUri);
+            mediaPlayer.setSurface(new Surface(surfaceTexture));
+            mediaPlayer.start();
+        };
+        setVideoWatermarkCallback(surfaceReadyCallback, scale, position);
+    }
+
+    /**
+     * Watermark with video
+     *
+     * @param surfaceReadyCallback SurfaceReadyCallback
+     * @param scale Scale in percent
+     * @param position of video
+     */
+    private void setVideoWatermarkCallback(@NonNull SurfaceFilterRender.SurfaceReadyCallback surfaceReadyCallback, PointF scale, Translate position) {
+        SurfaceFilterRender surfaceFilterRender =
+                new SurfaceFilterRender(surfaceReadyCallback);
+        cameraHelper.setFilter(surfaceFilterRender);
+        surfaceFilterRender.setScale(scale.x, scale.y);
+        surfaceFilterRender.setPosition(position.getTranslateTo());
+        spriteGestureController.setBaseObjectFilterRender(surfaceFilterRender); //Optional
     }
 }

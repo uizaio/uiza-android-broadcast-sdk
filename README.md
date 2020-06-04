@@ -128,6 +128,40 @@ In case `runInBackground = false` But you want to allows streaming again after b
 
 This sample help you know how to use all Uiza SDK for livestream, please refer to  [THIS](https://github.com/uizaio/uiza-android-broadcast-sdk/tree/master/samplebroadcast)
 
+## How to set watermark?
+UZBroadcast is supported watermarks.
+
+__with text__
+
+```java
+    uzBroadCast.setTextWatermark("UIZA", 22, Color.RED, Translate.CENTER);
+```
+
+__With image__
+
+```java
+    uzBroadCast.setImageWatermark(R.drawable.logo, new PointF(20f, 15f), Translate.CENTER);
+    or
+    uzBroadCast.setImageWatermark(bitmap, new PointF(20f, 15f), Translate.CENTER);
+```
+
+__With Gif__
+
+```java
+    uzBroadCast.setGifWatermark(R.raw.banana, new PointF(20f, 15f), Translate.CENTER);
+    or
+    uzBroadCast.setGifWatermark(inputstream, new PointF(20f, 15f), Translate.CENTER);
+```
+
+__With Video__
+
+```java
+    uzBroadCast.setVideoWatermarkByResource(R.raw.big_bunny_240p, Translate.CENTER);
+    or
+    uzBroadCast.setVideoWatermarkByResource(uri, Translate.CENTER);
+```
+
+
 ## How to broadcast your screen?
 
 See example in class [`UZDisplayActivity`](https://github.com/uizaio/uiza-android-broadcast-sdk/blob/master/samplebroadcast/src/main/java/com/uiza/samplebroadcast/UZDisplayActivity.java):
