@@ -1,6 +1,7 @@
 package com.uiza.sdk.enums;
 
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 
 import androidx.annotation.Nullable;
 
@@ -72,12 +73,10 @@ public enum FilterRender {
     Exposure(new ExposureFilterRender()),
     Fire(new FireFilterRender()),
     Gamma(new GammaFilterRender()),
-    GifObject(new GifObjectFilterRender()),
     Glitch(new GlitchFilterRender()),
     GreyScale(new GreyScaleFilterRender()),
     HalftoneLines(new HalftoneLinesFilterRender()),
     Image70s(new Image70sFilterRender()),
-    ImageObject(new ImageObjectFilterRender()),
     Lamoish(new LamoishFilterRender()),
     Money(new MoneyFilterRender()),
     Negative(new NegativeFilterRender()),
@@ -92,9 +91,7 @@ public enum FilterRender {
     Sharpness(new SharpnessFilterRender()),
     Snow(new SnowFilterRender()),
     Swirl(new SwirlFilterRender()),
-    Surface(new SurfaceFilterRender()),
     Temperature(new TemperatureFilterRender()),
-    TextObject(new TextObjectFilterRender()),
     Zebra(new ZebraFilterRender());
 
     private final BaseFilterRender filterRender;
@@ -112,60 +109,12 @@ public enum FilterRender {
             ((RotationFilterRender) filterRender).setRotation(rotation);
         }
     }
-
     /**
      * Saturate red, green and blue colors 0% to 100% (0.0f to 1.0f)
      */
     public void setRGBSaturation(float r, float g, float b) {
         if (filterRender instanceof RGBSaturationFilterRender) {
             ((RGBSaturationFilterRender) filterRender).setRGBSaturation(r, g, b);
-        }
-    }
-
-    @Nullable
-    public android.view.Surface getSurface() {
-        if (filterRender instanceof SurfaceFilterRender) {
-            return ((SurfaceFilterRender) filterRender).getSurface();
-        }
-        return null;
-    }
-
-    public void setScale(float scaleX, float scaleY) {
-        if (filterRender instanceof BaseObjectFilterRender) {
-            ((BaseObjectFilterRender) filterRender).setScale(scaleX, scaleY);
-        }
-    }
-
-    public void setText(String text, float textSize, int textColor) {
-        if (filterRender instanceof TextObjectFilterRender) {
-            ((TextObjectFilterRender) filterRender).setText(text, textSize, textColor);
-        }
-    }
-
-    public void setDefaultScale(int width, int height) {
-        if (filterRender instanceof BaseObjectFilterRender) {
-            ((BaseObjectFilterRender) filterRender).setDefaultScale(width, height);
-        }
-    }
-
-    public void setPosition(Translate translate) {
-        if (filterRender instanceof BaseObjectFilterRender) {
-            BaseObjectFilterRender objectFilterRender = (BaseObjectFilterRender) filterRender;
-            objectFilterRender.setPosition(translate.getTranslateTo());
-        }
-    }
-
-    public void setImage(Bitmap bitmap) {
-        if (filterRender instanceof ImageObjectFilterRender) {
-            ImageObjectFilterRender objectFilterRender = (ImageObjectFilterRender) filterRender;
-            objectFilterRender.setImage(bitmap);
-        }
-    }
-
-    public void setGif(InputStream inputStream) throws IOException {
-        if (filterRender instanceof GifObjectFilterRender) {
-            GifObjectFilterRender gifObjectFilterRender = (GifObjectFilterRender) filterRender;
-            gifObjectFilterRender.setGif(inputStream);
         }
     }
 }

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
@@ -208,19 +209,13 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
         } else if (itemId == R.id.glitch) {
             broadCastView.setFilter(FilterRender.Glitch);
             return true;
-        } else if (itemId == R.id.gif) {
-            setGifToStream();
-            return true;
         } else if (itemId == R.id.grey_scale) {
             broadCastView.setFilter(FilterRender.GreyScale);
             return true;
         } else if (itemId == R.id.halftone_lines) {
             broadCastView.setFilter(FilterRender.HalftoneLines);
             return true;
-        } else if (itemId == R.id.image) {
-            setImageToStream();
-            return true;
-        } else if (itemId == R.id.image_70s) {
+        }  else if (itemId == R.id.image_70s) {
             broadCastView.setFilter(FilterRender.Image70s);
             return true;
         } else if (itemId == R.id.lamoish) {
@@ -270,63 +265,26 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
         } else if (itemId == R.id.swirl) {
             broadCastView.setFilter(FilterRender.Swirl);
             return true;
-        } else if (itemId == R.id.surface_filter) {//You can render this filter with other api that draw in a surface. for example you can use VLC
-            FilterRender surfaceFilterRender = FilterRender.Surface;
-            broadCastView.setFilter(surfaceFilterRender);
-            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.big_bunny_240p);
-            mediaPlayer.setSurface(surfaceFilterRender.getSurface());
-            mediaPlayer.start();
-            //Video is 360x240 so select a percent to keep aspect ratio (50% x 33.3% screen)
-            surfaceFilterRender.setScale(50f, 33.3f);
-            broadCastView.setFilter(surfaceFilterRender); //Optional
-            return true;
         } else if (itemId == R.id.temperature) {
             broadCastView.setFilter(FilterRender.Temperature);
-            return true;
-        } else if (itemId == R.id.text) {
-            setTextToStream();
             return true;
         } else if (itemId == R.id.zebra) {
             broadCastView.setFilter(FilterRender.Zebra);
             return true;
+        } else if (itemId == R.id.text) {
+            broadCastView.setTextWatermark("UIZA", 22, Color.RED, Translate.CENTER);
+            return true;
+        } else if (itemId == R.id.image) {
+            broadCastView.setImageWatermark(R.mipmap.ic_launcher, new PointF(20f, 15f), Translate.CENTER);
+            return true;
+        }else if (itemId == R.id.gif) {
+            broadCastView.setGifWatermark(R.raw.banana, new PointF(20f, 15f), Translate.CENTER);
+            return true;
+        } else if (itemId == R.id.surface_filter) {
+            broadCastView.setVideoWatermarkByResource(R.raw.big_bunny_240p, Translate.CENTER);
+            return true;
         }
         return false;
-    }
-
-    private void setTextToStream() {
-        FilterRender textObject = FilterRender.TextObject;
-        broadCastView.setFilter(textObject);
-        textObject.setText("Hello world", 22, Color.RED);
-        textObject.setDefaultScale(broadCastView.getStreamWidth(),
-                broadCastView.getStreamHeight());
-        textObject.setPosition(Translate.CENTER);
-        broadCastView.setFilter(textObject); //Optional
-    }
-
-    private void setImageToStream() {
-        FilterRender imageObjectFilterRender = FilterRender.ImageObject;
-        broadCastView.setFilter(imageObjectFilterRender);
-        imageObjectFilterRender.setImage(
-                BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-        imageObjectFilterRender.setDefaultScale(broadCastView.getStreamWidth(),
-                broadCastView.getStreamHeight());
-        imageObjectFilterRender.setPosition(Translate.RIGHT);
-        broadCastView.setFilter(imageObjectFilterRender); //Optional
-//        liveView.setPreventMoveOutside(false); //Optional
-    }
-
-    private void setGifToStream() {
-        try {
-            FilterRender gifObjectFilterRender = FilterRender.GifObject;
-            gifObjectFilterRender.setGif(getResources().openRawResource(R.raw.banana));
-            broadCastView.setFilter(gifObjectFilterRender);
-            gifObjectFilterRender.setDefaultScale(broadCastView.getStreamWidth(),
-                    broadCastView.getStreamHeight());
-            gifObjectFilterRender.setPosition(Translate.BOTTOM);
-            broadCastView.setFilter(gifObjectFilterRender); //Optional
-        } catch (IOException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

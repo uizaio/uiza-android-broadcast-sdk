@@ -41,4 +41,5 @@
     <string name="broadcast">BroadCast</string>
     <string name="stream_key">Stream Key</string>
     <string name="rtmp">rtmp://</string>
+    <string name="watermark">Watermark</string>
 </resources>
