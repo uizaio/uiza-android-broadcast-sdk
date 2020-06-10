@@ -14,7 +14,7 @@
         app:isFlipHorizontal="false"
         app:isFlipVertical="false"
         app:keepAspectRatio="false"
-        app:numFilters="1" />
+        app:numFilters="2" />
 
     <ProgressBar
         android:id="@id/pb"

@@ -43,6 +43,8 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.pedro.encoder.input.gl.SpriteGestureController;
 import com.pedro.encoder.input.gl.render.ManagerRender;
+import com.pedro.encoder.input.gl.render.filters.AndroidViewFilterRender;
+import com.pedro.encoder.input.gl.render.filters.NoFilterRender;
 import com.pedro.encoder.input.gl.render.filters.object.GifObjectFilterRender;
 import com.pedro.encoder.input.gl.render.filters.object.ImageObjectFilterRender;
 import com.pedro.encoder.input.gl.render.filters.object.SurfaceFilterRender;
@@ -86,6 +88,8 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
 
     private static final long SECOND = 1000;
     private static final long MINUTE = 60 * SECOND;
+    private static final int WATERMARK_POSITION = 1;
+    private static final int FILTER_POSITION = 0;
     OpenGlView openGlView;
     AspectRatio aspectRatio = AspectRatio.RATIO_16_9;
     private String mainBroadCastUrl;
@@ -121,7 +125,6 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             int mHeight = Math.min((int) (width * aspectRatio.getAspectRatio()), height);
-            Timber.e("w=%d, h=%d", width, mHeight);
             cameraHelper.startPreview(startCamera, width, mHeight);
             if (runInBackground) {
                 cameraHelper.replaceView(openGlView);
@@ -252,23 +255,23 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
 
     public UZBroadCastView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
-        initView(attrs, defStyleAttr);
+        initView(attrs, defStyleAttr, 0);
     }
 
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public UZBroadCastView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        initView(attrs, defStyleAttr);
+        initView(attrs, defStyleAttr, defStyleRes);
     }
 
     /**
      * Call twice time
      * Node: Don't call inflate in this method
      */
-    private void initView(AttributeSet attrs, int defStyleAttr) {
+    private void initView(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (attrs != null) {
-            TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.UZBroadCastView, defStyleAttr, 0);
+            TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.UZBroadCastView, defStyleAttr, defStyleRes);
             try {
                 boolean hasLollipop = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
                 useCamera2 = a.getBoolean(R.styleable.UZBroadCastView_useCamera2, hasLollipop);
@@ -280,9 +283,10 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
                 // for openGL
                 keepAspectRatio = a.getBoolean(R.styleable.UZBroadCastView_keepAspectRatio, true);
                 AAEnabled = a.getBoolean(R.styleable.UZBroadCastView_AAEnabled, false);
-                ManagerRender.numFilters = a.getInt(R.styleable.UZBroadCastView_numFilters, 1);
+//                ManagerRender.numFilters = a.getInt(R.styleable.UZBroadCastView_numFilters, 1);
                 isFlipHorizontal = a.getBoolean(R.styleable.UZBroadCastView_isFlipHorizontal, false);
                 isFlipVertical = a.getBoolean(R.styleable.UZBroadCastView_isFlipVertical, false);
+                ManagerRender.numFilters = 2;
             } finally {
                 a.recycle();
             }
@@ -293,9 +297,9 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
             // for OpenGL
             keepAspectRatio = true;
             AAEnabled = false;
-            ManagerRender.numFilters = 1;
             isFlipHorizontal = false;
             isFlipVertical = false;
+            ManagerRender.numFilters = 2;
         }
     }
 
@@ -351,7 +355,7 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
     }
 
     private void checkLivePermission() {
-        Dexter.withActivity((Activity) getContext()).withPermissions(Manifest.permission.CAMERA,
+        Dexter.withContext(getContext()).withPermissions(Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO).withListener(new MultiplePermissionsListener() {
             @Override
             public void onPermissionsChecked(MultiplePermissionsReport report) {
@@ -477,6 +481,7 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
                 public void onTick(long millisUntilFinished) {
                     // Nothing
                 }
+
                 public void onFinish() {
                     isBroadcastingBeforeGoingBackground = false;
                     isFromBackgroundTooLong = true;
@@ -660,15 +665,8 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
     }
 
     public void setFilter(FilterRender filterRender) {
-        spriteGestureController.setBaseObjectFilterRender(null);
-        cameraHelper.setFilter(filterRender.getFilterRender());
+        cameraHelper.setFilter(FILTER_POSITION, filterRender.getFilterRender());
     }
-
-    public void setFilter(int position, FilterRender filterRender) {
-        spriteGestureController.setBaseObjectFilterRender(null);
-        cameraHelper.setFilter(position, filterRender.getFilterRender());
-    }
-
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -738,6 +736,14 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
         return cameraHelper.isLanternEnabled();
     }
 
+    /**
+     * Clear Watermark
+     */
+    public void clearWatermark() {
+        if (cameraHelper == null) return;
+        spriteGestureController.setBaseObjectFilterRender(null);
+        cameraHelper.setFilter(WATERMARK_POSITION, new NoFilterRender());
+    }
 
     /**
      * @param text     content of watermark
@@ -749,7 +755,7 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
         if (cameraHelper == null) return;
         spriteGestureController.setBaseObjectFilterRender(null);
         TextObjectFilterRender textRender = new TextObjectFilterRender();
-        cameraHelper.setFilter(textRender);
+        cameraHelper.setFilter(WATERMARK_POSITION, textRender);
         textRender.setText(text, textSize, color);
         textRender.setDefaultScale(cameraHelper.getStreamWidth(), cameraHelper.getStreamHeight());
         textRender.setPosition(position.getTranslateTo());
@@ -760,7 +766,7 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
      * Watermark with image
      *
      * @param imageRes The resource id of the image data
-     * @param scale Scale in percent
+     * @param scale    Scale in percent
      * @param position of image
      */
     public void setImageWatermark(@DrawableRes int imageRes, PointF scale, Translate position) {
@@ -771,14 +777,14 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
      * Watermark with image
      *
      * @param bitmap   the decoded bitmap
-     * @param scale Scale in percent
+     * @param scale    Scale in percent
      * @param position of image
      */
     public void setImageWatermark(Bitmap bitmap, PointF scale, Translate position) {
         if (cameraHelper == null) return;
         spriteGestureController.setBaseObjectFilterRender(null);
         ImageObjectFilterRender imageRender = new ImageObjectFilterRender();
-        cameraHelper.setFilter(imageRender);
+        cameraHelper.setFilter(WATERMARK_POSITION, imageRender);
         imageRender.setImage(bitmap);
         imageRender.setScale(scale.x, scale.y);
         imageRender.setPosition(position.getTranslateTo());
@@ -790,7 +796,7 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
      * Watermark with gif
      *
      * @param gifRaw   The resource identifier to open, as generated by the aapt tool.
-     * @param scale Scale in percent
+     * @param scale    Scale in percent
      * @param position of gif
      */
     public void setGifWatermark(@RawRes int gifRaw, PointF scale, Translate position) {
@@ -801,7 +807,7 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
      * Watermark with gif
      *
      * @param inputStream Access to the resource data.
-     * @param scale Scale in percent
+     * @param scale       Scale in percent
      * @param position    of gif
      */
     public void setGifWatermark(InputStream inputStream, PointF scale, Translate position) {
@@ -810,7 +816,7 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
         try {
             GifObjectFilterRender gifRender = new GifObjectFilterRender();
             gifRender.setGif(inputStream);
-            cameraHelper.setFilter(gifRender);
+            cameraHelper.setFilter(WATERMARK_POSITION, gifRender);
             gifRender.setScale(scale.x, scale.y);
             gifRender.setPosition(position.getTranslateTo());
             spriteGestureController.setBaseObjectFilterRender(gifRender);
@@ -819,7 +825,12 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
         }
     }
 
-    public void setVideoWatermarkByResource(@RawRes int videoRes, Translate position){
+    /**
+     * Watermark with video from resource
+     * @param videoRes Resource of video ex: raw file
+     * @param position of video
+     */
+    public void setVideoWatermarkByResource(@RawRes int videoRes, Translate position) {
         //Video is 360x240 so select a percent to keep aspect ratio (50% x 33.3% screen)
         setVideoWatermarkByResource(videoRes, new PointF(50f, 33.3f), position);
     }
@@ -829,8 +840,8 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
      *
      * @param videoRes the raw resource id (<var>R.raw.&lt;something></var>) for
      *                 the resource to use as the datasource
-     * @param scale Scale in percent
-     * @param  position of video
+     * @param scale    Scale in percent
+     * @param position of video
      */
     public void setVideoWatermarkByResource(@RawRes int videoRes, PointF scale, Translate position) {
         if (cameraHelper == null) return;
@@ -849,9 +860,9 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
      * Watermark with video
      *
      * @param videoUri the Uri from which to get the datasource
-     * @param  position of video
+     * @param position of video
      */
-    public void setVideoWatermarkByUri(@NonNull Uri videoUri, Translate position){
+    public void setVideoWatermarkByUri(@NonNull Uri videoUri, Translate position) {
         //Video is 360x240 so select a percent to keep aspect ratio (50% x 33.3% screen)
         setVideoWatermarkByUri(videoUri, new PointF(50f, 33.3f), position);
     }
@@ -861,7 +872,7 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
      * Watermark with video
      *
      * @param videoUri the Uri from which to get the datasource
-     * @param scale Scale in percent
+     * @param scale    Scale in percent
      * @param position of video
      */
     public void setVideoWatermarkByUri(@NonNull Uri videoUri, PointF scale, Translate position) {
@@ -879,13 +890,13 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
      * Watermark with video
      *
      * @param surfaceReadyCallback SurfaceReadyCallback
-     * @param scale Scale in percent
-     * @param position of video
+     * @param scale                Scale in percent
+     * @param position             of video
      */
     private void setVideoWatermarkCallback(@NonNull SurfaceFilterRender.SurfaceReadyCallback surfaceReadyCallback, PointF scale, Translate position) {
         SurfaceFilterRender surfaceFilterRender =
                 new SurfaceFilterRender(surfaceReadyCallback);
-        cameraHelper.setFilter(surfaceFilterRender);
+        cameraHelper.setFilter(WATERMARK_POSITION, surfaceFilterRender);
         surfaceFilterRender.setScale(scale.x, scale.y);
         surfaceFilterRender.setPosition(position.getTranslateTo());
         spriteGestureController.setBaseObjectFilterRender(surfaceFilterRender); //Optional

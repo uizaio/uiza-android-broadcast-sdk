@@ -29,8 +29,8 @@ import org.greenrobot.eventbus.EventBus;
 import timber.log.Timber;
 
 public class UZDisplayBroadCast {
-    private final int REQUEST_CODE_STREAM = 2020; //random num
-    private final int REQUEST_CODE_RECORD = 2021; //random num
+    private final int REQUEST_CODE_STREAM = 2021; //random num
+    private final int REQUEST_CODE_RECORD = 2023; //random num
     private RtmpDisplay rtmpDisplay;
     private String mBroadCastUrl;
     private Activity activity;
@@ -40,62 +40,63 @@ public class UZDisplayBroadCast {
     private boolean audioPermission = false;
     private VideoAttributes videoAttributes;
     private AudioAttributes audioAttributes;
-    private ConnectCheckerRtmp connectCheckerRtmp = new ConnectCheckerRtmp() {
-        // IMPLEMENT from ConnectCheckerRtmp
-        @Override
-        public void onConnectionSuccessRtmp() {
-            if (adaptiveBitrate) {
-                bitrateAdapter = new BitrateAdapter(bitrate -> rtmpDisplay.setVideoBitrateOnFly(bitrate));
-                bitrateAdapter.setMaxBitrate(rtmpDisplay.getBitrate());
-            }
-            if (uzBroadCastListener != null)
-                uzBroadCastListener.onConnectionSuccess();
-            EventBus.getDefault().postSticky(new UZEvent("Stream started"));
-        }
-
-        @Override
-        public void onConnectionFailedRtmp(@NonNull String reason) {
-            if (rtmpDisplay.reTry(5000, reason)) {
-                EventBus.getDefault().postSticky(new UZEvent("Retry connecting..."));
-                if (uzBroadCastListener != null)
-                    uzBroadCastListener.onRetryConnection(5000);
-            } else {
-                rtmpDisplay.stopStream();
-                EventBus.getDefault().postSticky(new UZEvent("Connection failed."));
-                if (uzBroadCastListener != null)
-                    uzBroadCastListener.onConnectionFailed(reason);
-            }
-        }
-
-        @Override
-        public void onNewBitrateRtmp(long bitrate) {
-            if (bitrateAdapter != null && adaptiveBitrate) bitrateAdapter.adaptBitrate(bitrate);
-        }
-
-        @Override
-        public void onDisconnectRtmp() {
-            if (uzBroadCastListener != null)
-                uzBroadCastListener.onDisconnect();
-            EventBus.getDefault().postSticky(new UZEvent(EventSignal.STOP, "Stop"));
-        }
-
-        @Override
-        public void onAuthErrorRtmp() {
-            if (uzBroadCastListener != null)
-                uzBroadCastListener.onAuthError();
-            EventBus.getDefault().postSticky(new UZEvent(EventSignal.STOP, "Stop"));
-        }
-
-        @Override
-        public void onAuthSuccessRtmp() {
-            if (uzBroadCastListener != null)
-                uzBroadCastListener.onAuthSuccess();
-            EventBus.getDefault().postSticky(new UZEvent(EventSignal.STOP, ""));
-        }
-    };
 
     public UZDisplayBroadCast(Activity activity) {
         this.activity = activity;
+        // IMPLEMENT from ConnectCheckerRtmp
+        ConnectCheckerRtmp connectCheckerRtmp = new ConnectCheckerRtmp() {
+            // IMPLEMENT from ConnectCheckerRtmp
+            @Override
+            public void onConnectionSuccessRtmp() {
+                if (adaptiveBitrate) {
+                    bitrateAdapter = new BitrateAdapter(bitrate -> rtmpDisplay.setVideoBitrateOnFly(bitrate));
+                    bitrateAdapter.setMaxBitrate(rtmpDisplay.getBitrate());
+                }
+                if (uzBroadCastListener != null)
+                    uzBroadCastListener.onConnectionSuccess();
+                EventBus.getDefault().postSticky(new UZEvent("Stream started"));
+            }
+
+            @Override
+            public void onConnectionFailedRtmp(@NonNull String reason) {
+                if (rtmpDisplay.reTry(5000, reason)) {
+                    EventBus.getDefault().postSticky(new UZEvent("Retry connecting..."));
+                    if (uzBroadCastListener != null)
+                        uzBroadCastListener.onRetryConnection(5000);
+                } else {
+                    rtmpDisplay.stopStream();
+                    EventBus.getDefault().postSticky(new UZEvent("Connection failed."));
+                    if (uzBroadCastListener != null)
+                        uzBroadCastListener.onConnectionFailed(reason);
+                }
+            }
+
+            @Override
+            public void onNewBitrateRtmp(long bitrate) {
+                if (bitrateAdapter != null && adaptiveBitrate) bitrateAdapter.adaptBitrate(bitrate);
+            }
+
+            @Override
+            public void onDisconnectRtmp() {
+                if (uzBroadCastListener != null)
+                    uzBroadCastListener.onDisconnect();
+                EventBus.getDefault().postSticky(new UZEvent(EventSignal.STOP, "Stop"));
+            }
+
+            @Override
+            public void onAuthErrorRtmp() {
+                if (uzBroadCastListener != null)
+                    uzBroadCastListener.onAuthError();
+                EventBus.getDefault().postSticky(new UZEvent(EventSignal.STOP, "Stop"));
+            }
+
+            @Override
+            public void onAuthSuccessRtmp() {
+                if (uzBroadCastListener != null)
+                    uzBroadCastListener.onAuthSuccess();
+                EventBus.getDefault().postSticky(new UZEvent(EventSignal.STOP, ""));
+            }
+        };
         rtmpDisplay = new RtmpDisplay(activity.getApplicationContext(), true, connectCheckerRtmp);
         rtmpDisplay.setReTries(8);
         UZDisplayService.init(this);
@@ -107,7 +108,7 @@ public class UZDisplayBroadCast {
     }
 
     private void checkLivePermission() {
-        Dexter.withActivity(activity).withPermission(Manifest.permission.RECORD_AUDIO).withListener(new PermissionListener() {
+        Dexter.withContext(activity).withPermission(Manifest.permission.RECORD_AUDIO).withListener(new PermissionListener() {
             @Override
             public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
                 token.continuePermissionRequest();

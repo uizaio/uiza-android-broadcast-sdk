@@ -3,9 +3,7 @@ package com.uiza.samplebroadcast;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,11 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.appcompat.widget.Toolbar;
 
 import java.util.Locale;
-
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,10 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                launchActivity(SettingsActivity.class);
-                break;
+        if (item.getItemId() == R.id.action_settings) {
+            launchActivity(SettingsActivity.class);
         }
         return super.onOptionsItemSelected(item);
     }

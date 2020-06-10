@@ -22,6 +22,7 @@
     <string name="sepia">Sepia</string>
     <!--filters-->
     <string name="no_filter">No filter</string>
+    <string name="clear_watermark">Clear</string>
     <string name="analog_tv">Analog TV</string>
     <string name="android_view">Android view</string>
     <string name="basic_deformation">Basic deformation</string>

@@ -1,9 +1,7 @@
 package com.uiza.sdk.enums;
 
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
-
-import androidx.annotation.Nullable;
+import android.graphics.PointF;
+import android.view.View;
 
 import com.pedro.encoder.input.gl.render.filters.AnalogTVFilterRender;
 import com.pedro.encoder.input.gl.render.filters.AndroidViewFilterRender;
@@ -44,20 +42,12 @@ import com.pedro.encoder.input.gl.render.filters.SnowFilterRender;
 import com.pedro.encoder.input.gl.render.filters.SwirlFilterRender;
 import com.pedro.encoder.input.gl.render.filters.TemperatureFilterRender;
 import com.pedro.encoder.input.gl.render.filters.ZebraFilterRender;
-import com.pedro.encoder.input.gl.render.filters.object.BaseObjectFilterRender;
-import com.pedro.encoder.input.gl.render.filters.object.GifObjectFilterRender;
-import com.pedro.encoder.input.gl.render.filters.object.ImageObjectFilterRender;
-import com.pedro.encoder.input.gl.render.filters.object.SurfaceFilterRender;
-import com.pedro.encoder.input.gl.render.filters.object.TextObjectFilterRender;
-
-import java.io.IOException;
-import java.io.InputStream;
-
 
 public enum FilterRender {
 
     None(new NoFilterRender()),
     AnalogTV(new AnalogTVFilterRender()),
+    AndroidView(new AndroidViewFilterRender()),
     BasicDeformation(new BasicDeformationFilterRender()),
     Beauty(new BeautyFilterRender()),
     Black(new BlackFilterRender()),
@@ -104,12 +94,19 @@ public enum FilterRender {
         return filterRender;
     }
 
+    /**
+     * for {@link RotationFilterRender} or {@link AndroidViewFilterRender}
+     * @param rotation of filter
+     */
     public void setRotation(int rotation) {
         if (filterRender instanceof RotationFilterRender) {
             ((RotationFilterRender) filterRender).setRotation(rotation);
+        } else if(filterRender instanceof AndroidViewFilterRender){
+            ((AndroidViewFilterRender)filterRender).setRotation(rotation);
         }
     }
     /**
+     * {@link RGBSaturationFilterRender} only
      * Saturate red, green and blue colors 0% to 100% (0.0f to 1.0f)
      */
     public void setRGBSaturation(float r, float g, float b) {
@@ -117,4 +114,34 @@ public enum FilterRender {
             ((RGBSaturationFilterRender) filterRender).setRGBSaturation(r, g, b);
         }
     }
+
+    /**
+     * For AndroidView Filter
+     * @param view View
+     */
+    public void setView(View view){
+        if(filterRender instanceof AndroidViewFilterRender){
+            ((AndroidViewFilterRender)filterRender).setView(view);
+        }
+    }
+    /**
+     * {@link AndroidViewFilterRender} only
+     * @param position of View
+     */
+    public void setPosition(Translate position){
+        if(filterRender instanceof AndroidViewFilterRender){
+            ((AndroidViewFilterRender)filterRender).setPosition(position.getTranslateTo());
+        }
+    }
+
+    /**
+     * {@link AndroidViewFilterRender} only
+     * @param scale of View
+     */
+    public void setScale(PointF scale){
+        if(filterRender instanceof AndroidViewFilterRender){
+            ((AndroidViewFilterRender)filterRender).setScale(scale.x, scale.y);
+        }
+    }
+
 }
