@@ -177,6 +177,25 @@ uzBroadCast.clearWatermark();
 
 See example in class [`UZDisplayActivity`](https://github.com/uizaio/uiza-android-broadcast-sdk/blob/master/samplebroadcast/src/main/java/com/uiza/samplebroadcast/UZDisplayActivity.java):
 
+## Features:
+
+- [x] Android min API 21.
+- [x] Support [camera1](https://developer.android.com/reference/android/hardware/Camera.html) and [camera2](https://developer.android.com/reference/android/hardware/camera2/package-summary.html) API
+- [x] Encoder type buffer to buffer.
+- [x] Encoder type surface to buffer.
+- [x] RTMP/RTMPS auth.
+- [x] Audio noise suppressor.
+- [x] Audio echo cancellation.
+- [x] Disable/Enable video and audio while streaming.
+- [x] Switch camera while streaming.
+- [x] Change video bitrate while streaming.
+- [X] Get upload bandwidth used.
+- [X] Record MP4 file while streaming.
+- [x] H264 and AAC hardware encoding.
+- [x] Force H264 and AAC Codec hardware/software encoding (Not recommended).
+- [x] Stream device display.
+- [X] OpenGL real time filters and watermarks. [More info](https://github.com/pedroSG94/rtmp-rtsp-stream-client-java/wiki/Real-time-filters)
+
 
 ## For contributors
 
