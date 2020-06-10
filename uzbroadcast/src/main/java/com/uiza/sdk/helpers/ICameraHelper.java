@@ -56,8 +56,7 @@ public interface ICameraHelper {
     void setFilter(BaseFilterRender filterReader);
 
     /**
-     * Set filter in position 0.
-     *
+     * @param filterPosition position of filter
      * @param filterReader filter to set. You can modify parameters to filter after set it to stream.
      */
     void setFilter(int filterPosition, BaseFilterRender filterReader);
@@ -243,6 +242,10 @@ public interface ICameraHelper {
      */
     void setVideoBitrateOnFly(int bitrate);
 
+    /**
+     *
+     * @return bitrate in kps
+     */
     int getBitrate();
 
 
