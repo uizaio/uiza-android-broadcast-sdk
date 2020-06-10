@@ -3,10 +3,8 @@ package com.uiza.samplebroadcast;
 import android.Manifest;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -151,140 +149,152 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
     private boolean onMenuItemSelected(MenuItem item) {
         //Stop listener for image, text and gif stream objects.
 //        openGlView.setFilter(null);
-        int itemId = item.getItemId();
-        if (itemId == R.id.e_d_fxaa) {
-            broadCastView.enableAA(!broadCastView.isAAEnabled());
-            Toast.makeText(this,
-                    "FXAA " + (broadCastView.isAAEnabled() ? "enabled" : "disabled"),
-                    Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (itemId == R.id.no_filter) {
-            broadCastView.setFilter(FilterRender.None);
-            return true;
-        } else if (itemId == R.id.basic_deformation) {
-            broadCastView.setFilter(FilterRender.BasicDeformation);
-            return true;
-        } else if (itemId == R.id.beauty) {
-            broadCastView.setFilter(FilterRender.Beauty);
-            return true;
-        } else if (itemId == R.id.black) {
-            broadCastView.setFilter(FilterRender.Black);
-            return true;
-        } else if (itemId == R.id.blur) {
-            broadCastView.setFilter(FilterRender.Blur);
-            return true;
-        } else if (itemId == R.id.brightness) {
-            broadCastView.setFilter(FilterRender.Brightness);
-            return true;
-        } else if (itemId == R.id.cartoon) {
-            broadCastView.setFilter(FilterRender.Cartoon);
-            return true;
-        } else if (itemId == R.id.circle) {
-            broadCastView.setFilter(FilterRender.Circle);
-            return true;
-        } else if (itemId == R.id.color) {
-            broadCastView.setFilter(FilterRender.Color);
-            return true;
-        } else if (itemId == R.id.contrast) {
-            broadCastView.setFilter(FilterRender.Contrast);
-            return true;
-        } else if (itemId == R.id.duotone) {
-            broadCastView.setFilter(FilterRender.Duotone);
-            return true;
-        } else if (itemId == R.id.early_bird) {
-            broadCastView.setFilter(FilterRender.EarlyBird);
-            return true;
-        } else if (itemId == R.id.edge_detection) {
-            broadCastView.setFilter(FilterRender.EdgeDetection);
-            return true;
-        } else if (itemId == R.id.exposure) {
-            broadCastView.setFilter(FilterRender.Exposure);
-            return true;
-        } else if (itemId == R.id.fire) {
-            broadCastView.setFilter(FilterRender.Fire);
-            return true;
-        } else if (itemId == R.id.gamma) {
-            broadCastView.setFilter(FilterRender.Gamma);
-            return true;
-        } else if (itemId == R.id.glitch) {
-            broadCastView.setFilter(FilterRender.Glitch);
-            return true;
-        } else if (itemId == R.id.grey_scale) {
-            broadCastView.setFilter(FilterRender.GreyScale);
-            return true;
-        } else if (itemId == R.id.halftone_lines) {
-            broadCastView.setFilter(FilterRender.HalftoneLines);
-            return true;
-        }  else if (itemId == R.id.image_70s) {
-            broadCastView.setFilter(FilterRender.Image70s);
-            return true;
-        } else if (itemId == R.id.lamoish) {
-            broadCastView.setFilter(FilterRender.Lamoish);
-            return true;
-        } else if (itemId == R.id.money) {
-            broadCastView.setFilter(FilterRender.Money);
-            return true;
-        } else if (itemId == R.id.negative) {
-            broadCastView.setFilter(FilterRender.Negative);
-            return true;
-        } else if (itemId == R.id.pixelated) {
-            broadCastView.setFilter(FilterRender.Pixelated);
-            return true;
-        } else if (itemId == R.id.polygonization) {
-            broadCastView.setFilter(FilterRender.Polygonization);
-            return true;
-        } else if (itemId == R.id.rainbow) {
-            broadCastView.setFilter(FilterRender.Rainbow);
-            return true;
-        } else if (itemId == R.id.rgb_saturate) {
-            FilterRender rgbSaturation = FilterRender.RGBSaturation;
-            broadCastView.setFilter(rgbSaturation);
-            //Reduce green and blue colors 20%. Red will predominate.
-            rgbSaturation.setRGBSaturation(1f, 0.8f, 0.8f);
-            return true;
-        } else if (itemId == R.id.ripple) {
-            broadCastView.setFilter(FilterRender.Ripple);
-            return true;
-        } else if (itemId == R.id.rotation) {
-            FilterRender filterRender = FilterRender.Rotation;
-            broadCastView.setFilter(filterRender);
-            filterRender.setRotation(90);
-            return true;
-        } else if (itemId == R.id.saturation) {
-            broadCastView.setFilter(FilterRender.Saturation);
-            return true;
-        } else if (itemId == R.id.sepia) {
-            broadCastView.setFilter(FilterRender.Sepia);
-            return true;
-        } else if (itemId == R.id.sharpness) {
-            broadCastView.setFilter(FilterRender.Sharpness);
-            return true;
-        } else if (itemId == R.id.snow) {
-            broadCastView.setFilter(FilterRender.Snow);
-            return true;
-        } else if (itemId == R.id.swirl) {
-            broadCastView.setFilter(FilterRender.Swirl);
-            return true;
-        } else if (itemId == R.id.temperature) {
-            broadCastView.setFilter(FilterRender.Temperature);
-            return true;
-        } else if (itemId == R.id.zebra) {
-            broadCastView.setFilter(FilterRender.Zebra);
-            return true;
-        } else if (itemId == R.id.text) {
-            broadCastView.setTextWatermark("UIZA", 22, Color.RED, Translate.CENTER);
-            return true;
-        } else if (itemId == R.id.image) {
-            broadCastView.setImageWatermark(R.mipmap.ic_launcher, new PointF(20f, 15f), Translate.CENTER);
-            return true;
-        }else if (itemId == R.id.gif) {
-            broadCastView.setGifWatermark(R.raw.banana, new PointF(20f, 15f), Translate.CENTER);
-            return true;
-        } else if (itemId == R.id.surface_filter) {
-            broadCastView.setVideoWatermarkByResource(R.raw.big_bunny_240p, Translate.CENTER);
-            return true;
+        switch (item.getItemId()) {
+            case R.id.e_d_fxaa:
+                broadCastView.enableAA(!broadCastView.isAAEnabled());
+                Toast.makeText(this,
+                        "FXAA " + (broadCastView.isAAEnabled() ? "enabled" : "disabled"),
+                        Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.no_filter:
+                broadCastView.setFilter(FilterRender.None);
+                return true;
+            case R.id.analog_tv:
+                broadCastView.setFilter(FilterRender.AnalogTV);
+                return true;
+            case R.id.android_view:
+                FilterRender androidRender = FilterRender.AndroidView;
+                androidRender.setView(findViewById(R.id.switch_camera));
+                broadCastView.setFilter(androidRender);
+                return true;
+            case R.id.basic_deformation:
+                broadCastView.setFilter(FilterRender.BasicDeformation);
+                return true;
+            case R.id.beauty:
+                broadCastView.setFilter(FilterRender.Beauty);
+                return true;
+            case R.id.black:
+                broadCastView.setFilter(FilterRender.Black);
+                return true;
+            case R.id.blur:
+                broadCastView.setFilter(FilterRender.Blur);
+                return true;
+            case R.id.brightness:
+                broadCastView.setFilter(FilterRender.Brightness);
+                return true;
+            case R.id.cartoon:
+                broadCastView.setFilter(FilterRender.Cartoon);
+                return true;
+            case R.id.circle:
+                broadCastView.setFilter(FilterRender.Circle);
+                return true;
+            case R.id.color:
+                broadCastView.setFilter(FilterRender.Color);
+                return true;
+            case R.id.contrast:
+                broadCastView.setFilter(FilterRender.Contrast);
+                return true;
+            case R.id.duotone:
+                broadCastView.setFilter(FilterRender.Duotone);
+                return true;
+            case R.id.early_bird:
+                broadCastView.setFilter(FilterRender.EarlyBird);
+                return true;
+            case R.id.edge_detection:
+                broadCastView.setFilter(FilterRender.EdgeDetection);
+                return true;
+            case R.id.exposure:
+                broadCastView.setFilter(FilterRender.Exposure);
+                return true;
+            case R.id.fire:
+                broadCastView.setFilter(FilterRender.Fire);
+                return true;
+            case R.id.gamma:
+                broadCastView.setFilter(FilterRender.Gamma);
+                return true;
+            case R.id.glitch:
+                broadCastView.setFilter(FilterRender.Glitch);
+                return true;
+            case R.id.grey_scale:
+                broadCastView.setFilter(FilterRender.GreyScale);
+                return true;
+            case R.id.halftone_lines:
+                broadCastView.setFilter(FilterRender.HalftoneLines);
+                return true;
+            case R.id.image_70s:
+                broadCastView.setFilter(FilterRender.Image70s);
+                return true;
+            case R.id.lamoish:
+                broadCastView.setFilter(FilterRender.Lamoish);
+                return true;
+            case R.id.money:
+                broadCastView.setFilter(FilterRender.Money);
+                return true;
+            case R.id.negative:
+                broadCastView.setFilter(FilterRender.Negative);
+                return true;
+            case R.id.pixelated:
+                broadCastView.setFilter(FilterRender.Pixelated);
+                return true;
+            case R.id.polygonization:
+                broadCastView.setFilter(FilterRender.Polygonization);
+                return true;
+            case R.id.rainbow:
+                broadCastView.setFilter(FilterRender.Rainbow);
+                return true;
+            case R.id.rgb_saturate:
+                FilterRender rgbSaturation = FilterRender.RGBSaturation;
+                broadCastView.setFilter(rgbSaturation);
+                //Reduce green and blue colors 20%. Red will predominate.
+                rgbSaturation.setRGBSaturation(1f, 0.8f, 0.8f);
+                return true;
+            case R.id.ripple:
+                broadCastView.setFilter(FilterRender.Ripple);
+                return true;
+            case R.id.rotation:
+                FilterRender rotationRender = FilterRender.Rotation;
+                broadCastView.setFilter(rotationRender);
+                rotationRender.setRotation(90);
+                return true;
+            case R.id.saturation:
+                broadCastView.setFilter(FilterRender.Saturation);
+                return true;
+            case R.id.sepia:
+                broadCastView.setFilter(FilterRender.Sepia);
+                return true;
+            case R.id.sharpness:
+                broadCastView.setFilter(FilterRender.Sharpness);
+                return true;
+            case R.id.snow:
+                broadCastView.setFilter(FilterRender.Snow);
+                return true;
+            case R.id.swirl:
+                broadCastView.setFilter(FilterRender.Swirl);
+                return true;
+            case R.id.temperature:
+                broadCastView.setFilter(FilterRender.Temperature);
+                return true;
+            case R.id.zebra:
+                broadCastView.setFilter(FilterRender.Zebra);
+                return true;
+            case R.id.clear_watermark:
+                broadCastView.clearWatermark();
+                return true;
+            case R.id.text:
+                broadCastView.setTextWatermark("Uiza", 22, Color.RED, Translate.CENTER);
+                return true;
+            case R.id.image:
+                broadCastView.setImageWatermark(R.mipmap.ic_launcher, new PointF(20f, 15f), Translate.CENTER);
+                return true;
+            case R.id.gif:
+                broadCastView.setGifWatermark(R.raw.banana, new PointF(20f, 15f), Translate.CENTER);
+                return true;
+            case R.id.surface_filter:
+                broadCastView.setVideoWatermarkByResource(R.raw.big_bunny_240p, Translate.CENTER);
+                return true;
+            default:
+                return false;
         }
-        return false;
     }
 
     @Override

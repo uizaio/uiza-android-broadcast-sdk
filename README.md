@@ -44,12 +44,18 @@ compileOptions {
 
 ## Init SDK
 
-. If you want show log, install any `Tree` instances you want in the `onCreate` of your application class
+. If you want show log, install any `Tree` instances you want in the `onCreate` of your `Application` class
 
 ```java
 if (BuildConfig.DEBUG) {
     Timber.plant(new Timber.DebugTree());
 }
+```
+
+. To set icon in notificationbar. In `onCreate` of your `Application` class:
+
+```java
+UZBroadCast.init(R.mipmap.ic_launcher);
 ```
 
 ## How to broadcast with UZBroadCast?:
@@ -161,6 +167,11 @@ uzBroadCast.setVideoWatermarkByResource(R.raw.big_bunny_240p, Translate.CENTER);
 // uzBroadCast.setVideoWatermarkByUri(uri, Translate.CENTER);
 ```
 
+__Clear watermark__
+
+```java
+uzBroadCast.clearWatermark();
+```
 
 ## How to broadcast your screen?
 
