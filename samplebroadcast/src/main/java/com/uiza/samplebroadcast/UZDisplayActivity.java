@@ -2,6 +2,7 @@ package com.uiza.samplebroadcast;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import com.uiza.sdk.enums.Translate;
 import com.uiza.sdk.interfaces.UZBroadCastListener;
 import com.uiza.sdk.profile.AudioAttributes;
 import com.uiza.sdk.profile.VideoAttributes;
@@ -136,6 +138,7 @@ public class UZDisplayActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onConnectionSuccess() {
         runOnUiThread(() -> {
+                    broadCast.setImageWatermark(R.drawable.logo, new PointF(20f, 15f), Translate.TOP_LEFT);
                     startBtn.setChecked(true);
                     Toast.makeText(this, "onConnectionSuccess",
                             Toast.LENGTH_SHORT).show();

@@ -43,7 +43,6 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.pedro.encoder.input.gl.SpriteGestureController;
 import com.pedro.encoder.input.gl.render.ManagerRender;
-import com.pedro.encoder.input.gl.render.filters.AndroidViewFilterRender;
 import com.pedro.encoder.input.gl.render.filters.NoFilterRender;
 import com.pedro.encoder.input.gl.render.filters.object.GifObjectFilterRender;
 import com.pedro.encoder.input.gl.render.filters.object.ImageObjectFilterRender;
@@ -675,6 +674,14 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
             spriteGestureController.scaleSprite(motionEvent);
             return true;
         }
+//        else {
+//            int action = motionEvent.getAction();
+//            if (motionEvent.getPointerCount() > 1) {
+//                if (action == MotionEvent.ACTION_MOVE) {
+//                    cameraHelper.setZoom(motionEvent);
+//                }
+//            }
+//        }
         return false;
     }
 
@@ -827,6 +834,7 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
 
     /**
      * Watermark with video from resource
+     *
      * @param videoRes Resource of video ex: raw file
      * @param position of video
      */

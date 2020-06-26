@@ -30,9 +30,14 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * use camera2 library
+ * Wrapper to stream with camera2 api and microphone. Support stream with OpenGlView(Custom SurfaceView that use OpenGl) and Context(background mode).
+ * All views use Surface to buffer encoding mode for H264.
+ *
+ * API requirements:
+ * API 21+.
+ *
+ * Created by namnd on 10/01/20.
  */
-
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class Camera2Helper implements ICameraHelper {
 

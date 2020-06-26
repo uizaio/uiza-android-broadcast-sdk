@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mServerEdt = findViewById(R.id.edt_server);
         mStreamKeyEdt = findViewById(R.id.edt_stream_key);
-        mServerEdt.setText("rtmp://2e037c369f-in.streamwiz.dev/live");
-        mStreamKeyEdt.setText("live_NmyjWY0Bj5");
+        mServerEdt.setText("rtmp://4e6dfc40ff-in.streamwiz.dev/live");
+        mStreamKeyEdt.setText("live_59DB9cIVN9");
         findViewById(R.id.btn_start).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, UZBroadCastActivity.class);
             intent.putExtra(SampleLiveApplication.EXTRA_STREAM_ENDPOINT, String.format("%s/%s", mServerEdt.getText().toString(), mStreamKeyEdt.getText().toString()));

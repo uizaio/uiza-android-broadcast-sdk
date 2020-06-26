@@ -30,7 +30,14 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * use camera1 library
+ * Wrapper to stream with camera1 api and microphone. Support stream with OpenGlView(Custom SurfaceView that use OpenGl).
+ * OpenGlView use Surface to buffer mode(This mode is generally
+ * better because skip buffer processing).
+ *
+ * API requirements:
+ * OpenGlView: API 18+.
+ *
+ * Created by namnd on 10/01/20.
  */
 public class Camera1Helper implements ICameraHelper {
 

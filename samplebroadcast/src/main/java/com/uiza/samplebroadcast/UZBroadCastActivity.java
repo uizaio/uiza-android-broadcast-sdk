@@ -284,7 +284,7 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
                 broadCastView.setTextWatermark("Uiza", 22, Color.RED, Translate.CENTER);
                 return true;
             case R.id.image:
-                broadCastView.setImageWatermark(R.mipmap.ic_launcher, new PointF(20f, 15f), Translate.CENTER);
+                broadCastView.setImageWatermark(R.drawable.logo, new PointF(20f, 15f), Translate.TOP_LEFT);
                 return true;
             case R.id.gif:
                 broadCastView.setGifWatermark(R.raw.banana, new PointF(20f, 15f), Translate.CENTER);
