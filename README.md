@@ -1,5 +1,6 @@
 
 [![](https://jitpack.io/v/uizaio/uiza-android-broadcast-sdk.svg)](https://jitpack.io/#uizaio/uiza-android-broadcast-sdk)
+[![Build Status](https://travis-ci.org/uizaio/uiza-android-broadcast-sdk.svg?branch=master)](https://travis-ci.org/uizaio/uiza-android-broadcast-sdk)
 
 [![Play Store](https://www.google.com/photos/about/static/images/badge_google_play_36dp.svg)](https://play.google.com/store/apps/details?id=io.uiza.samplelive)
 
