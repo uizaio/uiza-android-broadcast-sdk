@@ -15,6 +15,7 @@ import com.uiza.sdk.enums.RecordStatus;
 import com.uiza.sdk.interfaces.UZCameraChangeListener;
 import com.uiza.sdk.interfaces.UZCameraOpenException;
 import com.uiza.sdk.interfaces.UZRecordListener;
+import com.uiza.sdk.interfaces.UZTakePhotoCallback;
 import com.uiza.sdk.profile.AudioAttributes;
 import com.uiza.sdk.profile.VideoAttributes;
 import com.uiza.sdk.profile.VideoSize;
@@ -304,6 +305,11 @@ public class Camera1Helper implements ICameraHelper {
     public void stopRecord() {
         rtmpCamera1.stopRecord();
         rtmpCamera1.startPreview();
+    }
+
+    @Override
+    public void takePhoto(@NonNull UZTakePhotoCallback callback) {
+        rtmpCamera1.getGlInterface().takePhoto(callback::onTakePhoto);
     }
 
     @Override

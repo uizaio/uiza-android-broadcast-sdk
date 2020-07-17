@@ -181,6 +181,12 @@ __Clear watermark__
 uzBroadCast.clearWatermark();
 ```
 
+## Take Photo
+
+```java
+uzBroadCast.takePhoto(photoCallback)
+```
+
 ## How to broadcast your screen?
 
 See example in class [`UZDisplayActivity`](https://github.com/uizaio/uiza-android-broadcast-sdk/blob/master/samplebroadcast/src/main/java/com/uiza/samplebroadcast/UZDisplayActivity.java):
