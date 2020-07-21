@@ -333,8 +333,14 @@ public class UZDisplayBroadCast {
     }
 
     public void stopBroadCast() {
+        this.stopBroadCast(true);
+    }
+
+    public void stopBroadCast(boolean closeActivity) {
         rtmpDisplay.stopStream();
-        new Handler().postDelayed(() -> activity.finish(), 100);
+        if(closeActivity) {
+            new Handler().postDelayed(() -> activity.finish(), 100);
+        }
     }
     /**
      * call this method in onActivityResult

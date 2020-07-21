@@ -63,6 +63,7 @@ import com.uiza.sdk.helpers.ICameraHelper;
 import com.uiza.sdk.interfaces.UZBroadCastListener;
 import com.uiza.sdk.interfaces.UZCameraChangeListener;
 import com.uiza.sdk.interfaces.UZRecordListener;
+import com.uiza.sdk.interfaces.UZTakePhotoCallback;
 import com.uiza.sdk.profile.AudioAttributes;
 import com.uiza.sdk.profile.VideoAttributes;
 import com.uiza.sdk.services.UZRTMPService;
@@ -603,6 +604,14 @@ public class UZBroadCastView extends RelativeLayout implements View.OnTouchListe
 
     public void stopRecord() {
         cameraHelper.stopRecord();
+    }
+
+    /**
+     * Take a photo
+     * @param callback
+     */
+    public void takePhoto(@NonNull UZTakePhotoCallback callback) {
+        cameraHelper.takePhoto(callback);
     }
 
     /**

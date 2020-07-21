@@ -1,6 +1,7 @@
 package com.uiza.sdk.helpers;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Size;
 import android.view.MotionEvent;
@@ -13,10 +14,12 @@ import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.encoder.input.video.CameraOpenException;
 import com.pedro.rtplibrary.rtmp.RtmpCamera2;
 import com.pedro.rtplibrary.view.OpenGlView;
+import com.pedro.rtplibrary.view.TakePhotoCallback;
 import com.uiza.sdk.enums.RecordStatus;
 import com.uiza.sdk.interfaces.UZCameraChangeListener;
 import com.uiza.sdk.interfaces.UZCameraOpenException;
 import com.uiza.sdk.interfaces.UZRecordListener;
+import com.uiza.sdk.interfaces.UZTakePhotoCallback;
 import com.uiza.sdk.profile.AudioAttributes;
 import com.uiza.sdk.profile.VideoAttributes;
 import com.uiza.sdk.profile.VideoSize;
@@ -223,6 +226,11 @@ public class Camera2Helper implements ICameraHelper {
                 attrs.getAVCProfileLevel()
         );
 
+    }
+
+    @Override
+    public void takePhoto(@NonNull UZTakePhotoCallback callback) {
+        rtmpCamera2.getGlInterface().takePhoto(callback::onTakePhoto);
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.pedro.rtplibrary.view.OpenGlView;
 import com.uiza.sdk.interfaces.UZCameraChangeListener;
 import com.uiza.sdk.interfaces.UZCameraOpenException;
 import com.uiza.sdk.interfaces.UZRecordListener;
+import com.uiza.sdk.interfaces.UZTakePhotoCallback;
 import com.uiza.sdk.profile.AudioAttributes;
 import com.uiza.sdk.profile.VideoAttributes;
 import com.uiza.sdk.profile.VideoSize;
@@ -234,6 +235,12 @@ public interface ICameraHelper {
      * Stop record MP4 video started with @startRecord. If you don't call it file will be unreadable.
      */
     void stopRecord();
+
+    /**
+     * take a photo
+     * @param callback {@link UZTakePhotoCallback}
+     */
+    void takePhoto(UZTakePhotoCallback callback);
 
     /**
      * Set video bitrate of H264 in kb while stream.
