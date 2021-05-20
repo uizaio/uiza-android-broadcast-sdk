@@ -15,11 +15,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-import com.uiza.sdk.enums.Translate;
-import com.uiza.sdk.interfaces.UZBroadCastListener;
-import com.uiza.sdk.profile.AudioAttributes;
-import com.uiza.sdk.profile.VideoAttributes;
-import com.uiza.sdk.view.UZDisplayBroadCast;
+import com.uiza.sdkbroadcast.enums.Translate;
+import com.uiza.sdkbroadcast.interfaces.UZBroadCastListener;
+import com.uiza.sdkbroadcast.profile.AudioAttributes;
+import com.uiza.sdkbroadcast.profile.VideoAttributes;
+import com.uiza.sdkbroadcast.view.UZDisplayBroadCast;
 import com.uiza.widget.UZMediaButton;
 
 import timber.log.Timber;
