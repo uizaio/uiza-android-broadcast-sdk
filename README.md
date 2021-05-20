@@ -72,7 +72,7 @@ It's very easy, plz follow these steps below to implement:
 XML:
 
 ```xml
-<com.uiza.sdk.view.UZBroadCastView
+<com.uiza.sdkbroadcast.view.UZBroadCastView
     android:id="@+id/uz_broadcast"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
