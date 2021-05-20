@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.uiza.sdk">
+    package="com.uiza.sdkbroadcast">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -43,9 +43,9 @@
     <application
         android:allowBackup="true"
         android:usesCleartextTraffic="true">
-        <service android:name="com.uiza.sdk.services.UZRTMPService" />
+        <service android:name="com.uiza.sdkbroadcast.services.UZRTMPService" />
         <service
-            android:name="com.uiza.sdk.services.UZDisplayService"
+            android:name="com.uiza.sdkbroadcast.services.UZDisplayService"
             android:foregroundServiceType="mediaProjection" />
     </application>
 </manifest>

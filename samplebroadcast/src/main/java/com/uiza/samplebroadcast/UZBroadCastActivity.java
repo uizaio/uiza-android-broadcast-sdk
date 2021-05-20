@@ -23,16 +23,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
-import com.uiza.sdk.enums.FilterRender;
-import com.uiza.sdk.enums.RecordStatus;
-import com.uiza.sdk.enums.Translate;
-import com.uiza.sdk.interfaces.UZBroadCastListener;
-import com.uiza.sdk.interfaces.UZCameraChangeListener;
-import com.uiza.sdk.interfaces.UZCameraOpenException;
-import com.uiza.sdk.interfaces.UZRecordListener;
-import com.uiza.sdk.profile.AudioAttributes;
-import com.uiza.sdk.profile.VideoAttributes;
-import com.uiza.sdk.view.UZBroadCastView;
+import com.uiza.sdkbroadcast.enums.FilterRender;
+import com.uiza.sdkbroadcast.enums.RecordStatus;
+import com.uiza.sdkbroadcast.enums.Translate;
+import com.uiza.sdkbroadcast.interfaces.UZBroadCastListener;
+import com.uiza.sdkbroadcast.interfaces.UZCameraChangeListener;
+import com.uiza.sdkbroadcast.interfaces.UZCameraOpenException;
+import com.uiza.sdkbroadcast.interfaces.UZRecordListener;
+import com.uiza.sdkbroadcast.profile.AudioAttributes;
+import com.uiza.sdkbroadcast.profile.VideoAttributes;
+import com.uiza.sdkbroadcast.view.UZBroadCastView;
 import com.uiza.widget.UZMediaButton;
 
 import java.io.File;

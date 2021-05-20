@@ -2,7 +2,7 @@ package com.uiza.samplebroadcast;
 
 import androidx.multidex.MultiDexApplication;
 
-import com.uiza.sdk.UZBroadCast;
+import com.uiza.sdkbroadcast.UZBroadCast;
 
 import timber.log.Timber;
 

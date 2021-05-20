@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <com.uiza.sdk.view.UZBroadCastView
+    <com.uiza.sdkbroadcast.view.UZBroadCastView
         android:id="@+id/uiza_live_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
