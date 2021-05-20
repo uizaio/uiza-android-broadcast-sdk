@@ -1,14 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.uizaio'
+group = 'com.github.uizaio.broadcast'
 
 android {
     compileSdkVersion 29
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 20071718
-        versionName "1.0.10"
+        versionCode 20071719
+        versionName "1.0.11"
     }
     dexOptions {
         jumboMode true
