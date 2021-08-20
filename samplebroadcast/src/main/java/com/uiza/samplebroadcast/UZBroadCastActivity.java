@@ -104,7 +104,11 @@ public class UZBroadCastActivity extends AppCompatActivity implements UZBroadCas
                 videoAttributes = VideoAttributes.SD_360p(fps, maxBitrate, frameInterval);
             else
                 videoAttributes = VideoAttributes.HD_720p(fps, maxBitrate, frameInterval);
-            AudioAttributes audioAttributes = AudioAttributes.create(audioBitrate, audioSampleRate, stereo);
+
+            AudioAttributes audioAttributes = AudioAttributes.create(audioBitrate * 1024, audioSampleRate, stereo);
+//            audioAttributes.setEchoCanceler(true);
+//            audioAttributes.setNoiseSuppressor(true);
+
             // set audio and video profile
             broadCastView.setVideoAttributes(videoAttributes);
             broadCastView.setAudioAttributes(audioAttributes);
